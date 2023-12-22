@@ -27,6 +27,18 @@ Route::post('new-loan-term', 'LoanTermController@store');
 Route::get('edit-loan-term/{id}', 'LoanTermController@edit');
 Route::post('update-loan-term/{id}', 'LoanTermController@update');
 
+//Settings > Loan Types
+Route::get('loan-types', 'LoanTypeController@index');
+Route::post('new-loan-type', 'LoanTypeController@store');
+Route::get('edit-loan-type/{id}', 'LoanTypeController@edit');
+Route::post('update-loan-type/{id}', 'LoanTypeController@update');
+
+//Settings > Loan Interests
+Route::get('loan-interests', 'LoanInterestController@index');
+Route::post('new-loan-interest', 'LoanInterestController@store');
+Route::get('edit-loan-interest/{id}', 'LoanInterestController@edit');
+Route::post('update-loan-interest/{id}', 'LoanInterestController@update');
+
 Route::group(['prefix' => 'borrowers'], function () {
     Route::get('/lists', 'BorrowerController@index')->name('borrowers');
     Route::get('/create', 'BorrowerController@create');

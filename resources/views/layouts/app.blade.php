@@ -152,7 +152,9 @@
                         </a>
                         <div class="collapse" id="biometrics">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-terms') }}">Loan Term</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-types') }}">Loan Types</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-terms') }}">Loan Terms</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-interests') }}">Loan Interests</a></li>
                             </ul>
                         </div>
                     </li>
@@ -206,15 +208,18 @@
     <script src="{{ asset('body_css/vendors/inputmask/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('body_css/js/inputmask.js') }}"></script>
 
+    
+
+    <!--begin::Webpack-->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!--end::Webpack-->
+
+
     <script type='text/javascript'>
         $(document).ready(function() {
             $('.tablewithSearch').DataTable();
         });
     </script>
-
-    <!--begin::Webpack-->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <!--end::Webpack-->
 
     @yield('footer')
     </div>
