@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <borrower-view></borrower-view>
+    <borrower-form></borrower-form>
 @endsection

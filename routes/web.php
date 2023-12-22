@@ -28,6 +28,9 @@ Route::get('edit-loan-term/{id}', 'LoanTermController@edit');
 Route::post('update-loan-term/{id}', 'LoanTermController@update');
 
 Route::group(['prefix' => 'borrowers'], function () {
-    Route::get('/lists', 'BorrowerController@index')->name('borrowers');
+    Route::get('/main', 'BorrowerController@index')->name('borrowers');
+    Route::get('/lists', 'BorrowerController@lists');
     Route::get('/create', 'BorrowerController@create');
+    Route::post('/store', 'BorrowerController@store');
+    Route::delete('/delete/{borrower}', 'BorrowerController@destroy');
 });

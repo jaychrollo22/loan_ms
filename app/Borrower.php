@@ -17,7 +17,7 @@ class Borrower extends Model implements Auditable
      */
     protected $fillable = [
         'borrower_type_id','grouping_id','loan_officer_id','business_name','first_name','middle_name',
-        'last_name','suffix','country_id','region_id','county','township','address','property_type_id',
+        'last_name','suffix','country_id','region_id','county_id','township_id','address','property_type_id',
         'age','civil_status_id','contact_number','email_address','valid_id_type_id','id_number',
         'nature_of_business_id','business_address','business_property_type_id','monthly_sale',
         'monthly_profit','file_name','file_path'

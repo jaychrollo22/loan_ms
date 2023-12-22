@@ -1,72 +1,44 @@
 <template>
-    <div class="container">
-        <div class="card card-custom">
-            <div class="card-header flex-wrap border-0 pt-6 pb-0">
-                <div class="card-title">
-                    <h3 class="card-label">Borrowers Lists</h3>
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Borrowers</h4>
+                    <p class="card-description">
+                        <a href="/borrowers/create" class="btn btn-outline-success btn-icon-text">
+                            <i class="ti-plus btn-icon-prepend"></i>
+                            New 
+                        </a>
+                    </p>
+                
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered tablewithSearch">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>First Name</th>
+                                    <th>Middle Name</th>
+                                    <th>Last Name</th>
+                                    <th>Suffix</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(borrower, b) in borrowers" :key="b">
+                                    <td>{{ borrower.id}}</td>
+                                    <td>{{ borrower.first_name}}</td>
+                                    <td>{{ borrower.middle_name}}</td>
+                                    <td>{{ borrower.last_name}}</td>
+                                    <td>{{ borrower.suffix}}</td>
+                                    <td>
+                                        <button class="btn btn-danger" title="Delete Request" @click="deleteBorrower(borrower.id,b)">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="card-toolbar">
-                    <!--begin::Button-->
-                    <a href="/borrowers/create" class="btn btn-primary font-weight-bolder">New Record</a>
-                    <!--end::Button-->
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table">
-                    <thead>
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        <th scope="col">Heading</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <th scope="row">1</th>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">2</th>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">3</th>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                        </tr>
-                    </tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -75,8 +47,34 @@
 
 <script>
     export default {
-        mounted() {
-            console.log('Component mounted.')
+        data(){
+            return {
+                borrowers: [],
+                errors: []
+            }
+        },
+        created() {
+           this.fetchBorrowers();
+        },
+        methods:{
+            fetchBorrowers(){
+                axios.get('/borrowers/lists')
+                .then(response =>{
+                    this.borrowers = response.data;
+                })
+                .catch(error => { 
+                    this.errors = error.response.data.errors;
+                })
+            },
+            deleteBorrower(id,index){
+                axios.delete(`/borrowers/delete/${id}`)
+                .then(response => { 
+                    this.borrowers.splice(index, 1);
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                })
+            }
         }
     }
 </script>
