@@ -60,7 +60,7 @@
     <div id="loader" style="display:none;" class="loader">
     </div>
 
-    <div class="container-scroller">
+    <div class="container-scroller" id="app">
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo mr-5" href=""> <img src="{{ URL::asset('/images/company_image.png') }}" onerror="this.src='{{ URL::asset('/images/no_image.png') }}';" style="height:auto;max-height:60px" class="mr-2 ml-2" alt="logo" /></a>
@@ -132,7 +132,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}" onclick='show()'>
+                        <a class="nav-link" href="{{ route('borrowers') }}" onclick='show()'>
                             <i class="ti-user menu-icon"></i>
                             <span class="menu-title">Borrowers</span>
                         </a>
@@ -212,9 +212,11 @@
         });
     </script>
 
+    <!--begin::Webpack-->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!--end::Webpack-->
 
     @yield('footer')
-
     </div>
 </body>
 
