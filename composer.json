@@ -15,7 +15,8 @@
         "laravel/framework": "^7.29",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^2.4",
-        "owen-it/laravel-auditing": "^13.6"
+        "owen-it/laravel-auditing": "^13.6",
+        "realrashid/sweet-alert": "^7.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

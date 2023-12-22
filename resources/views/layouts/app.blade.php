@@ -143,11 +143,18 @@
                             <span class="menu-title">Reports</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}" onclick='show()'>
+                        <a class="nav-link" data-toggle="collapse" href="#biometrics" aria-expanded="false" aria-controls="ui-basic">
                             <i class="icon-cog menu-icon"></i>
                             <span class="menu-title">Settings</span>
+                            <i class="menu-arrow"></i>
                         </a>
+                        <div class="collapse" id="biometrics">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-terms') }}">Loan Term</a></li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
             </nav>
@@ -158,6 +165,8 @@
     </div>
 
     </div>
+
+    @include('sweetalert::alert')
 
     <script type='text/javascript'>
         function show() {
@@ -196,6 +205,12 @@
     <script src="{{ asset('body_css/vendors/inputmask/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('body_css/vendors/inputmask/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('body_css/js/inputmask.js') }}"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $('.tablewithSearch').DataTable();
+        });
+    </script>
 
 
     @yield('footer')
