@@ -21,7 +21,7 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('borrower', require('./components/Borrowers/Index.vue').default);
-Vue.component('borrower-view', require('./components/Borrowers/View.vue').default);
+Vue.component('borrower-form', require('./components/Borrowers/Form.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

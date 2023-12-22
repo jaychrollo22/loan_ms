@@ -25,8 +25,8 @@ class CreateBorrowersTable extends Migration
             $table->char('suffix',10)->nullable();
             $table->integer('country_id');
             $table->integer('region_id');
-            $table->integer('county');
-            $table->integer('township');
+            $table->integer('county_id');
+            $table->integer('township_id');
             $table->string('address');
             $table->integer('property_type_id');
             $table->integer('age');
