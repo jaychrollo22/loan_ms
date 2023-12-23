@@ -10,7 +10,15 @@
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="inputEmail4">Type</label>
-                                <input type="text" class="form-control" id="inputEmail4" placeholder="Type" v-model="borrower.borrower_type">
+                                <multiselect
+                                    v-model="borrower.borrower_type"
+                                    :options="borrower_types"
+                                    :multiple="false"
+                                    track-by="id"
+                                    :custom-label="customLabel"
+                                    placeholder="Select Borrower Type"
+                                >
+                                </multiselect>
                             </div>
                             <div class="form-group col-md-9">
                                 <label for="inputEmail4">Business Name</label>
@@ -121,19 +129,33 @@
         </div>
     </div>
 </template>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <script>
+    import Multiselect from 'vue-multiselect'
     export default {
+        components: { Multiselect },
         data(){
             return {
                 borrower: {},
+                borrower_types: [],
                 errors: []
             }
         },
         created() {
-        //    this.fetchBorrowers();
+           this.fetchBorrowerTypes();
         },
         methods:{
+            customLabel (object) { return `${object.name}`},
+            fetchBorrowerTypes(){
+                axios.get('/borrower-types/lists')
+                .then(response => {
+                    this.borrower_types = response.data;
+                })
+                .catch(errors => {
+                    this.errors = errors.response.data.errors;
+                })
+            },
             saveBorrower(){
                 axios.post('/borrowers/store',{
                     borrower: this.borrower

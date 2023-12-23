@@ -46,7 +46,7 @@ class BorrowerController extends Controller
         try {
             $borrower_params = $request->borrower;
             $borrower = Borrower::create([
-                'borrower_type_id' => 1,
+                'borrower_type_id' => $borrower_params['borrower_type']['id'],
                 'grouping_id' => null,
                 'loan_officer_id' => 1,
                 'business_name' => $borrower_params['business_name'],

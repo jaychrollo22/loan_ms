@@ -39,6 +39,10 @@ Route::post('new-loan-interest', 'LoanInterestController@store');
 Route::get('edit-loan-interest/{id}', 'LoanInterestController@edit');
 Route::post('update-loan-interest/{id}', 'LoanInterestController@update');
 
+Route::group(['prefix' => 'borrower-types'], function () {
+    Route::get('/lists', 'BorrowerTypeController@lists');
+});
+
 Route::group(['prefix' => 'borrowers'], function () {
     Route::get('/main', 'BorrowerController@index')->name('borrowers');
     Route::get('/lists', 'BorrowerController@lists');
