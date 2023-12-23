@@ -21,6 +21,14 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+
+//Loans
+Route::get('loans', 'LoanController@index');
+Route::get('create-loan', 'LoanController@create');
+Route::post('new-loan', 'LoanController@store');
+Route::get('edit-loan/{id}', 'LoanController@edit');
+Route::post('update-loan/{id}', 'LoanController@update');
+
 //Settings > Loan Terms
 Route::get('loan-terms', 'LoanTermController@index');
 Route::post('new-loan-term', 'LoanTermController@store');
