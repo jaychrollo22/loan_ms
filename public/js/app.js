@@ -1917,32 +1917,80 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      borrower: {},
+      borrower: {
+        region: '',
+        region_id: '',
+        county: '',
+        county_id: '',
+        township: '',
+        township_id: ''
+      },
       borrower_types: [],
+      countries: [],
+      regions: [],
+      counties: [],
+      townships: [],
+      civil_statuses: [],
+      valid_id_types: [],
+      nature_of_businesses: [],
+      property_types: [],
       errors: []
     };
   },
   created: function created() {
-    this.fetchBorrowerTypes();
+    this.commonRequest('/borrower-types/lists', 'borrower_types');
+    this.commonRequest('/countries/lists', 'countries');
+    this.commonRequest('/civil-statuses/lists', 'civil_statuses');
+    this.commonRequest('/valid-id-types/lists', 'valid_id_types');
+    this.commonRequest('/nature-of-businesses/lists', 'nature_of_businesses');
+    this.commonRequest('/property-types/lists', 'property_types');
   },
   methods: {
     customLabel: function customLabel(object) {
       return "".concat(object.name);
     },
-    fetchBorrowerTypes: function fetchBorrowerTypes() {
-      var _this = this;
-      axios.get('/borrower-types/lists').then(function (response) {
-        _this.borrower_types = response.data;
-      })["catch"](function (errors) {
-        _this.errors = errors.response.data.errors;
-      });
+    customLabel2: function customLabel2(object) {
+      return "".concat(object.code + ' - ' + object.name);
+    },
+    toggleSelected: function toggleSelected(value, model) {
+      var fields = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      this.borrower[model] = value.id;
+      if (fields == 'countries') this.fetchRegions();
+      if (fields == 'regions') this.fetchCounties();
+      if (fields == 'counties') this.fetchTownships();
+    },
+    fetchRegions: function fetchRegions() {
+      this.regions = [];
+      this.borrower.region = '';
+      this.borrower.region_id = '';
+      this.commonRequest("/regions/lists/".concat(this.borrower.country_id), 'regions');
+    },
+    fetchCounties: function fetchCounties() {
+      this.counties = [];
+      this.borrower.county = '';
+      this.borrower.county_id = '';
+      this.commonRequest("/counties/lists/".concat(this.borrower.region_id), 'counties');
+    },
+    fetchTownships: function fetchTownships() {
+      this.townships = [];
+      this.borrower.township = '';
+      this.borrower.township_id = '';
+      this.commonRequest("/townships/lists/".concat(this.borrower.region_id, "/").concat(this.borrower.county_id), 'townships');
     },
     saveBorrower: function saveBorrower() {
-      var _this2 = this;
+      var _this = this;
       axios.post('/borrowers/store', {
         borrower: this.borrower
       }).then(function (response) {
         window.location.href = '/borrowers/main';
+      })["catch"](function (errors) {
+        _this.errors = Object.values(errors.response.data.errors);
+      });
+    },
+    commonRequest: function commonRequest(end_point, model) {
+      var _this2 = this;
+      axios.get(end_point).then(function (response) {
+        _this2[model] = response.data;
       })["catch"](function (errors) {
         _this2.errors = errors.response.data.errors;
       });
@@ -1989,6 +2037,21 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Errors.vue?vue&type=script&lang=js":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Common/Errors.vue?vue&type=script&lang=js ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['errors']
 });
 
 /***/ }),
@@ -2051,6 +2114,11 @@ var render = function render() {
       "track-by": "id",
       "custom-label": _vm.customLabel,
       placeholder: "Select Borrower Type"
+    },
+    on: {
+      input: function input($event) {
+        return _vm.toggleSelected(_vm.borrower.borrower_type, "borrower_type_id");
+      }
     },
     model: {
       value: _vm.borrower.borrower_type,
@@ -2209,113 +2277,105 @@ var render = function render() {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Country")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.country_id,
-      expression: "borrower.country_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Country")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputAddress2",
-      placeholder: "Country"
-    },
-    domProps: {
-      value: _vm.borrower.country_id
+      options: _vm.countries,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel2,
+      placeholder: "Select Country"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "country_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.country, "country_id", "countries");
       }
+    },
+    model: {
+      value: _vm.borrower.country,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "country", $$v);
+      },
+      expression: "borrower.country"
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputCity"
     }
-  }, [_vm._v("Region")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.region_id,
-      expression: "borrower.region_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Region")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputCity",
-      placeholder: "Region"
-    },
-    domProps: {
-      value: _vm.borrower.region_id
+      options: _vm.regions,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel2,
+      placeholder: "Select Region"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "region_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.region, "region_id", "regions");
       }
+    },
+    model: {
+      value: _vm.borrower.region,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "region", $$v);
+      },
+      expression: "borrower.region"
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputCity"
     }
-  }, [_vm._v("County")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.county_id,
-      expression: "borrower.county_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("County")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputCity",
-      placeholder: "County"
-    },
-    domProps: {
-      value: _vm.borrower.county_id
+      options: _vm.counties,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select County"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "county_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.county, "county_id", "counties");
       }
+    },
+    model: {
+      value: _vm.borrower.county,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "county", $$v);
+      },
+      expression: "borrower.county"
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputCity"
     }
-  }, [_vm._v("Township")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.township_id,
-      expression: "borrower.township_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Township")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputCity",
-      placeholder: "Township"
-    },
-    domProps: {
-      value: _vm.borrower.township_id
+      options: _vm.townships,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Township"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "township_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.township, "township_id");
       }
+    },
+    model: {
+      value: _vm.borrower.township,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "township", $$v);
+      },
+      expression: "borrower.township"
     }
-  })])]), _vm._v(" "), _c("div", {
+  })], 1)]), _vm._v(" "), _c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-3"
@@ -2351,7 +2411,7 @@ var render = function render() {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Address")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("Home Address")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -2379,29 +2439,27 @@ var render = function render() {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Property Type")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.property_type_id,
-      expression: "borrower.property_type_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Property Type")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputAddress2",
-      placeholder: "Property Type"
-    },
-    domProps: {
-      value: _vm.borrower.property_type_id
+      options: _vm.property_types,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Property Type"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "property_type_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.property_type, "property_type_id");
       }
+    },
+    model: {
+      value: _vm.borrower.property_type,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "property_type", $$v);
+      },
+      expression: "borrower.property_type"
     }
-  })])]), _vm._v(" "), _c("div", {
+  })], 1)]), _vm._v(" "), _c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-3"
@@ -2437,29 +2495,27 @@ var render = function render() {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Civil Status")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.civil_status_id,
-      expression: "borrower.civil_status_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Civil Status")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputAddress2",
-      placeholder: "Civil Status"
-    },
-    domProps: {
-      value: _vm.borrower.civil_status_id
+      options: _vm.civil_statuses,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Civil Status"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "civil_status_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.civil_status, "civil_status_id");
       }
+    },
+    model: {
+      value: _vm.borrower.civil_status,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "civil_status", $$v);
+      },
+      expression: "borrower.civil_status"
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
@@ -2523,29 +2579,27 @@ var render = function render() {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Valid ID")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.valid_id_type_id,
-      expression: "borrower.valid_id_type_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Valid ID")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputAddress2",
-      placeholder: "Valid ID"
-    },
-    domProps: {
-      value: _vm.borrower.valid_id_type_id
+      options: _vm.valid_id_types,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Valid ID Type"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "valid_id_type_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.valid_id_type, "valid_id_type_id");
       }
+    },
+    model: {
+      value: _vm.borrower.valid_id_type,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "valid_id_type", $$v);
+      },
+      expression: "borrower.valid_id_type"
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
@@ -2579,59 +2633,83 @@ var render = function render() {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Nature of Business")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.borrower.nature_of_business_id,
-      expression: "borrower.nature_of_business_id"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v("Nature of Business")]), _vm._v(" "), _c("multiselect", {
     attrs: {
-      type: "text",
-      id: "inputAddress2",
-      placeholder: "Nature of Business"
-    },
-    domProps: {
-      value: _vm.borrower.nature_of_business_id
+      options: _vm.nature_of_businesses,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Nature of Business"
     },
     on: {
       input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "nature_of_business_id", $event.target.value);
+        return _vm.toggleSelected(_vm.borrower.nature_of_business, "nature_of_business_id");
       }
+    },
+    model: {
+      value: _vm.borrower.nature_of_business,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "nature_of_business", $$v);
+      },
+      expression: "borrower.nature_of_business"
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputAddress2"
     }
-  }, [_vm._v("Propert Type")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("Business Property Type")]), _vm._v(" "), _c("multiselect", {
+    attrs: {
+      options: _vm.property_types,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Property Type"
+    },
+    on: {
+      input: function input($event) {
+        return _vm.toggleSelected(_vm.borrower.business_property_type, "business_property_type_id");
+      }
+    },
+    model: {
+      value: _vm.borrower.business_property_type,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "business_property_type", $$v);
+      },
+      expression: "borrower.business_property_type"
+    }
+  })], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "form-row"
+  }, [_c("div", {
+    staticClass: "form-group col-md-6"
+  }, [_c("label", {
+    attrs: {
+      "for": "inputAddress2"
+    }
+  }, [_vm._v("Business Address")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.borrower.property_type_id,
-      expression: "borrower.property_type_id"
+      value: _vm.borrower.business_address,
+      expression: "borrower.business_address"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
       id: "inputAddress2",
-      placeholder: "Propert Type"
+      placeholder: "Address"
     },
     domProps: {
-      value: _vm.borrower.property_type_id
+      value: _vm.borrower.business_address
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.borrower, "property_type_id", $event.target.value);
+        _vm.$set(_vm.borrower, "business_address", $event.target.value);
       }
     }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "form-row"
-  }, [_c("div", {
+  })]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
@@ -2695,7 +2773,11 @@ var render = function render() {
     on: {
       click: _vm.saveBorrower
     }
-  }, [_vm._v("Save")])])])])])])]);
+  }, [_vm._v("Save")])])]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
+    attrs: {
+      errors: _vm.errors
+    }
+  }) : _vm._e()], 1)])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2766,6 +2848,47 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("thead", [_c("tr", [_c("th", [_vm._v("Id")]), _vm._v(" "), _c("th", [_vm._v("First Name")]), _vm._v(" "), _c("th", [_vm._v("Middle Name")]), _vm._v(" "), _c("th", [_vm._v("Last Name")]), _vm._v(" "), _c("th", [_vm._v("Suffix")]), _vm._v(" "), _c("th", [_vm._v("Action")])])]);
+}];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Errors.vue?vue&type=template&id=46fa9054":
+/*!*********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Common/Errors.vue?vue&type=template&id=46fa9054 ***!
+  \*********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "alert alert-custom alert-light-danger fade show mb-0 py-3 px-5",
+    attrs: {
+      role: "alert"
+    }
+  }, [_c("div", {
+    staticClass: "alert-text"
+  }, [_vm._m(0), _vm._v("\n        The given data was invalid!\n        "), _c("ul", {
+    staticClass: "mb-0"
+  }, _vm._l(_vm.errors, function (error, e) {
+    return _c("li", {
+      key: e
+    }, [_vm._v(_vm._s(error[0]))]);
+  }), 0)])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("strong", [_c("i", {
+    staticClass: "flaticon-warning text-danger icon-md mr-2"
+  }), _vm._v("\n            Error:\n        ")]);
 }];
 render._withStripped = true;
 
@@ -33196,6 +33319,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
+Vue.component('error-messages', __webpack_require__(/*! ./components/Common/Errors.vue */ "./resources/js/components/Common/Errors.vue")["default"]);
 Vue.component('borrower', __webpack_require__(/*! ./components/Borrowers/Index.vue */ "./resources/js/components/Borrowers/Index.vue")["default"]);
 Vue.component('borrower-form', __webpack_require__(/*! ./components/Borrowers/Form.vue */ "./resources/js/components/Borrowers/Form.vue")["default"]);
 
@@ -33396,6 +33520,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_f9cc624e__WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_Index_vue_vue_type_template_id_f9cc624e__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Common/Errors.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/Common/Errors.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Errors_vue_vue_type_template_id_46fa9054__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Errors.vue?vue&type=template&id=46fa9054 */ "./resources/js/components/Common/Errors.vue?vue&type=template&id=46fa9054");
+/* harmony import */ var _Errors_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Errors.vue?vue&type=script&lang=js */ "./resources/js/components/Common/Errors.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Errors_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Errors_vue_vue_type_template_id_46fa9054__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Errors_vue_vue_type_template_id_46fa9054__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Common/Errors.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Common/Errors.vue?vue&type=script&lang=js":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/Common/Errors.vue?vue&type=script&lang=js ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Errors_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Errors.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Errors.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Errors_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Common/Errors.vue?vue&type=template&id=46fa9054":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/Common/Errors.vue?vue&type=template&id=46fa9054 ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_Errors_vue_vue_type_template_id_46fa9054__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!../../../../node_modules/vue-loader/lib??vue-loader-options!./Errors.vue?vue&type=template&id=46fa9054 */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Errors.vue?vue&type=template&id=46fa9054");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_Errors_vue_vue_type_template_id_46fa9054__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_Errors_vue_vue_type_template_id_46fa9054__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

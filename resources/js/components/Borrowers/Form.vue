@@ -3,127 +3,217 @@
         <div class="content-wrapper">
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
-                <div class="card-body">
-                    <h1 class="card-title">Borrower</h1>
-                    <hr/>
-                    <form>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputEmail4">Type</label>
-                                <multiselect
-                                    v-model="borrower.borrower_type"
-                                    :options="borrower_types"
-                                    :multiple="false"
-                                    track-by="id"
-                                    :custom-label="customLabel"
-                                    placeholder="Select Borrower Type"
-                                >
-                                </multiselect>
+                    <div class="card-body">
+                        <h1 class="card-title">Borrower</h1>
+                        <hr/>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputEmail4">Type</label>
+                                    <multiselect
+                                        v-model="borrower.borrower_type"
+                                        :options="borrower_types"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Borrower Type"
+                                        @input="toggleSelected(borrower.borrower_type,'borrower_type_id')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <label for="inputEmail4">Business Name</label>
+                                    <input type="text" class="form-control" id="inputEmail4" placeholder="Business Name" v-model="borrower.business_name">
+                                </div>
                             </div>
-                            <div class="form-group col-md-9">
-                                <label for="inputEmail4">Business Name</label>
-                                <input type="text" class="form-control" id="inputEmail4" placeholder="Business Name" v-model="borrower.business_name">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputEmail4">First Name</label>
+                                    <input type="text" class="form-control" id="inputEmail4" placeholder="First Name" v-model="borrower.first_name">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputPassword4">Middle Name</label>
+                                    <input type="text" class="form-control" id="inputPassword4" placeholder="Middle Name" v-model="borrower.middle_name">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputPassword4">Last Name</label>
+                                    <input type="text" class="form-control" id="inputPassword4" placeholder="Last Name" v-model="borrower.last_name">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputPassword4">Suffix</label>
+                                    <input type="text" class="form-control" id="inputPassword4" placeholder="Suffix" v-model="borrower.suffix">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputEmail4">First Name</label>
-                                <input type="text" class="form-control" id="inputEmail4" placeholder="First Name" v-model="borrower.first_name">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Country</label>
+                                    <multiselect
+                                        v-model="borrower.country"
+                                        :options="countries"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel2"
+                                        placeholder="Select Country"
+                                        @input="toggleSelected(borrower.country,'country_id','countries')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputCity">Region</label>
+                                    <multiselect
+                                        v-model="borrower.region"
+                                        :options="regions"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel2"
+                                        placeholder="Select Region"
+                                        @input="toggleSelected(borrower.region,'region_id','regions')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputCity">County</label>
+                                    <multiselect
+                                        v-model="borrower.county"
+                                        :options="counties"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select County"
+                                        @input="toggleSelected(borrower.county,'county_id','counties')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputCity">Township</label>
+                                    <multiselect
+                                        v-model="borrower.township"
+                                        :options="townships"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Township"
+                                        @input="toggleSelected(borrower.township,'township_id')"
+                                    >
+                                    </multiselect>
+                                </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputPassword4">Middle Name</label>
-                                <input type="text" class="form-control" id="inputPassword4" placeholder="Middle Name" v-model="borrower.middle_name">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">City</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="City" v-model="borrower.city">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputAddress2">Home Address</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.address">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Property Type</label>
+                                    <multiselect
+                                        v-model="borrower.property_type"
+                                        :options="property_types"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Property Type"
+                                        @input="toggleSelected(borrower.property_type,'property_type_id')"
+                                    >
+                                    </multiselect>
+                                </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputPassword4">Last Name</label>
-                                <input type="text" class="form-control" id="inputPassword4" placeholder="Last Name" v-model="borrower.last_name">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Age</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Age" v-model="borrower.age">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Civil Status</label>
+                                    <multiselect
+                                        v-model="borrower.civil_status"
+                                        :options="civil_statuses"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Civil Status"
+                                        @input="toggleSelected(borrower.civil_status,'civil_status_id')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Contact Number</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.contact_number">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Email Address</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Email Address" v-model="borrower.email_address">
+                                </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputPassword4">Suffix</label>
-                                <input type="text" class="form-control" id="inputPassword4" placeholder="Suffix" v-model="borrower.suffix">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Valid ID</label>
+                                    <multiselect
+                                        v-model="borrower.valid_id_type"
+                                        :options="valid_id_types"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Valid ID Type"
+                                        @input="toggleSelected(borrower.valid_id_type,'valid_id_type_id')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">ID Number</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.id_number">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Nature of Business</label>
+                                    <multiselect
+                                        v-model="borrower.nature_of_business"
+                                        :options="nature_of_businesses"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Nature of Business"
+                                        @input="toggleSelected(borrower.nature_of_business,'nature_of_business_id')"
+                                    >
+                                    </multiselect>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Business Property Type</label>
+                                    <multiselect
+                                        v-model="borrower.business_property_type"
+                                        :options="property_types"
+                                        :multiple="false"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select Property Type"
+                                        @input="toggleSelected(borrower.business_property_type,'business_property_type_id')"
+                                    >
+                                    </multiselect>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Country</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Country" v-model="borrower.country_id">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputAddress2">Business Address</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.business_address">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Monthly Sale</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="borrower.monthly_sale">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputAddress2">Monthly Profit</label>
+                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="borrower.monthly_profit">
+                                </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputCity">Region</label>
-                                <input type="text" class="form-control" id="inputCity" placeholder="Region" v-model="borrower.region_id">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputCity">County</label>
-                                <input type="text" class="form-control" id="inputCity" placeholder="County" v-model="borrower.county_id">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputCity">Township</label>
-                                <input type="text" class="form-control" id="inputCity" placeholder="Township" v-model="borrower.township_id">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">City</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="City" v-model="borrower.city">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputAddress2">Address</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.address">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Property Type</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Property Type" v-model="borrower.property_type_id">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Age</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Age" v-model="borrower.age">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Civil Status</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Civil Status" v-model="borrower.civil_status_id">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Contact Number</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.contact_number">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Email Address</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Email Address" v-model="borrower.email_address">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Valid ID</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Valid ID" v-model="borrower.valid_id_type_id">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">ID Number</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.id_number">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Nature of Business</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Nature of Business" v-model="borrower.nature_of_business_id">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Propert Type</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Propert Type" v-model="borrower.property_type_id">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Monthly Sale</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="borrower.monthly_sale">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputAddress2">Monthly Profit</label>
-                                <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="borrower.monthly_profit">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary" @click="saveBorrower">Save</button>
-                    </form>
-                </div>
+                            <button type="button" class="btn btn-primary" @click="saveBorrower">Save</button>
+                        </form>
+                    </div>
+
+                    <!-- Start: Error Message-->
+                    <error-messages :errors="errors" v-if="errors.length > 0"/>
+                    <!-- End: Error Message -->
                 </div>
             </div>
         </div>
@@ -137,24 +227,60 @@
         components: { Multiselect },
         data(){
             return {
-                borrower: {},
+                borrower: {
+                    region: '',
+                    region_id: '',
+                    county: '',
+                    county_id: '',
+                    township: '',
+                    township_id: ''
+                },
                 borrower_types: [],
+                countries: [],
+                regions: [],
+                counties: [],
+                townships: [],
+                civil_statuses: [],
+                valid_id_types: [],
+                nature_of_businesses: [],
+                property_types: [],
                 errors: []
             }
         },
         created() {
-           this.fetchBorrowerTypes();
+            this.commonRequest('/borrower-types/lists','borrower_types');
+            this.commonRequest('/countries/lists','countries');
+            this.commonRequest('/civil-statuses/lists','civil_statuses');
+            this.commonRequest('/valid-id-types/lists','valid_id_types');
+            this.commonRequest('/nature-of-businesses/lists','nature_of_businesses');
+            this.commonRequest('/property-types/lists','property_types');
         },
         methods:{
             customLabel (object) { return `${object.name}`},
-            fetchBorrowerTypes(){
-                axios.get('/borrower-types/lists')
-                .then(response => {
-                    this.borrower_types = response.data;
-                })
-                .catch(errors => {
-                    this.errors = errors.response.data.errors;
-                })
+            customLabel2 (object) { return `${object.code +' - '+ object.name}`},
+            toggleSelected(value,model,fields = '') {
+                this.borrower[model] = value.id;
+                if(fields == 'countries') this.fetchRegions();
+                if(fields == 'regions') this.fetchCounties();
+                if(fields == 'counties') this.fetchTownships();
+			},
+            fetchRegions(){
+                this.regions = [];
+                this.borrower.region = '';
+                this.borrower.region_id = '';
+                this.commonRequest(`/regions/lists/${this.borrower.country_id}`,'regions');
+            },
+            fetchCounties(){
+                this.counties = [];
+                this.borrower.county = '';
+                this.borrower.county_id = '';
+                this.commonRequest(`/counties/lists/${this.borrower.region_id}`,'counties');
+            },
+            fetchTownships(){
+                this.townships = [];
+                this.borrower.township = '';
+                this.borrower.township_id = '';
+                this.commonRequest(`/townships/lists/${this.borrower.region_id}/${this.borrower.county_id}`,'townships');
             },
             saveBorrower(){
                 axios.post('/borrowers/store',{
@@ -162,6 +288,15 @@
                 })
                 .then(response => {
                     window.location.href = '/borrowers/main';
+                })
+                .catch(errors => {
+                    this.errors = Object.values(errors.response.data.errors);
+                })
+            },
+            commonRequest(end_point,model){
+                axios.get(end_point)
+                .then(response => {
+                    this[model] = response.data;
                 })
                 .catch(errors => {
                     this.errors = errors.response.data.errors;

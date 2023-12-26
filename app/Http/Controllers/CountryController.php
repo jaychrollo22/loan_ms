@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\{
-    BorrowerType
+    Country
 };
 
-class BorrowerTypeController extends Controller
+class CountryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -90,6 +90,6 @@ class BorrowerTypeController extends Controller
      *
      */
     public function lists(){
-        return BorrowerType::all(['id','name']);
+        return Country::get(['id','code','name']);
     }
 }

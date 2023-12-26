@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Auth;
 use Illuminate\Http\Request;
 use App\{
     Borrower
@@ -38,42 +39,41 @@ class BorrowerController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-
-        // ]);
+        $request->validate([
+            'borrower_type_id' => 'required',
+            'grouping_id' => '',
+            'loan_officer_id' => '',
+            'business_name' => 'required',
+            'first_name' => 'required',
+            'middle_name' => 'required',
+            'last_name' => 'required',
+            'suffix' => '',
+            'country_id' => 'required',
+            'region_id' => 'required',
+            'county_id' => 'required',
+            'township_id' => 'required',
+            'address' => 'required',
+            'property_type_id' => 'required',
+            'age' => 'required',
+            'civil_status_id' => 'required',
+            'contact_number' => 'required',
+            'email_address' => 'required',
+            'valid_id_type_id' => 'required',
+            'id_number' => 'required',
+            'nature_of_business_id' => 'required',
+            'business_address' => 'required',
+            'business_property_type_id' => 'required',
+            'monthly_sale' => 'required',
+            'monthly_profit' => 'required',
+            'file_name' => '',
+            'file_path' => ''
+        ],[
+            'country_id.required' => 'Country field is required'
+        ]);
 
         DB::beginTransaction();
         try {
-            $borrower_params = $request->borrower;
-            $borrower = Borrower::create([
-                'borrower_type_id' => $borrower_params['borrower_type']['id'],
-                'grouping_id' => null,
-                'loan_officer_id' => 1,
-                'business_name' => $borrower_params['business_name'],
-                'first_name' => $borrower_params['first_name'],
-                'middle_name' => $borrower_params['middle_name'],
-                'last_name' => $borrower_params['last_name'],
-                'suffix' => null,
-                'country_id' => 1,
-                'region_id' => 1,
-                'county_id' => 1,
-                'township_id' => 1,
-                'address' => $borrower_params['address'],
-                'property_type_id' => 1,
-                'age' => $borrower_params['age'],
-                'civil_status_id' => 1,
-                'contact_number' => $borrower_params['contact_number'],
-                'email_address' => $borrower_params['email_address'],
-                'valid_id_type_id' => 1,
-                'id_number' => $borrower_params['id_number'],
-                'nature_of_business_id' => 1,
-                'business_address' => $borrower_params['address'],
-                'business_property_type_id' => 1,
-                'monthly_sale' => $borrower_params['monthly_sale'],
-                'monthly_profit' => $borrower_params['monthly_profit'],
-                'file_name' => 'file_name',
-                'file_path' => 'file_path'
-            ]);
+            $borrower = Borrower::create($request->borrower + ['loan_officer_id' => Auth::user()->id]);
          
             DB::commit();
             return $borrower;

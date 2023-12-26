@@ -8,6 +8,8 @@ use OwenIt\Auditing\Contracts\Auditable;
 
 class Region extends Model implements Auditable
 {
+    use SoftDeletes,\OwenIt\Auditing\Auditable;
+    
     /**
      * The attributes that are mass assignable.
      *
