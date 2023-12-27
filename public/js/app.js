@@ -1910,6 +1910,12 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
 /* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_0__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1917,6 +1923,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      form_data: new FormData(),
       borrower: {
         region: '',
         region_id: '',
@@ -1935,6 +1942,7 @@ __webpack_require__.r(__webpack_exports__);
       nature_of_businesses: [],
       property_types: [],
       errors: []
+      // preview_image: null
     };
   },
   created: function created() {
@@ -1951,6 +1959,24 @@ __webpack_require__.r(__webpack_exports__);
     },
     customLabel2: function customLabel2(object) {
       return "".concat(object.code + ' - ' + object.name);
+    },
+    uploadPhoto: function uploadPhoto(e) {
+      // const image = e.target.files[0];
+      // const reader = new FileReader();
+      // reader.readAsDataURL(image);
+      // reader.onload = e =>{
+      //     this.preview_image = e.target.result;
+      //     console.log(this.preview_image);
+      // };
+      this.borrower.photo = '';
+      if (/\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false) {
+        alert('Please use Image file');
+        this.$refs.photo.value = null;
+        return false;
+      }
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.borrower.photo = files[0];
     },
     toggleSelected: function toggleSelected(value, model) {
       var fields = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
@@ -1979,9 +2005,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveBorrower: function saveBorrower() {
       var _this = this;
-      axios.post('/borrowers/store', {
-        borrower: this.borrower
-      }).then(function (response) {
+      Object.entries(this.borrower).forEach(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          key = _ref2[0],
+          value = _ref2[1];
+        _this.form_data.append(key, value);
+      });
+      axios.post('/borrowers/store', this.form_data).then(function (response) {
         window.location.href = '/borrowers/main';
       })["catch"](function (errors) {
         _this.errors = Object.values(errors.response.data.errors);
@@ -2097,11 +2127,40 @@ var render = function render() {
     staticClass: "card"
   }, [_c("div", {
     staticClass: "card-body"
+  }, [_vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "tab-content",
+    attrs: {
+      id: "pills-tabContent"
+    }
+  }, [_c("div", {
+    staticClass: "tab-pane fade show active",
+    attrs: {
+      id: "pills-home",
+      role: "tabpanel",
+      "aria-labelledby": "pills-home-tab"
+    }
   }, [_c("h1", {
     staticClass: "card-title"
-  }, [_vm._v("Borrower")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("form", [_c("div", {
+  }, [_vm._v("CONTACT INFORMATION")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("form", [_c("div", {
     staticClass: "form-row"
   }, [_c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "inputEmail4"
+    }
+  }, [_vm._v("Photo")]), _vm._v(" "), _c("input", {
+    ref: "photo",
+    staticClass: "form-control",
+    attrs: {
+      type: "file",
+      name: "profile_avatar",
+      accept: ".png, .jpg, .jpeg"
+    },
+    on: {
+      change: _vm.uploadPhoto
+    }
+  })]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
@@ -2128,7 +2187,7 @@ var render = function render() {
       expression: "borrower.borrower_type"
     }
   })], 1), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-9"
+    staticClass: "form-group col-md-6"
   }, [_c("label", {
     attrs: {
       "for": "inputEmail4"
@@ -2773,13 +2832,54 @@ var render = function render() {
     on: {
       click: _vm.saveBorrower
     }
-  }, [_vm._v("Save")])])]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
+  }, [_vm._v("Save")])])]), _vm._v(" "), _c("div", {
+    staticClass: "tab-pane fade",
+    attrs: {
+      id: "pills-profile",
+      role: "tabpanel",
+      "aria-labelledby": "pills-profile-tab"
+    }
+  }, [_vm._v("\n                            FOR DEVELOPMENT\n                        ")])])]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
     attrs: {
       errors: _vm.errors
     }
   }) : _vm._e()], 1)])])]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("ul", {
+    staticClass: "nav nav-pills mb-3",
+    attrs: {
+      id: "pills-tab",
+      role: "tablist"
+    }
+  }, [_c("li", {
+    staticClass: "nav-item"
+  }, [_c("a", {
+    staticClass: "nav-link active",
+    attrs: {
+      id: "pills-home-tab",
+      "data-toggle": "pill",
+      href: "#pills-home",
+      role: "tab",
+      "aria-controls": "pills-home",
+      "aria-selected": "true"
+    }
+  }, [_vm._v("BORROWER")])]), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("a", {
+    staticClass: "nav-link",
+    attrs: {
+      id: "pills-profile-tab",
+      "data-toggle": "pill",
+      href: "#pills-profile",
+      role: "tab",
+      "aria-controls": "pills-profile",
+      "aria-selected": "false"
+    }
+  }, [_vm._v("CO-BORROWER")])])]);
+}];
 render._withStripped = true;
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Storage;
 use Illuminate\Http\Request;
 use App\{
     Borrower
@@ -40,6 +41,7 @@ class BorrowerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'photo' => 'required',
             'borrower_type_id' => 'required',
             'grouping_id' => '',
             'loan_officer_id' => '',
@@ -64,17 +66,20 @@ class BorrowerController extends Controller
             'business_address' => 'required',
             'business_property_type_id' => 'required',
             'monthly_sale' => 'required',
-            'monthly_profit' => 'required',
-            'file_name' => '',
-            'file_path' => ''
+            'monthly_profit' => 'required'
         ],[
             'country_id.required' => 'Country field is required'
         ]);
 
         DB::beginTransaction();
         try {
-            $borrower = Borrower::create($request->borrower + ['loan_officer_id' => Auth::user()->id]);
-         
+            $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
+            //Saving of uploaded photo
+            $borrower->update([
+                'file_path' => Storage::disk('public')->put('Borrowers/Photos', $request->photo),
+                'file_name' => $request->photo->getClientOriginalName(),
+            ]);
+
             DB::commit();
             return $borrower;
         } catch (Exception $e) {
