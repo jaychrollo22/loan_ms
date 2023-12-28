@@ -7,10 +7,10 @@ use Auth;
 use Storage;
 use Illuminate\Http\Request;
 use App\{
-    Borrower
+    CoBorrower
 };
 
-class BorrowerController extends Controller
+class CoBorrowerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class BorrowerController extends Controller
      */
     public function index()
     {
-        return view('borrowers.index');
+        //
     }
 
     /**
@@ -29,7 +29,7 @@ class BorrowerController extends Controller
      */
     public function create()
     {
-        return view('borrowers.form');
+        //
     }
 
     /**
@@ -42,9 +42,6 @@ class BorrowerController extends Controller
     {
         $request->validate([
             'photo' => 'required',
-            'borrower_type_id' => 'required',
-            'grouping_id' => '',
-            'loan_officer_id' => '',
             'business_name' => 'required',
             'first_name' => 'required',
             'middle_name' => 'required',
@@ -78,15 +75,15 @@ class BorrowerController extends Controller
 
         DB::beginTransaction();
         try {
-            $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
+            $co_borrower = CoBorrower::create($request->all() + ['borrower_id' => 6, 'relationship_id' => 1]);
             //Saving of uploaded photo
-            $borrower->update([
-                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
+            $co_borrower->update([
+                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-6/CoBorrowers', $request->photo),
                 'file_name' => $request->photo->getClientOriginalName(),
             ]);
 
             DB::commit();
-            return $borrower;
+            return $co_borrower;
         } catch (Exception $e) {
             DB::rollBack();
             // return GlobalController::errorLogs($e->getMessage(),'App\DocumentRfp');
@@ -133,17 +130,8 @@ class BorrowerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Borrower $borrower)
+    public function destroy($id)
     {
-        return $borrower->delete();
-    }
-
-    /**
-     * Display all resources.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function lists(){
-        return Borrower::get();
+        //
     }
 }
