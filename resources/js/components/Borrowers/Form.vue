@@ -11,17 +11,20 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">CO-BORROWER</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-documents" aria-selected="false">DOCUMENTS</a>
+                            </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <h1 class="card-title">CONTACT INFORMATION</h1>
+                                <h1 class="card-title">BORROWER CONTACT INFORMATION</h1>
                                 <hr/>
                                 <form>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
                                             <label for="inputEmail4">Photo</label>
                                             <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
-                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto">
+                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'borrower')">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputEmail4">Type</label>
@@ -32,7 +35,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Borrower Type"
-                                                @input="toggleSelected(borrower.borrower_type,'borrower_type_id')"
+                                                @input="toggleSelected(borrower.borrower_type,'borrower','borrower_type_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -69,7 +72,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel2"
                                                 placeholder="Select Country"
-                                                @input="toggleSelected(borrower.country,'country_id','countries')"
+                                                @input="toggleSelected(borrower.country,'borrower','country_id','countries')"
                                             >
                                             </multiselect>
                                         </div>
@@ -82,7 +85,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel2"
                                                 placeholder="Select Region"
-                                                @input="toggleSelected(borrower.region,'region_id','regions')"
+                                                @input="toggleSelected(borrower.region,'borrower','region_id','regions')"
                                             >
                                             </multiselect>
                                         </div>
@@ -95,7 +98,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select County"
-                                                @input="toggleSelected(borrower.county,'county_id','counties')"
+                                                @input="toggleSelected(borrower.county,'borrower','county_id','counties')"
                                             >
                                             </multiselect>
                                         </div>
@@ -108,7 +111,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Township"
-                                                @input="toggleSelected(borrower.township,'township_id')"
+                                                @input="toggleSelected(borrower.township,'borrower','township_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -131,7 +134,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Property Type"
-                                                @input="toggleSelected(borrower.property_type,'property_type_id')"
+                                                @input="toggleSelected(borrower.property_type,'borrower','property_type_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -150,7 +153,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Civil Status"
-                                                @input="toggleSelected(borrower.civil_status,'civil_status_id')"
+                                                @input="toggleSelected(borrower.civil_status,'borrower','civil_status_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -173,7 +176,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Valid ID Type"
-                                                @input="toggleSelected(borrower.valid_id_type,'valid_id_type_id')"
+                                                @input="toggleSelected(borrower.valid_id_type,'borrower','valid_id_type_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -190,7 +193,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Nature of Business"
-                                                @input="toggleSelected(borrower.nature_of_business,'nature_of_business_id')"
+                                                @input="toggleSelected(borrower.nature_of_business,'borrower','nature_of_business_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -203,7 +206,7 @@
                                                 track-by="id"
                                                 :custom-label="customLabel"
                                                 placeholder="Select Property Type"
-                                                @input="toggleSelected(borrower.business_property_type,'business_property_type_id')"
+                                                @input="toggleSelected(borrower.business_property_type,'borrower','business_property_type_id')"
                                             >
                                             </multiselect>
                                         </div>
@@ -226,6 +229,205 @@
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                <h1 class="card-title">CO-BORROWER CONTACT INFORMATION</h1>
+                                <hr/>
+                                <form>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputEmail4">Photo</label>
+                                            <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
+                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'co_borrower')">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="inputEmail4">Business Name</label>
+                                            <input type="text" class="form-control" id="inputEmail4" placeholder="Business Name" v-model="co_borrower.business_name">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputEmail4">First Name</label>
+                                            <input type="text" class="form-control" id="inputEmail4" placeholder="First Name" v-model="co_borrower.first_name">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputPassword4">Middle Name</label>
+                                            <input type="text" class="form-control" id="inputPassword4" placeholder="Middle Name" v-model="co_borrower.middle_name">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputPassword4">Last Name</label>
+                                            <input type="text" class="form-control" id="inputPassword4" placeholder="Last Name" v-model="co_borrower.last_name">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputPassword4">Suffix</label>
+                                            <input type="text" class="form-control" id="inputPassword4" placeholder="Suffix" v-model="co_borrower.suffix">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Country</label>
+                                            <multiselect
+                                                v-model="co_borrower.country"
+                                                :options="countries"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel2"
+                                                placeholder="Select Country"
+                                                @input="toggleSelected(co_borrower.country,'co_borrower','country_id','countries')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputCity">Region</label>
+                                            <multiselect
+                                                v-model="co_borrower.region"
+                                                :options="regions"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel2"
+                                                placeholder="Select Region"
+                                                @input="toggleSelected(co_borrower.region,'co_borrower','region_id','regions')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputCity">County</label>
+                                            <multiselect
+                                                v-model="co_borrower.county"
+                                                :options="counties"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select County"
+                                                @input="toggleSelected(co_borrower.county,'co_borrower','county_id','counties')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputCity">Township</label>
+                                            <multiselect
+                                                v-model="co_borrower.township"
+                                                :options="townships"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Township"
+                                                @input="toggleSelected(co_borrower.township,'co_borrower','township_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">City</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="City" v-model="co_borrower.city">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="inputAddress2">Home Address</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="co_borrower.address">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Property Type</label>
+                                            <multiselect
+                                                v-model="co_borrower.property_type"
+                                                :options="property_types"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Property Type"
+                                                @input="toggleSelected(co_borrower.property_type,'co_borrower','property_type_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Age</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Age" v-model="co_borrower.age">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Civil Status</label>
+                                            <multiselect
+                                                v-model="co_borrower.civil_status"
+                                                :options="civil_statuses"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Civil Status"
+                                                @input="toggleSelected(co_borrower.civil_status,'co_borrower','civil_status_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Contact Number</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="co_borrower.contact_number">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Email Address</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Email Address" v-model="co_borrower.email_address">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Valid ID</label>
+                                            <multiselect
+                                                v-model="co_borrower.valid_id_type"
+                                                :options="valid_id_types"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Valid ID Type"
+                                                @input="toggleSelected(co_borrower.valid_id_type,'co_borrower','valid_id_type_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">ID Number</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="co_borrower.id_number">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Nature of Business</label>
+                                            <multiselect
+                                                v-model="co_borrower.nature_of_business"
+                                                :options="nature_of_businesses"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Nature of Business"
+                                                @input="toggleSelected(co_borrower.nature_of_business,'co_borrower','nature_of_business_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Business Property Type</label>
+                                            <multiselect
+                                                v-model="co_borrower.business_property_type"
+                                                :options="property_types"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Property Type"
+                                                @input="toggleSelected(co_borrower.business_property_type,'co_borrower','business_property_type_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="inputAddress2">Business Address</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="co_borrower.business_address">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Monthly Sale</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="co_borrower.monthly_sale">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Monthly Profit</label>
+                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="co_borrower.monthly_profit">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" @click="saveCoBorrower">Save</button>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="pills-documents" role="tabpanel" aria-labelledby="pills-documents-tab">
                                 FOR DEVELOPMENT
                             </div>
                         </div>
@@ -249,6 +451,14 @@
             return {
                 form_data: new FormData(),
                 borrower: {
+                    region: '',
+                    region_id: '',
+                    county: '',
+                    county_id: '',
+                    township: '',
+                    township_id: ''
+                },
+                co_borrower: {
                     region: '',
                     region_id: '',
                     county: '',
@@ -280,7 +490,7 @@
         methods:{
             customLabel (object) { return `${object.name}`},
             customLabel2 (object) { return `${object.code +' - '+ object.name}`},
-            uploadPhoto(e){
+            uploadPhoto(e,object){
                 // const image = e.target.files[0];
                 // const reader = new FileReader();
                 // reader.readAsDataURL(image);
@@ -288,7 +498,7 @@
                 //     this.preview_image = e.target.result;
                 //     console.log(this.preview_image);
                 // };
-                this.borrower.photo = '';
+                this[object].photo = '';
                 if(/\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false){
                     alert('Please use Image file');
                     this.$refs.photo.value = null;
@@ -297,43 +507,43 @@
 
                 let files = e.target.files || e.dataTransfer.files;
                 if(!files.length) return
-                this.borrower.photo = files[0];
+                this[object].photo = files[0];
             },
-            toggleSelected(value,model,fields = '') {
-                this.borrower[model] = value.id;
-                if(fields == 'countries') this.fetchRegions();
-                if(fields == 'regions') this.fetchCounties();
-                if(fields == 'counties') this.fetchTownships();
+            toggleSelected(value,object,model,fields = '') {
+                this[object][model] = value.id;
+                if(fields == 'countries') this.fetchRegions(object);
+                if(fields == 'regions') this.fetchCounties(object);
+                if(fields == 'counties') this.fetchTownships(object);
 			},
-            fetchRegions(){
-                this.regions = [];
-                this.borrower.region = '';
-                this.borrower.region_id = '';
-                this.commonRequest(`/regions/lists/${this.borrower.country_id}`,'regions');
+            fetchRegions(object){
+                this.resetAddressParameters(this.regions,this[object].region,this[object].region_id);
+                this.commonRequest(`/regions/lists/${this[object].country_id}`,'regions');
             },
-            fetchCounties(){
-                this.counties = [];
-                this.borrower.county = '';
-                this.borrower.county_id = '';
-                this.commonRequest(`/counties/lists/${this.borrower.region_id}`,'counties');
+            fetchCounties(object){
+                this.resetAddressParameters(this.counties,this[object].county,this[object].county_id);
+                this.commonRequest(`/counties/lists/${this[object].region_id}`,'counties');
             },
-            fetchTownships(){
-                this.townships = [];
-                this.borrower.township = '';
-                this.borrower.township_id = '';
-                this.commonRequest(`/townships/lists/${this.borrower.region_id}/${this.borrower.county_id}`,'townships');
+            fetchTownships(object){
+                this.resetAddressParameters(this.townships,this[object].township,this[object].township_id);
+                this.commonRequest(`/townships/lists/${this[object].region_id}/${this[object].county_id}`,'townships');
+            },
+            resetAddressParameters(model1,model2,model3){
+                model1 = [];
+                model2 = '';
+                model3 = '';
             },
             saveBorrower(){
-                Object.entries(this.borrower).forEach(([key, value]) => {
+                this.appendFormData(this.borrower);
+                this.commonPostRequest('/borrowers/store');
+            },
+            saveCoBorrower(){
+                this.appendFormData(this.co_borrower);
+                this.commonPostRequest('/co-borrowers/store');
+            },
+            appendFormData(model){
+                Object.entries(model).forEach(([key, value]) => {
                     this.form_data.append(key, value);
                 });
-                axios.post('/borrowers/store',this.form_data)
-                .then(response => {
-                    window.location.href = '/borrowers/main';
-                })
-                .catch(errors => {
-                    this.errors = Object.values(errors.response.data.errors);
-                })
             },
             commonRequest(end_point,model){
                 axios.get(end_point)
@@ -342,6 +552,15 @@
                 })
                 .catch(errors => {
                     this.errors = errors.response.data.errors;
+                })
+            },
+            commonPostRequest(end_point){
+                axios.post(end_point,this.form_data)
+                .then(response => {
+                    window.location.href = '/borrowers/main';
+                })
+                .catch(errors => {
+                    this.errors = Object.values(errors.response.data.errors);
                 })
             }
         }
