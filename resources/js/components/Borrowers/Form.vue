@@ -12,7 +12,7 @@
                                 <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">CO-BORROWER</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-documents" aria-selected="false">DOCUMENTS</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-documents" role="tab" aria-controls="pills-documents" aria-selected="false" @click="fetchDocuments">DOCUMENTS</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
@@ -24,7 +24,7 @@
                                         <div class="form-group col-md-3">
                                             <label for="inputEmail4">Photo</label>
                                             <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
-                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'borrower')">
+                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'borrower','Image')">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputEmail4">Type</label>
@@ -236,7 +236,7 @@
                                         <div class="form-group col-md-3">
                                             <label for="inputEmail4">Photo</label>
                                             <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
-                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'co_borrower')">
+                                            <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'co_borrower','Image')">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="inputEmail4">Business Name</label>
@@ -428,7 +428,37 @@
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="pills-documents" role="tabpanel" aria-labelledby="pills-documents-tab">
-                                FOR DEVELOPMENT
+                                <p class="card-description">
+                                    <button type="button" class="btn btn-outline-success btn-icon-text" data-toggle="modal" data-target="#uploadDocumentModal">
+                                        <i class="ti-plus btn-icon-prepend"></i>                                                    
+                                        New
+                                    </button>
+                                </p>
+                            
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered tablewithSearch">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>File Name</th>
+                                                <th>Date Uploaded</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(document, d) in documents" :key="d">
+                                                <td>{{ document.id }}</td>
+                                                <td>{{ document.title }}</td>
+                                                <td><a :href="'../storage/'+document.file_path" target="_blank" >{{ document.file_name }}</a></td>
+                                                <td>{{ document.created_at }}</td>
+                                                <td>
+                                                    <button class="btn btn-danger" title="Delete Document" @click="deleteDocument(document.id,d)">Delete</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -439,130 +469,178 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="uploadDocumentModal" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newLoanTypelabel">New Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class='col-md-12 form-group'>
+                                Title
+                                <input type="text" name='name' class="form-control" required placeholder="Title" v-model="document.title">
+                            </div>
+                            <div class='col-md-12 form-group'>
+                                Attach File
+                                <input type="file" class="form-control" ref="photo" @change="uploadPhoto($event,'document','')">
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" @click="saveDocument">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <script>
-    import Multiselect from 'vue-multiselect'
-    export default {
-        components: { Multiselect },
-        data(){
-            return {
-                form_data: new FormData(),
-                borrower: {
-                    region: '',
-                    region_id: '',
-                    county: '',
-                    county_id: '',
-                    township: '',
-                    township_id: ''
-                },
-                co_borrower: {
-                    region: '',
-                    region_id: '',
-                    county: '',
-                    county_id: '',
-                    township: '',
-                    township_id: ''
-                },
-                borrower_types: [],
-                countries: [],
-                regions: [],
-                counties: [],
-                townships: [],
-                civil_statuses: [],
-                valid_id_types: [],
-                nature_of_businesses: [],
-                property_types: [],
-                errors: [],
-                // preview_image: null
+import Multiselect from 'vue-multiselect'
+export default {
+    components: { Multiselect },
+    data(){
+        return {
+            form_data: new FormData(),
+            borrower: {
+                region: '',
+                region_id: '',
+                county: '',
+                county_id: '',
+                township: '',
+                township_id: ''
+            },
+            co_borrower: {
+                region: '',
+                region_id: '',
+                county: '',
+                county_id: '',
+                township: '',
+                township_id: ''
+            },
+            borrower_types: [],
+            countries: [],
+            regions: [],
+            counties: [],
+            townships: [],
+            civil_statuses: [],
+            valid_id_types: [],
+            nature_of_businesses: [],
+            property_types: [],
+            errors: [],
+            // preview_image: null,
+            documents: [],
+            document: {}
+        }
+    },
+    created() {
+        this.commonRequest('/borrower-types/lists','borrower_types');
+        this.commonRequest('/countries/lists','countries');
+        this.commonRequest('/civil-statuses/lists','civil_statuses');
+        this.commonRequest('/valid-id-types/lists','valid_id_types');
+        this.commonRequest('/nature-of-businesses/lists','nature_of_businesses');
+        this.commonRequest('/property-types/lists','property_types');
+    },
+    methods:{
+        customLabel (object) { return `${object.name}`},
+        customLabel2 (object) { return `${object.code +' - '+ object.name}`},
+        uploadPhoto(e,object,type){
+            // const image = e.target.files[0];
+            // const reader = new FileReader();
+            // reader.readAsDataURL(image);
+            // reader.onload = e =>{
+            //     this.preview_image = e.target.result;
+            //     console.log(this.preview_image);
+            // };
+            this[object].photo = '';
+            if(type == 'Image' && /\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false){
+                alert('Please use Image file');
+                this.$refs.photo.value = null;
+                return false;
             }
-        },
-        created() {
-            this.commonRequest('/borrower-types/lists','borrower_types');
-            this.commonRequest('/countries/lists','countries');
-            this.commonRequest('/civil-statuses/lists','civil_statuses');
-            this.commonRequest('/valid-id-types/lists','valid_id_types');
-            this.commonRequest('/nature-of-businesses/lists','nature_of_businesses');
-            this.commonRequest('/property-types/lists','property_types');
-        },
-        methods:{
-            customLabel (object) { return `${object.name}`},
-            customLabel2 (object) { return `${object.code +' - '+ object.name}`},
-            uploadPhoto(e,object){
-                // const image = e.target.files[0];
-                // const reader = new FileReader();
-                // reader.readAsDataURL(image);
-                // reader.onload = e =>{
-                //     this.preview_image = e.target.result;
-                //     console.log(this.preview_image);
-                // };
-                this[object].photo = '';
-                if(/\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false){
-                    alert('Please use Image file');
-                    this.$refs.photo.value = null;
-                    return false;
-                }
 
-                let files = e.target.files || e.dataTransfer.files;
-                if(!files.length) return
-                this[object].photo = files[0];
-            },
-            toggleSelected(value,object,model,fields = '') {
-                this[object][model] = value.id;
-                if(fields == 'countries') this.fetchRegions(object);
-                if(fields == 'regions') this.fetchCounties(object);
-                if(fields == 'counties') this.fetchTownships(object);
-			},
-            fetchRegions(object){
-                this.resetAddressParameters(this.regions,this[object].region,this[object].region_id);
-                this.commonRequest(`/regions/lists/${this[object].country_id}`,'regions');
-            },
-            fetchCounties(object){
-                this.resetAddressParameters(this.counties,this[object].county,this[object].county_id);
-                this.commonRequest(`/counties/lists/${this[object].region_id}`,'counties');
-            },
-            fetchTownships(object){
-                this.resetAddressParameters(this.townships,this[object].township,this[object].township_id);
-                this.commonRequest(`/townships/lists/${this[object].region_id}/${this[object].county_id}`,'townships');
-            },
-            resetAddressParameters(model1,model2,model3){
-                model1 = [];
-                model2 = '';
-                model3 = '';
-            },
-            saveBorrower(){
-                this.appendFormData(this.borrower);
-                this.commonPostRequest('/borrowers/store');
-            },
-            saveCoBorrower(){
-                this.appendFormData(this.co_borrower);
-                this.commonPostRequest('/co-borrowers/store');
-            },
-            appendFormData(model){
-                Object.entries(model).forEach(([key, value]) => {
-                    this.form_data.append(key, value);
-                });
-            },
-            commonRequest(end_point,model){
-                axios.get(end_point)
-                .then(response => {
-                    this[model] = response.data;
-                })
-                .catch(errors => {
-                    this.errors = errors.response.data.errors;
-                })
-            },
-            commonPostRequest(end_point){
-                axios.post(end_point,this.form_data)
-                .then(response => {
-                    window.location.href = '/borrowers/main';
-                })
-                .catch(errors => {
-                    this.errors = Object.values(errors.response.data.errors);
-                })
-            }
+            let files = e.target.files || e.dataTransfer.files;
+            if(!files.length) return
+            this[object].photo = files[0];
+        },
+        toggleSelected(value,object,model,fields = '') {
+            this[object][model] = value.id;
+            if(fields == 'countries') this.fetchRegions(object);
+            if(fields == 'regions') this.fetchCounties(object);
+            if(fields == 'counties') this.fetchTownships(object);
+        },
+        fetchRegions(object){
+            this.resetAddressParameters(this.regions,this[object].region,this[object].region_id);
+            this.commonRequest(`/regions/lists/${this[object].country_id}`,'regions');
+        },
+        fetchCounties(object){
+            this.resetAddressParameters(this.counties,this[object].county,this[object].county_id);
+            this.commonRequest(`/counties/lists/${this[object].region_id}`,'counties');
+        },
+        fetchTownships(object){
+            this.resetAddressParameters(this.townships,this[object].township,this[object].township_id);
+            this.commonRequest(`/townships/lists/${this[object].region_id}/${this[object].county_id}`,'townships');
+        },
+        resetAddressParameters(model1,model2,model3){
+            model1 = [];
+            model2 = '';
+            model3 = '';
+        },
+        saveBorrower(){
+            this.appendFormData(this.borrower);
+            this.commonPostRequest('/borrowers/store');
+        },
+        saveCoBorrower(){
+            this.appendFormData(this.co_borrower);
+            this.commonPostRequest('/co-borrowers/store');
+        },
+        appendFormData(model){
+            Object.entries(model).forEach(([key, value]) => {
+                this.form_data.append(key, value);
+            });
+        },
+        commonRequest(end_point,model){
+            axios.get(end_point)
+            .then(response => {
+                this[model] = response.data;
+            })
+            .catch(errors => {
+                this.errors = errors.response.data.errors;
+            })
+        },
+        commonPostRequest(end_point){
+            axios.post(end_point,this.form_data)
+            .then(response => {
+                window.location.href = '/borrowers/main';
+            })
+            .catch(errors => {
+                this.errors = Object.values(errors.response.data.errors);
+            })
+        },
+        fetchDocuments(){
+            this.commonRequest('/documents/lists','documents');
+        },
+        saveDocument(){
+            this.appendFormData(this.document);
+            this.commonPostRequest('/documents/store');
+        },
+        deleteDocument(id,index){
+            axios.delete(`/documents/delete/${id}`)
+            .then(response => { 
+                this.documents.splice(index, 1);
+            })
+            .catch(error => {
+                this.errors = error.response.data.errors;
+            })
         }
     }
+}
 </script>

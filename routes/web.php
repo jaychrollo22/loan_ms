@@ -94,3 +94,9 @@ Route::group(['prefix' => 'borrowers'], function () {
 Route::group(['prefix' => 'co-borrowers'], function () {
     Route::post('/store', 'CoBorrowerController@store');
 });
+
+Route::group(['prefix' => 'documents'], function () {
+    Route::get('/lists', 'DocumentController@lists');
+    Route::post('/store', 'DocumentController@store');
+    Route::delete('/delete/{document}', 'DocumentController@destroy');
+});

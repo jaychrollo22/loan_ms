@@ -1949,8 +1949,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       valid_id_types: [],
       nature_of_businesses: [],
       property_types: [],
-      errors: []
-      // preview_image: null
+      errors: [],
+      // preview_image: null,
+      documents: [],
+      document: {}
     };
   },
   created: function created() {
@@ -1968,7 +1970,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     customLabel2: function customLabel2(object) {
       return "".concat(object.code + ' - ' + object.name);
     },
-    uploadPhoto: function uploadPhoto(e, object) {
+    uploadPhoto: function uploadPhoto(e, object, type) {
       // const image = e.target.files[0];
       // const reader = new FileReader();
       // reader.readAsDataURL(image);
@@ -1977,7 +1979,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       //     console.log(this.preview_image);
       // };
       this[object].photo = '';
-      if (/\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false) {
+      if (type == 'Image' && /\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false) {
         alert('Please use Image file');
         this.$refs.photo.value = null;
         return false;
@@ -2041,6 +2043,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         window.location.href = '/borrowers/main';
       })["catch"](function (errors) {
         _this3.errors = Object.values(errors.response.data.errors);
+      });
+    },
+    fetchDocuments: function fetchDocuments() {
+      this.commonRequest('/documents/lists', 'documents');
+    },
+    saveDocument: function saveDocument() {
+      this.appendFormData(this.document);
+      this.commonPostRequest('/documents/store');
+    },
+    deleteDocument: function deleteDocument(id, index) {
+      var _this4 = this;
+      axios["delete"]("/documents/delete/".concat(id)).then(function (response) {
+        _this4.documents.splice(index, 1);
+      })["catch"](function (error) {
+        _this4.errors = error.response.data.errors;
       });
     }
   }
@@ -2145,7 +2162,28 @@ var render = function render() {
     staticClass: "card"
   }, [_c("div", {
     staticClass: "card-body"
-  }, [_vm._m(0), _vm._v(" "), _c("div", {
+  }, [_c("ul", {
+    staticClass: "nav nav-pills mb-3",
+    attrs: {
+      id: "pills-tab",
+      role: "tablist"
+    }
+  }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("a", {
+    staticClass: "nav-link",
+    attrs: {
+      id: "pills-profile-tab",
+      "data-toggle": "pill",
+      href: "#pills-documents",
+      role: "tab",
+      "aria-controls": "pills-documents",
+      "aria-selected": "false"
+    },
+    on: {
+      click: _vm.fetchDocuments
+    }
+  }, [_vm._v("DOCUMENTS")])])]), _vm._v(" "), _c("div", {
     staticClass: "tab-content",
     attrs: {
       id: "pills-tabContent"
@@ -2177,7 +2215,7 @@ var render = function render() {
     },
     on: {
       change: function change($event) {
-        return _vm.uploadPhoto($event, "borrower");
+        return _vm.uploadPhoto($event, "borrower", "Image");
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -2879,7 +2917,7 @@ var render = function render() {
     },
     on: {
       change: function change($event) {
-        return _vm.uploadPhoto($event, "co_borrower");
+        return _vm.uploadPhoto($event, "co_borrower", "Image");
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -3535,22 +3573,113 @@ var render = function render() {
       role: "tabpanel",
       "aria-labelledby": "pills-documents-tab"
     }
-  }, [_vm._v("\n                            FOR DEVELOPMENT\n                        ")])])]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
+  }, [_vm._m(2), _vm._v(" "), _c("div", {
+    staticClass: "table-responsive"
+  }, [_c("table", {
+    staticClass: "table table-hover table-bordered tablewithSearch"
+  }, [_vm._m(3), _vm._v(" "), _c("tbody", _vm._l(_vm.documents, function (document, d) {
+    return _c("tr", {
+      key: d
+    }, [_c("td", [_vm._v(_vm._s(document.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.title))]), _vm._v(" "), _c("td", [_c("a", {
+      attrs: {
+        href: "../storage/" + document.file_path,
+        target: "_blank"
+      }
+    }, [_vm._v(_vm._s(document.file_name))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.created_at))]), _vm._v(" "), _c("td", [_c("button", {
+      staticClass: "btn btn-danger",
+      attrs: {
+        title: "Delete Document"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.deleteDocument(document.id, d);
+        }
+      }
+    }, [_vm._v("Delete")])])]);
+  }), 0)])])])])]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
     attrs: {
       errors: _vm.errors
     }
-  }) : _vm._e()], 1)])])]);
+  }) : _vm._e()], 1)])]), _vm._v(" "), _c("div", {
+    staticClass: "modal fade",
+    attrs: {
+      id: "uploadDocumentModal",
+      tabindex: "-1",
+      role: "dialog",
+      "aria-labelledby": "label",
+      "aria-hidden": "true"
+    }
+  }, [_c("div", {
+    staticClass: "modal-dialog",
+    attrs: {
+      role: "document"
+    }
+  }, [_c("div", {
+    staticClass: "modal-content"
+  }, [_vm._m(4), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-md-12 form-group"
+  }, [_vm._v("\n                            Title\n                            "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.document.title,
+      expression: "document.title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "name",
+      required: "",
+      placeholder: "Title"
+    },
+    domProps: {
+      value: _vm.document.title
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.document, "title", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 form-group"
+  }, [_vm._v("\n                            Attach File\n                            "), _c("input", {
+    ref: "photo",
+    staticClass: "form-control",
+    attrs: {
+      type: "file"
+    },
+    on: {
+      change: function change($event) {
+        return _vm.uploadPhoto($event, "document", "");
+      }
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
+  }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Close")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      type: "submit"
+    },
+    on: {
+      click: _vm.saveDocument
+    }
+  }, [_vm._v("Save")])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("ul", {
-    staticClass: "nav nav-pills mb-3",
-    attrs: {
-      id: "pills-tab",
-      role: "tablist"
-    }
-  }, [_c("li", {
+  return _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
     staticClass: "nav-link active",
@@ -3562,7 +3691,11 @@ var staticRenderFns = [function () {
       "aria-controls": "pills-home",
       "aria-selected": "true"
     }
-  }, [_vm._v("BORROWER")])]), _vm._v(" "), _c("li", {
+  }, [_vm._v("BORROWER")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
     staticClass: "nav-link",
@@ -3574,19 +3707,48 @@ var staticRenderFns = [function () {
       "aria-controls": "pills-profile",
       "aria-selected": "false"
     }
-  }, [_vm._v("CO-BORROWER")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link",
+  }, [_vm._v("CO-BORROWER")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("p", {
+    staticClass: "card-description"
+  }, [_c("button", {
+    staticClass: "btn btn-outline-success btn-icon-text",
     attrs: {
-      id: "pills-profile-tab",
-      "data-toggle": "pill",
-      href: "#pills-profile",
-      role: "tab",
-      "aria-controls": "pills-documents",
-      "aria-selected": "false"
+      type: "button",
+      "data-toggle": "modal",
+      "data-target": "#uploadDocumentModal"
     }
-  }, [_vm._v("DOCUMENTS")])])]);
+  }, [_c("i", {
+    staticClass: "ti-plus btn-icon-prepend"
+  }), _vm._v("                                                    \n                                    New\n                                ")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", [_c("tr", [_c("th", [_vm._v("ID")]), _vm._v(" "), _c("th", [_vm._v("Title")]), _vm._v(" "), _c("th", [_vm._v("File Name")]), _vm._v(" "), _c("th", [_vm._v("Date Uploaded")]), _vm._v(" "), _c("th", [_vm._v("Action")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "modal-header"
+  }, [_c("h5", {
+    staticClass: "modal-title",
+    attrs: {
+      id: "newLoanTypelabel"
+    }
+  }, [_vm._v("New Document")]), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  }, [_c("span", {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])])]);
 }];
 render._withStripped = true;
 
