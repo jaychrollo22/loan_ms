@@ -9,15 +9,22 @@
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">BORROWER</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">CO-BORROWER</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" v-if="id > 0 ">CO-BORROWER</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-documents" role="tab" aria-controls="pills-documents" aria-selected="false" @click="fetchDocuments">DOCUMENTS</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-documents" role="tab" aria-controls="pills-documents" aria-selected="false" v-if="id > 0 " @click="fetchDocuments">DOCUMENTS</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <h1 class="card-title">BORROWER CONTACT INFORMATION</h1>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h1 class="card-title">BORROWER CONTACT INFORMATION</h1>
+                                    </div>
+                                    <div class="col-md-6" v-if="id > 0 ">
+                                    <h1 class="card-title">{{ borrower.borrower_code }}</h1>
+                                    </div>
+                                </div>
                                 <hr/>
                                 <form>
                                     <div class="form-row">
@@ -506,6 +513,7 @@
 <script>
 import Multiselect from 'vue-multiselect'
 export default {
+    props: ['id'],
     components: { Multiselect },
     data(){
         return {
@@ -548,6 +556,7 @@ export default {
         this.commonRequest('/valid-id-types/lists','valid_id_types');
         this.commonRequest('/nature-of-businesses/lists','nature_of_businesses');
         this.commonRequest('/property-types/lists','property_types');
+        if(this.id > 0) this.commonRequest('/borrowers/show/'+this.id,'borrower');
     },
     methods:{
         customLabel (object) { return `${object.name}`},
@@ -599,6 +608,7 @@ export default {
             this.commonPostRequest('/borrowers/store');
         },
         saveCoBorrower(){
+            this.form_data.append('borrower_id', this.id);
             this.appendFormData(this.co_borrower);
             this.commonPostRequest('/co-borrowers/store');
         },
@@ -619,7 +629,7 @@ export default {
         commonPostRequest(end_point){
             axios.post(end_point,this.form_data)
             .then(response => {
-                window.location.href = '/borrowers/main';
+                window.location.href = '/borrowers/edit/'+ this.id ? this.id : response.data.id;
             })
             .catch(errors => {
                 this.errors = Object.values(errors.response.data.errors);

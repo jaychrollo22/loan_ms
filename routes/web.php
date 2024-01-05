@@ -80,6 +80,8 @@ Route::group(['prefix' => 'borrowers'], function () {
     Route::get('/lists', 'BorrowerController@lists');
     Route::get('/create', 'BorrowerController@create');
     Route::post('/store', 'BorrowerController@store');
+    Route::get('/show/{id}', 'BorrowerController@show');
+    Route::get('/edit/{id}', 'BorrowerController@edit');
     Route::delete('/delete/{borrower}', 'BorrowerController@destroy');
 });
 
