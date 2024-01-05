@@ -79,8 +79,11 @@ class BorrowerController extends Controller
         DB::beginTransaction();
         try {
             $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
-            //Saving of uploaded photo
+            
+            $borrower_type = $request->borrower_type_id == 1 ? 'BI' : 'BG';
+            $borrower_code = $borrower_type.now()->year.$this->pad(now()->month,2).$this->pad($borrower->id,5);
             $borrower->update([
+                'borrower_code' => $borrower_code, 
                 'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
                 'file_name' => $request->photo->getClientOriginalName(),
             ]);
@@ -101,7 +104,7 @@ class BorrowerController extends Controller
      */
     public function show($id)
     {
-        //
+        return  Borrower::findOrFail($id);
     }
 
     /**
@@ -112,7 +115,7 @@ class BorrowerController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('borrowers.form',compact('id'));
     }
 
     /**
@@ -145,5 +148,13 @@ class BorrowerController extends Controller
      */
     public function lists(){
         return Borrower::get();
+    }
+
+    /**
+     * Pad character
+     *
+     */
+    public function pad ($data,$count){
+        return str_pad($data, $count, '0', STR_PAD_LEFT);
     }
 }

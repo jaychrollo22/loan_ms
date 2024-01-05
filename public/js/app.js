@@ -1918,6 +1918,7 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['id'],
   components: {
     Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default.a
   },
@@ -1962,6 +1963,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     this.commonRequest('/valid-id-types/lists', 'valid_id_types');
     this.commonRequest('/nature-of-businesses/lists', 'nature_of_businesses');
     this.commonRequest('/property-types/lists', 'property_types');
+    if (this.id > 0) this.commonRequest('/borrowers/show/' + this.id, 'borrower');
   },
   methods: {
     customLabel: function customLabel(object) {
@@ -2017,6 +2019,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.commonPostRequest('/borrowers/store');
     },
     saveCoBorrower: function saveCoBorrower() {
+      this.form_data.append('borrower_id', this.id);
       this.appendFormData(this.co_borrower);
       this.commonPostRequest('/co-borrowers/store');
     },
@@ -2040,7 +2043,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     commonPostRequest: function commonPostRequest(end_point) {
       var _this3 = this;
       axios.post(end_point, this.form_data).then(function (response) {
-        window.location.href = '/borrowers/main';
+        window.location.href =  true ? _this3.id : undefined;
       })["catch"](function (errors) {
         _this3.errors = Object.values(errors.response.data.errors);
       });
@@ -2168,9 +2171,21 @@ var render = function render() {
       id: "pills-tab",
       role: "tablist"
     }
-  }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("li", {
+  }, [_vm._m(0), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
-  }, [_c("a", {
+  }, [_vm.id > 0 ? _c("a", {
+    staticClass: "nav-link",
+    attrs: {
+      id: "pills-profile-tab",
+      "data-toggle": "pill",
+      href: "#pills-profile",
+      role: "tab",
+      "aria-controls": "pills-profile",
+      "aria-selected": "false"
+    }
+  }, [_vm._v("CO-BORROWER")]) : _vm._e()]), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_vm.id > 0 ? _c("a", {
     staticClass: "nav-link",
     attrs: {
       id: "pills-profile-tab",
@@ -2183,7 +2198,7 @@ var render = function render() {
     on: {
       click: _vm.fetchDocuments
     }
-  }, [_vm._v("DOCUMENTS")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("DOCUMENTS")]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "tab-content",
     attrs: {
       id: "pills-tabContent"
@@ -2195,9 +2210,13 @@ var render = function render() {
       role: "tabpanel",
       "aria-labelledby": "pills-home-tab"
     }
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_vm._m(1), _vm._v(" "), _vm.id > 0 ? _c("div", {
+    staticClass: "col-md-6"
   }, [_c("h1", {
     staticClass: "card-title"
-  }, [_vm._v("BORROWER CONTACT INFORMATION")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("form", [_c("div", {
+  }, [_vm._v(_vm._s(_vm.borrower.borrower_code))])]) : _vm._e()]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("form", [_c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-3"
@@ -3695,19 +3714,11 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link",
-    attrs: {
-      id: "pills-profile-tab",
-      "data-toggle": "pill",
-      href: "#pills-profile",
-      role: "tab",
-      "aria-controls": "pills-profile",
-      "aria-selected": "false"
-    }
-  }, [_vm._v("CO-BORROWER")])]);
+  return _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("h1", {
+    staticClass: "card-title"
+  }, [_vm._v("BORROWER CONTACT INFORMATION")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -3788,7 +3799,12 @@ var render = function render() {
   }, [_vm._m(1), _vm._v(" "), _c("tbody", _vm._l(_vm.borrowers, function (borrower, b) {
     return _c("tr", {
       key: b
-    }, [_c("td", [_vm._v(_vm._s(borrower.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.first_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.middle_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.last_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.suffix))]), _vm._v(" "), _c("td", [_c("button", {
+    }, [_c("td", [_vm._v(_vm._s(borrower.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.first_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.middle_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.last_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.suffix))]), _vm._v(" "), _c("td", [_c("a", {
+      staticClass: "btn btn-success",
+      attrs: {
+        href: "/borrowers/edit/" + borrower.id
+      }
+    }, [_vm._v(" Edit")]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-danger",
       attrs: {
         title: "Delete Request"
