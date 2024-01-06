@@ -28,6 +28,7 @@ Route::get('create-loan', 'LoanController@create');
 Route::post('new-loan', 'LoanController@store');
 Route::get('edit-loan/{id}', 'LoanController@edit');
 Route::post('update-loan/{id}', 'LoanController@update');
+Route::get('view-loan/{id}', 'LoanController@show');
 
 //Settings > Loan Terms
 Route::get('loan-terms', 'LoanTermController@index');

@@ -108,9 +108,22 @@ class LoanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,Request $request)
     {
-        //
+        $payment_start_date = isset($request->payment_start_date) ?  $request->payment_start_date : "";
+        $loan = Loan::with('borrower','type_info')
+                        ->where('id',$id)
+                        ->first();
+
+        return view(
+            'loans.view',
+            array(
+                'header' => 'loans',
+                'loan' => $loan,
+                'payment_start_date' => $payment_start_date
+
+            )
+        );
     }
 
     /**

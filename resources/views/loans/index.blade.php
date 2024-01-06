@@ -37,19 +37,20 @@
                     <tbody>
                         @foreach($loans as $item)
                         <tr>
-                            <td> <a href="/edit-loan/{{$item->id}}" class="ml-3 mr-3">
+                            <td> <a href="/edit-loan/{{$item->id}}" class="ml-3 mr-3" title="Edit">
                                 <i class="ti-pencil"></i>
-                            </a>{{$item->loan_number}}</td>
-                            <td>{{$item->borrower ?  "BID-" . $item->borrower->id : "" }}</td>
+                            </a>
+                            {{$item->loan_number}}</td>
+                            <td>{{$item->borrower ? $item->borrower->id : "" }}</td>
                             <td>{{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }}</td>
                             <td>{{$item->type_info ? $item->type_info->name : "" }}</td>
                             <td>{{$item->term }}</td>
-                            <td>{{$item->amount }}</td>
-                            <td>{{$item->interest }}</td>
-                            <td>{{$item->total_interest }}</td>
-                            <td>{{$item->total_amount }}</td>
+                            <td>{{ '₱ ' . number_format($item->amount, 2, '.', ',') }}</td>
+                            <td>{{$item->interest . '%' }}</td>
+                            <td>{{ '₱ ' . number_format($item->total_interest, 2, '.', ',') }}</td>
+                            <td>{{ '₱ ' . number_format($item->total_amount, 2, '.', ',') }}</td>
                             <td>{{$item->release_date }}</td>
-                            <td>{{$item->status}}</td>
+                            <td><a href="/view-loan/{{$item->id}}" class="ml-3 mr-3"> {{$item->status}} </a></td>
                         </tr>
                         
                         @endforeach
