@@ -75,7 +75,7 @@ class CoBorrowerController extends Controller
 
         DB::beginTransaction();
         try {
-            $co_borrower = CoBorrower::create($request->all() + ['borrower_id' => 6, 'relationship_id' => 1]);
+            $co_borrower = CoBorrower::create($request->all() + ['relationship_id' => 1]);
             //Saving of uploaded photo
             $co_borrower->update([
                 'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-6/CoBorrowers', $request->photo),

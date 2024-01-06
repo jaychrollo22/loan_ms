@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <borrower-form></borrower-form>
+    <borrower-form :id="{{ isset($id) ? $id : 0 }}"></borrower-form>
 @endsection

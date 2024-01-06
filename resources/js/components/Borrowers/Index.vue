@@ -32,6 +32,7 @@
                                     <td>{{ borrower.last_name}}</td>
                                     <td>{{ borrower.suffix}}</td>
                                     <td>
+                                        <a :href="'/borrowers/edit/'+borrower.id"  class="btn btn-success"> Edit</a>
                                         <button class="btn btn-danger" title="Delete Request" @click="deleteBorrower(borrower.id,b)">Delete</button>
                                     </td>
                                 </tr>
