@@ -30,7 +30,7 @@
                             <th>Interest</th>
                             <th>Total Interest</th>
                             <th>Total Amount</th>
-                            <th>Release Date</th>
+                            <th>Payment Start</th>
                             <th>Status</th>
                         </tr>
                     </thead>

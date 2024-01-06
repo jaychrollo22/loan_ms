@@ -29,6 +29,8 @@ Route::post('new-loan', 'LoanController@store');
 Route::get('edit-loan/{id}', 'LoanController@edit');
 Route::post('update-loan/{id}', 'LoanController@update');
 Route::get('view-loan/{id}', 'LoanController@show');
+Route::post('approve-loan/{id}', 'LoanController@approve');
+Route::post('disapprove-loan/{id}', 'LoanController@disapprove');
 
 //Settings > Loan Terms
 Route::get('loan-terms', 'LoanTermController@index');
@@ -47,6 +49,14 @@ Route::get('loan-interests', 'LoanInterestController@index');
 Route::post('new-loan-interest', 'LoanInterestController@store');
 Route::get('edit-loan-interest/{id}', 'LoanInterestController@edit');
 Route::post('update-loan-interest/{id}', 'LoanInterestController@update');
+
+//Users
+Route::get('users', 'UserController@index');
+Route::post('new-user', 'UserController@store');
+Route::get('edit-user/{id}', 'UserController@edit');
+Route::post('update-user/{id}', 'UserController@update');
+Route::get('/change-password/{user}','UserController@changePassword');
+Route::post('/update-user-password/{user}','UserController@updateUserPassword');
 
 Route::group(['prefix' => 'borrower-types'], function () {
     Route::get('/lists', 'BorrowerTypeController@lists');

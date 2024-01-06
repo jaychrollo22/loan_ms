@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Loan extends Model
+class Loan extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     public function borrower(){
         return $this->belongsTo(Borrower::class,'borrower_id','id');
     }

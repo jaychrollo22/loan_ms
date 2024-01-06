@@ -115,12 +115,14 @@ class LoanController extends Controller
                         ->where('id',$id)
                         ->first();
 
+        $release_date = '';
         return view(
             'loans.view',
             array(
                 'header' => 'loans',
                 'loan' => $loan,
-                'payment_start_date' => $payment_start_date
+                'payment_start_date' => $payment_start_date,
+                'release_date' => $release_date
 
             )
         );
@@ -188,8 +190,31 @@ class LoanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function approve(Request $request,$id)
     {
-        //
+        $loan = Loan::where('id',$id)->first();
+
+        if($loan){
+            $loan->status = 'Approved';
+            $loan->release_date = $request->release_date;
+            $loan->payment_start = $request->payment_start;
+            $loan->approval_remarks = $request->approval_remarks;
+            $loan->save();
+
+            Alert::success('Loan has been Approved')->persistent('Dismiss');
+            return back();
+        }
+    }
+    public function disapprove(Request $request,$id)
+    {
+        $loan = Loan::where('id',$id)->first();
+        if($loan){
+            $loan->status = 'Disapproved';
+            $loan->approval_remarks = $request->approval_remarks;
+            $loan->save();
+
+            Alert::success('Loan has been Approved')->persistent('Dismiss');
+            return back();
+        }
     }
 }

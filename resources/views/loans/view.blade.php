@@ -48,15 +48,17 @@
                                                     <h4>Payment Start Date : {{$loan->payment_start}}</h4>
                                                 </div>    
                                             @else
-                                                <div class="col-sm-12">
-                                                    <h4>Payment Start Date</h4>
-                                                </div>
-                                                <div class="col-sm-6 form-group">
-                                                    <input type="date" name="payment_start_date" class="form-control" value="{{ $payment_start_date }}">
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <button type="submit" class="btn btn-primary btn-md">Generate Schedule</button>
-                                                </div>
+                                                @if($loan->status == 'For Approval' && $payment_start_date)
+                                                    <div class="col-sm-12">
+                                                        <h4>Payment Start Date</h4>
+                                                    </div>
+                                                    <div class="col-sm-6 form-group">
+                                                        <input type="date" name="payment_start_date" class="form-control" value="{{ $payment_start_date }}">
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <button type="submit" class="btn btn-primary btn-md">Generate Schedule</button>
+                                                    </div>
+                                                @endif
                                             @endif
                                             
                                             @if($loan->payment_start || $payment_start_date)
@@ -151,18 +153,17 @@
 
                         </div>
 
-
-
-
-                        @if($loan->status == 'For Approval')
-                        <div class="col-md-12">
-                            <form method='POST' action='{{url('approve-loan')}}' onsubmit='show()' enctype="multipart/form-data">
-                                @csrf
-                                <div class="row">
-
-                                </div>
-                            </form>
-                        </div>
+                        @if($loan->status == 'For Approval' && $payment_start_date)
+                            <div class="col-md-12 mt-3">
+                                <button type="button" class="btn btn-success btn-md" id="{{ $loan->id }}" data-target="#approve-{{ $loan->id }}" data-toggle="modal" title="Disapprove">
+                                    <i class="ti-check btn-icon-prepend"></i> Approve</button>
+                                <button type="button" class="btn btn-danger btn-md" id="{{ $loan->id }}" data-target="#disapprove-{{ $loan->id }}" data-toggle="modal" title="Disapprove">
+                                    <i class="ti-close btn-icon-prepend"></i> Disapprove</button>
+                            </div>
+                        @elseif($loan->status == 'Approved')
+                            <h4 class="badge badge-success mt-1">Approved</h4>
+                        @elseif($loan->status == 'Disapproved')
+                            <h4 class="badge badge-danger mt-1">Disapproved</h4>
                         @endif
 
                     </div>
@@ -171,4 +172,6 @@
         </div>
     </div>
 </div>
+@include('loans.approve')
+@include('loans.disapprove')
 @endsection
