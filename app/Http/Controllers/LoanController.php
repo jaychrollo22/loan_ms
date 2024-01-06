@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 
 use App\Borrower;
 use App\Loan;
+use App\LoanBilling;
 use App\LoanType;
 use App\LoanTerm;
 use App\LoanInterest;
 
+
 use Alert;
+use DateTime;
+use DateInterval;
 
 class LoanController extends Controller
 {
@@ -200,6 +204,36 @@ class LoanController extends Controller
             $loan->payment_start = $request->payment_start;
             $loan->approval_remarks = $request->approval_remarks;
             $loan->save();
+
+            $currentDate = new DateTime($loan->payment_start);
+
+            for($term = 1 ; $term <= $loan->term; $term++){
+                
+                $week_number = $term;
+                $schedule_date = $currentDate->format('Y-m-d');
+                $principal = $loan->amount / $loan->term;
+                $interest = $loan->total_interest / $loan->term;
+                $total_amount = $principal + $interest;
+
+                $new_loan_billing = new LoanBilling;
+                $new_loan_billing->borrower_id = $loan->borrower_id;
+                $new_loan_billing->loan_id = $loan->id;
+                $new_loan_billing->week_number = $week_number;
+                $new_loan_billing->schedule_date = date('Y-m-d',strtotime($schedule_date));
+                $new_loan_billing->principal = $principal;
+                $new_loan_billing->interest = $interest;
+                $new_loan_billing->total_amount = $total_amount;
+                $new_loan_billing->save();
+
+                $type = 'W';
+                if($loan->type_info->name == "Weekly"){
+                    $currentDate->add(new DateInterval('P1W'));
+                }elseif($loan->type_info->name == "Monthly"){
+                    $currentDate->add(new DateInterval('P1M'));
+                }
+                
+            }
+            
 
             Alert::success('Loan has been Approved')->persistent('Dismiss');
             return back();

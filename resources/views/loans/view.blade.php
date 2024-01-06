@@ -48,7 +48,7 @@
                                                     <h4>Payment Start Date : {{$loan->payment_start}}</h4>
                                                 </div>    
                                             @else
-                                                @if($loan->status == 'For Approval' && $payment_start_date)
+                                                @if($loan->status == 'For Approval')
                                                     <div class="col-sm-12">
                                                         <h4>Payment Start Date</h4>
                                                     </div>
