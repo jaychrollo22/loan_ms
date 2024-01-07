@@ -80,6 +80,7 @@ Route::group(['prefix' => 'borrowers'], function () {
     Route::get('/lists', 'BorrowerController@lists');
     Route::get('/create', 'BorrowerController@create');
     Route::post('/store', 'BorrowerController@store');
+    Route::get('/view/{id}', 'BorrowerController@view');
     Route::get('/show/{id}', 'BorrowerController@show');
     Route::get('/edit/{id}', 'BorrowerController@edit');
     Route::delete('/delete/{borrower}', 'BorrowerController@destroy');
@@ -87,10 +88,11 @@ Route::group(['prefix' => 'borrowers'], function () {
 
 Route::group(['prefix' => 'co-borrowers'], function () {
     Route::post('/store', 'CoBorrowerController@store');
+    Route::get('/show/{id}', 'CoBorrowerController@show');
 });
 
 Route::group(['prefix' => 'documents'], function () {
-    Route::get('/lists', 'DocumentController@lists');
+    Route::get('/lists/{id}', 'DocumentController@lists');
     Route::post('/store', 'DocumentController@store');
     Route::delete('/delete/{document}', 'DocumentController@destroy');
 });

@@ -2009,12 +2009,19 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.resetAddressParameters(this.townships, this[object].township, this[object].township_id);
       this.commonRequest("/townships/lists/".concat(this[object].region_id, "/").concat(this[object].county_id), 'townships');
     },
+    fetchCoBorrower: function fetchCoBorrower() {
+      this.commonRequest('/co-borrowers/show/' + this.id, 'co_borrower');
+    },
+    fetchDocuments: function fetchDocuments() {
+      this.commonRequest('/documents/lists/' + this.id, 'documents');
+    },
     resetAddressParameters: function resetAddressParameters(model1, model2, model3) {
       model1 = [];
       model2 = '';
       model3 = '';
     },
     saveBorrower: function saveBorrower() {
+      this.form_data.append('id', this.id);
       this.appendFormData(this.borrower);
       this.commonPostRequest('/borrowers/store');
     },
@@ -2023,44 +2030,42 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.appendFormData(this.co_borrower);
       this.commonPostRequest('/co-borrowers/store');
     },
-    appendFormData: function appendFormData(model) {
-      var _this = this;
-      Object.entries(model).forEach(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-          key = _ref2[0],
-          value = _ref2[1];
-        _this.form_data.append(key, value);
-      });
-    },
-    commonRequest: function commonRequest(end_point, model) {
-      var _this2 = this;
-      axios.get(end_point).then(function (response) {
-        _this2[model] = response.data;
-      })["catch"](function (errors) {
-        _this2.errors = errors.response.data.errors;
-      });
-    },
-    commonPostRequest: function commonPostRequest(end_point) {
-      var _this3 = this;
-      axios.post(end_point, this.form_data).then(function (response) {
-        window.location.href =  true ? _this3.id : undefined;
-      })["catch"](function (errors) {
-        _this3.errors = Object.values(errors.response.data.errors);
-      });
-    },
-    fetchDocuments: function fetchDocuments() {
-      this.commonRequest('/documents/lists', 'documents');
-    },
     saveDocument: function saveDocument() {
+      this.form_data.append('borrower_id', this.id);
       this.appendFormData(this.document);
       this.commonPostRequest('/documents/store');
     },
     deleteDocument: function deleteDocument(id, index) {
-      var _this4 = this;
+      var _this = this;
       axios["delete"]("/documents/delete/".concat(id)).then(function (response) {
-        _this4.documents.splice(index, 1);
+        _this.documents.splice(index, 1);
       })["catch"](function (error) {
-        _this4.errors = error.response.data.errors;
+        _this.errors = error.response.data.errors;
+      });
+    },
+    appendFormData: function appendFormData(model) {
+      var _this2 = this;
+      Object.entries(model).forEach(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          key = _ref2[0],
+          value = _ref2[1];
+        if (value && !['created_at', 'updated_at'].includes(key)) _this2.form_data.append(key, value);
+      });
+    },
+    commonRequest: function commonRequest(end_point, model) {
+      var _this3 = this;
+      axios.get(end_point).then(function (response) {
+        _this3[model] = response.data;
+      })["catch"](function (errors) {
+        _this3.errors = errors.response.data.errors;
+      });
+    },
+    commonPostRequest: function commonPostRequest(end_point) {
+      var _this4 = this;
+      axios.post(end_point, this.form_data).then(function (response) {
+        window.location.href =  true ? _this4.id : undefined;
+      })["catch"](function (errors) {
+        _this4.errors = Object.values(errors.response.data.errors);
       });
     }
   }
@@ -2182,6 +2187,9 @@ var render = function render() {
       role: "tab",
       "aria-controls": "pills-profile",
       "aria-selected": "false"
+    },
+    on: {
+      click: _vm.fetchCoBorrower
     }
   }, [_vm._v("CO-BORROWER")]) : _vm._e()]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
@@ -3601,7 +3609,7 @@ var render = function render() {
       key: d
     }, [_c("td", [_vm._v(_vm._s(document.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.title))]), _vm._v(" "), _c("td", [_c("a", {
       attrs: {
-        href: "../storage/" + document.file_path,
+        href: "../../storage/" + document.file_path,
         target: "_blank"
       }
     }, [_vm._v(_vm._s(document.file_name))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.created_at))]), _vm._v(" "), _c("td", [_c("button", {
@@ -3800,6 +3808,11 @@ var render = function render() {
     return _c("tr", {
       key: b
     }, [_c("td", [_vm._v(_vm._s(borrower.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.first_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.middle_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.last_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.suffix))]), _vm._v(" "), _c("td", [_c("a", {
+      staticClass: "btn btn-primary",
+      attrs: {
+        href: "/borrowers/view/" + borrower.id
+      }
+    }, [_vm._v(" View")]), _vm._v(" "), _c("a", {
       staticClass: "btn btn-success",
       attrs: {
         href: "/borrowers/edit/" + borrower.id

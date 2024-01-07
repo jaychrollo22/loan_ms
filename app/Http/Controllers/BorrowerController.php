@@ -78,15 +78,20 @@ class BorrowerController extends Controller
 
         DB::beginTransaction();
         try {
-            $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
+            if($request->id){
+                $borrower =  Borrower::where('id',$request->id)
+                    ->update($request->all());
+            }else{
+                $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
             
-            $borrower_type = $request->borrower_type_id == 1 ? 'BI' : 'BG';
-            $borrower_code = $borrower_type.now()->year.$this->pad(now()->month,2).$this->pad($borrower->id,5);
-            $borrower->update([
-                'borrower_code' => $borrower_code, 
-                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
-                'file_name' => $request->photo->getClientOriginalName(),
-            ]);
+                $borrower_type = $request->borrower_type_id == 1 ? 'BI' : 'BG';
+                $borrower_code = $borrower_type.now()->year.$this->pad(now()->month,2).$this->pad($borrower->id,5);
+                $borrower->update([
+                        'borrower_code' => $borrower_code, 
+                        'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
+                        'file_name' => $request->photo->getClientOriginalName(),
+                    ]);
+            }
 
             DB::commit();
             return $borrower;
@@ -156,5 +161,16 @@ class BorrowerController extends Controller
      */
     public function pad ($data,$count){
         return str_pad($data, $count, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Show the form for viewing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function view($id)
+    {
+        return view('borrowers.view',compact('id'));
     }
 }

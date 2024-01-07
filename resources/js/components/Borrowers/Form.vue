@@ -9,7 +9,7 @@
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">BORROWER</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" v-if="id > 0 ">CO-BORROWER</a>
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" v-if="id > 0 " @click="fetchCoBorrower">CO-BORROWER</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-documents" role="tab" aria-controls="pills-documents" aria-selected="false" v-if="id > 0 " @click="fetchDocuments">DOCUMENTS</a>
@@ -457,7 +457,7 @@
                                             <tr v-for="(document, d) in documents" :key="d">
                                                 <td>{{ document.id }}</td>
                                                 <td>{{ document.title }}</td>
-                                                <td><a :href="'../storage/'+document.file_path" target="_blank" >{{ document.file_name }}</a></td>
+                                                <td><a :href="'../../storage/'+document.file_path" target="_blank" >{{ document.file_name }}</a></td>
                                                 <td>{{ document.created_at }}</td>
                                                 <td>
                                                     <button class="btn btn-danger" title="Delete Document" @click="deleteDocument(document.id,d)">Delete</button>
@@ -598,12 +598,19 @@ export default {
             this.resetAddressParameters(this.townships,this[object].township,this[object].township_id);
             this.commonRequest(`/townships/lists/${this[object].region_id}/${this[object].county_id}`,'townships');
         },
+        fetchCoBorrower(){
+            this.commonRequest('/co-borrowers/show/'+this.id,'co_borrower');
+        },
+        fetchDocuments(){
+            this.commonRequest('/documents/lists/'+this.id,'documents');
+        },
         resetAddressParameters(model1,model2,model3){
             model1 = [];
             model2 = '';
             model3 = '';
         },
         saveBorrower(){
+            this.form_data.append('id', this.id);
             this.appendFormData(this.borrower);
             this.commonPostRequest('/borrowers/store');
         },
@@ -612,9 +619,23 @@ export default {
             this.appendFormData(this.co_borrower);
             this.commonPostRequest('/co-borrowers/store');
         },
+        saveDocument(){
+            this.form_data.append('borrower_id', this.id);
+            this.appendFormData(this.document);
+            this.commonPostRequest('/documents/store');
+        },
+        deleteDocument(id,index){
+            axios.delete(`/documents/delete/${id}`)
+            .then(response => { 
+                this.documents.splice(index, 1);
+            })
+            .catch(error => {
+                this.errors = error.response.data.errors;
+            })
+        },
         appendFormData(model){
             Object.entries(model).forEach(([key, value]) => {
-                this.form_data.append(key, value);
+                if(value && !['created_at','updated_at'].includes(key)) this.form_data.append(key, value);
             });
         },
         commonRequest(end_point,model){
@@ -633,22 +654,6 @@ export default {
             })
             .catch(errors => {
                 this.errors = Object.values(errors.response.data.errors);
-            })
-        },
-        fetchDocuments(){
-            this.commonRequest('/documents/lists','documents');
-        },
-        saveDocument(){
-            this.appendFormData(this.document);
-            this.commonPostRequest('/documents/store');
-        },
-        deleteDocument(id,index){
-            axios.delete(`/documents/delete/${id}`)
-            .then(response => { 
-                this.documents.splice(index, 1);
-            })
-            .catch(error => {
-                this.errors = error.response.data.errors;
             })
         }
     }
