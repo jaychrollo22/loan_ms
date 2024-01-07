@@ -49,10 +49,10 @@ class DocumentController extends Controller
 
         DB::beginTransaction();
         try {
-            $document = Document::create($request->all() + ['borrower_id' => '6']);
+            $document = Document::create($request->all());
             //Saving of uploaded photo
             $document->update([
-                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-6/Documents', $request->photo),
+                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$request->borrower_id.'/Documents', $request->photo),
                 'file_name' => $request->photo->getClientOriginalName(),
             ]);
 
@@ -114,7 +114,8 @@ class DocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function lists(){
-        return Document::get();
+    public function lists($id){
+        return Document::where('borrower_id',$id)
+            ->get();
     }
 }
