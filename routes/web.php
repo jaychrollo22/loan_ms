@@ -32,6 +32,9 @@ Route::get('view-loan/{id}', 'LoanController@show');
 Route::post('approve-loan/{id}', 'LoanController@approve');
 Route::post('disapprove-loan/{id}', 'LoanController@disapprove');
 
+//Payments
+Route::get('payments', 'PaymentController@index');
+
 //Settings > Loan Terms
 Route::get('loan-terms', 'LoanTermController@index');
 Route::post('new-loan-term', 'LoanTermController@store');

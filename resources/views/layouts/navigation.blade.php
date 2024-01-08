@@ -58,7 +58,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/') }}" onclick='show()'>
+                    <a class="nav-link" href="{{ url('/payments') }}" onclick='show()'>
                         <i class="icon-layout menu-icon"></i>
                         <span class="menu-title">Payments</span>
                     </a>
