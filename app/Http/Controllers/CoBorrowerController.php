@@ -75,12 +75,17 @@ class CoBorrowerController extends Controller
 
         DB::beginTransaction();
         try {
-            $co_borrower = CoBorrower::create($request->all() + ['relationship_id' => 1]);
-            //Saving of uploaded photo
-            $co_borrower->update([
-                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-6/CoBorrowers', $request->photo),
-                'file_name' => $request->photo->getClientOriginalName(),
-            ]);
+            if($request->id){
+                $co_borrower = CoBorrower::where('borrower_id',$request->id)
+                    ->update($request->all());
+            }else{
+                $co_borrower = CoBorrower::create($request->all() + ['relationship_id' => 1]);
+                //Saving of uploaded photo
+                $co_borrower->update([
+                        'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$request->borrower_id.'/CoBorrowers', $request->photo),
+                        'file_name' => $request->photo->getClientOriginalName(),
+                    ]);
+            }
 
             DB::commit();
             return $co_borrower;
@@ -98,7 +103,8 @@ class CoBorrowerController extends Controller
      */
     public function show($id)
     {
-        //
+        return CoBorrower::where('borrower_id',$id)
+            ->first();
     }
 
     /**
