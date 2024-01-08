@@ -103,7 +103,9 @@ class CoBorrowerController extends Controller
      */
     public function show($id)
     {
-        return CoBorrower::where('borrower_id',$id)
+        return CoBorrower::with('country','region','county','township','propertyType',
+            'civilStatus','validIdType','natureOfBusiness','businessPropertyType')
+            ->where('borrower_id',$id)
             ->first();
     }
 

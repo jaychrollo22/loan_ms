@@ -556,7 +556,8 @@ export default {
         this.commonRequest('/valid-id-types/lists','valid_id_types');
         this.commonRequest('/nature-of-businesses/lists','nature_of_businesses');
         this.commonRequest('/property-types/lists','property_types');
-        if(this.id > 0) this.commonRequest('/borrowers/show/'+this.id,'borrower');
+        // if(this.id > 0) this.commonRequest('/borrowers/show/'+this.id,'borrower');
+        if(this.id > 0) this.fetchBorrower();
     },
     methods:{
         customLabel (object) { return `${object.name}`},
@@ -586,6 +587,11 @@ export default {
             if(fields == 'regions') this.fetchCounties(object);
             if(fields == 'counties') this.fetchTownships(object);
         },
+        async fetchBorrower(){
+            const response = await axios.get('/borrowers/show/'+this.id);
+            this.borrower = response.data;
+            this.fetchAddressDropDown('borrower');
+        },
         fetchRegions(object){
             this.resetAddressParameters(this.regions,this[object].region,this[object].region_id);
             this.commonRequest(`/regions/lists/${this[object].country_id}`,'regions');
@@ -598,8 +604,15 @@ export default {
             this.resetAddressParameters(this.townships,this[object].township,this[object].township_id);
             this.commonRequest(`/townships/lists/${this[object].region_id}/${this[object].county_id}`,'townships');
         },
-        fetchCoBorrower(){
-            this.commonRequest('/co-borrowers/show/'+this.id,'co_borrower');
+        async fetchCoBorrower(){
+            const response = await axios.get('/co-borrowers/show/'+this.id);
+            this.co_borrower = response.data;
+            this.fetchAddressDropDown('co_borrower');
+        },
+        fetchAddressDropDown(model){
+            this.fetchRegions(model);
+            this.fetchCounties(model);
+            this.fetchTownships(model);
         },
         fetchDocuments(){
             this.commonRequest('/documents/lists/'+this.id,'documents');

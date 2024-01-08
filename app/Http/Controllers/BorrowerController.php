@@ -109,7 +109,10 @@ class BorrowerController extends Controller
      */
     public function show($id)
     {
-        return  Borrower::findOrFail($id);
+        return Borrower::with('borrowerType','country','region','county','township',
+            'propertyType','civilStatus','validIdType','natureOfBusiness','businessPropertyType')
+            ->where('id',$id)
+            ->first();
     }
 
     /**
