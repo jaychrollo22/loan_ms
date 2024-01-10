@@ -1995,6 +1995,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (!files.length) return;
       this[object].photo = files[0];
     },
+    updatePhoto: function updatePhoto(model) {
+      this[model].file_path = '';
+      this[model].file_name = '';
+      this[model].photo = '';
+    },
     toggleSelected: function toggleSelected(value, object, model) {
       var fields = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
       this[object][model] = value.id;
@@ -2014,8 +2019,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 2:
               response = _context.sent;
               _this.borrower = response.data;
+              _this.$set(_this.borrower, 'photo', response.data.file_name);
               _this.fetchAddressDropDown('borrower');
-            case 5:
+            case 6:
             case "end":
               return _context.stop();
           }
@@ -2046,8 +2052,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 2:
               response = _context2.sent;
               _this2.co_borrower = response.data;
+              _this2.$set(_this2.co_borrower, 'photo', response.data.file_name);
               _this2.fetchAddressDropDown('co_borrower');
-            case 5:
+            case 6:
             case "end":
               return _context2.stop();
           }
@@ -2073,7 +2080,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.commonPostRequest('/borrowers/store');
     },
     saveCoBorrower: function saveCoBorrower() {
-      this.form_data.append('borrower_id', this.id);
       this.appendFormData(this.co_borrower);
       this.commonPostRequest('/co-borrowers/store');
     },
@@ -2109,6 +2115,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     commonPostRequest: function commonPostRequest(end_point) {
       var _this6 = this;
+      this.errors = [];
       axios.post(end_point, this.form_data).then(function (response) {
         window.location.href =  true ? _this6.id : undefined;
       })["catch"](function (errors) {
@@ -2273,7 +2280,46 @@ var render = function render() {
     staticClass: "card-title"
   }, [_vm._v(_vm._s(_vm.borrower.borrower_code))])]) : _vm._e()]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("form", [_c("div", {
     staticClass: "form-row"
+  }, [_vm.borrower.file_path ? _c("div", {
+    staticClass: "form-group col-md-3"
   }, [_c("div", {
+    staticClass: "row justify-content-center"
+  }, [_c("div", {
+    staticClass: "col-lg-3 order-lg-2"
+  }, [_c("div", {
+    staticClass: "card-profile-image"
+  }, [_c("a", {
+    attrs: {
+      href: "../../storage/" + _vm.borrower.file_path,
+      target: "_blank"
+    }
+  }, [_c("img", {
+    staticStyle: {
+      width: "100px",
+      height: "100px"
+    },
+    attrs: {
+      src: "../../storage/" + _vm.borrower.file_path
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-lg-4 order-lg-3 text-lg-right align-self-lg-center"
+  }, [_c("div", {
+    staticClass: "card-profile-stats d-flex float-right"
+  }, [_c("div", [_c("span", {
+    staticClass: "heading"
+  }, [_c("a", {
+    staticClass: "text-warning",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.updatePhoto("borrower");
+      }
+    }
+  }, [_vm._v("Update Photo")])]), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })])])]), _vm._v(" "), _vm._m(2)])]) : _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
@@ -2975,7 +3021,46 @@ var render = function render() {
     staticClass: "card-title"
   }, [_vm._v("CO-BORROWER CONTACT INFORMATION")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("form", [_c("div", {
     staticClass: "form-row"
+  }, [_vm.co_borrower.file_path ? _c("div", {
+    staticClass: "form-group col-md-3"
   }, [_c("div", {
+    staticClass: "row justify-content-center"
+  }, [_c("div", {
+    staticClass: "col-lg-3 order-lg-2"
+  }, [_c("div", {
+    staticClass: "card-profile-image"
+  }, [_c("a", {
+    attrs: {
+      href: "../../storage/" + _vm.co_borrower.file_path,
+      target: "_blank"
+    }
+  }, [_c("img", {
+    staticStyle: {
+      width: "100px",
+      height: "100px"
+    },
+    attrs: {
+      src: "../../storage/" + _vm.co_borrower.file_path
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-lg-4 order-lg-3 text-lg-right align-self-lg-center"
+  }, [_c("div", {
+    staticClass: "card-profile-stats d-flex float-right"
+  }, [_c("div", [_c("span", {
+    staticClass: "heading"
+  }, [_c("a", {
+    staticClass: "text-warning",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.updatePhoto("co_borrower");
+      }
+    }
+  }, [_vm._v("Update Photo")])]), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })])])]), _vm._v(" "), _vm._m(3)])]) : _c("div", {
     staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
@@ -3647,11 +3732,11 @@ var render = function render() {
       role: "tabpanel",
       "aria-labelledby": "pills-documents-tab"
     }
-  }, [_vm._m(2), _vm._v(" "), _c("div", {
+  }, [_vm._m(4), _vm._v(" "), _c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-hover table-bordered tablewithSearch"
-  }, [_vm._m(3), _vm._v(" "), _c("tbody", _vm._l(_vm.documents, function (document, d) {
+  }, [_vm._m(5), _vm._v(" "), _c("tbody", _vm._l(_vm.documents, function (document, d) {
     return _c("tr", {
       key: d
     }, [_c("td", [_vm._v(_vm._s(document.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.title))]), _vm._v(" "), _c("td", [_c("a", {
@@ -3690,7 +3775,7 @@ var render = function render() {
     }
   }, [_c("div", {
     staticClass: "modal-content"
-  }, [_vm._m(4), _vm._v(" "), _c("div", {
+  }, [_vm._m(6), _vm._v(" "), _c("div", {
     staticClass: "modal-body"
   }, [_c("div", {
     staticClass: "row"
@@ -3774,6 +3859,46 @@ var staticRenderFns = [function () {
   }, [_c("h1", {
     staticClass: "card-title"
   }, [_vm._v("BORROWER CONTACT INFORMATION")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "col-lg-4 order-lg-1"
+  }, [_c("div", {
+    staticClass: "card-profile-stats d-flex justify-content-center"
+  }, [_c("div", [_c("span", {
+    staticClass: "heading"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })]), _vm._v(" "), _c("div", [_c("span", {
+    staticClass: "heading"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })]), _vm._v(" "), _c("div", [_c("span", {
+    staticClass: "heading"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "col-lg-4 order-lg-1"
+  }, [_c("div", {
+    staticClass: "card-profile-stats d-flex justify-content-center"
+  }, [_c("div", [_c("span", {
+    staticClass: "heading"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })]), _vm._v(" "), _c("div", [_c("span", {
+    staticClass: "heading"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })]), _vm._v(" "), _c("div", [_c("span", {
+    staticClass: "heading"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "description"
+  })])])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;

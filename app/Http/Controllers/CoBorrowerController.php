@@ -76,8 +76,19 @@ class CoBorrowerController extends Controller
         DB::beginTransaction();
         try {
             if($request->id){
-                $co_borrower = CoBorrower::where('borrower_id',$request->id)
-                    ->update($request->all());
+                $co_borrower = CoBorrower::where('borrower_id',$request->borrower_id)
+                    ->first();
+
+                $co_borrower->update($request->except(['borrower_type','country','region','county','township','property_type',
+                    'civil_status','valid_id_type','nature_of_business','business_property_type']));
+
+                // Update photo
+                if(!$request->has('file_name')){
+                    $co_borrower->update([
+                            'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$request->borrower_id.'/Photos', $request->photo),
+                            'file_name' => $request->photo->getClientOriginalName()
+                        ]);
+                }
             }else{
                 $co_borrower = CoBorrower::create($request->all() + ['relationship_id' => 1]);
                 //Saving of uploaded photo

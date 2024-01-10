@@ -79,8 +79,17 @@ class BorrowerController extends Controller
         DB::beginTransaction();
         try {
             if($request->id){
-                $borrower =  Borrower::where('id',$request->id)
-                    ->update($request->all());
+                $borrower =  Borrower::findOrFail($request->id);
+                $borrower->update($request->except(['borrower_type','country','region','county','township','property_type',
+                        'civil_status','valid_id_type','nature_of_business','business_property_type','photo']));
+                    
+                    // Update photo
+                    if(!$request->has('file_name')){
+                        $borrower->update([
+                                'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
+                                'file_name' => $request->photo->getClientOriginalName()
+                            ]);
+                    }
             }else{
                 $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
             
@@ -89,7 +98,7 @@ class BorrowerController extends Controller
                 $borrower->update([
                         'borrower_code' => $borrower_code, 
                         'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
-                        'file_name' => $request->photo->getClientOriginalName(),
+                        'file_name' => $request->photo->getClientOriginalName()
                     ]);
             }
 
