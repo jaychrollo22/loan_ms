@@ -28,7 +28,52 @@
                                 <hr/>
                                 <form>
                                     <div class="form-row">
-                                        <div class="form-group col-md-3">
+                                        <!-- <div class="form-group col-md-3 text-center" v-if="borrower.file_path">
+                                            <a :href="'../../storage/'+borrower.file_path" target="_blank">
+                                                <img :src="'../../storage/'+borrower.file_path" style='width:100px;height:100px;'>
+                                            </a>
+                                            <a type="button" class="text-primary">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                        </div> -->
+                                        <div class="form-group col-md-3" v-if="borrower.file_path">
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-3 order-lg-2">
+                                                    <div class="card-profile-image">
+                                                    <a :href="'../../storage/'+borrower.file_path" target="_blank">
+                                                        <img :src="'../../storage/'+borrower.file_path" style='width:100px;height:100px;'>
+                                                    </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
+                                                <div class="card-profile-stats d-flex float-right">
+                                                        <div>
+                                                            <span class="heading">
+                                                                <a type="button" class="text-warning" @click="updatePhoto('borrower')">Update Photo</a>
+                                                            </span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 order-lg-1">
+                                                    <div class="card-profile-stats d-flex justify-content-center">
+                                                        <div>
+                                                            <span class="heading"></span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="heading"></span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="heading"></span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3" v-else>
                                             <label for="inputEmail4">Photo</label>
                                             <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
                                             <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'borrower','Image')">
@@ -240,7 +285,44 @@
                                 <hr/>
                                 <form>
                                     <div class="form-row">
-                                        <div class="form-group col-md-3">
+                                         <div class="form-group col-md-3" v-if="co_borrower.file_path">
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-3 order-lg-2">
+                                                    <div class="card-profile-image">
+                                                    <a :href="'../../storage/'+co_borrower.file_path" target="_blank">
+                                                        <img :src="'../../storage/'+co_borrower.file_path" style='width:100px;height:100px;'>
+                                                    </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
+                                                <div class="card-profile-stats d-flex float-right">
+                                                        <div>
+                                                            <span class="heading">
+                                                                <a type="button" class="text-warning" @click="updatePhoto('co_borrower')">Update Photo</a>
+                                                            </span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 order-lg-1">
+                                                    <div class="card-profile-stats d-flex justify-content-center">
+                                                        <div>
+                                                            <span class="heading"></span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="heading"></span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="heading"></span>
+                                                            <span class="description"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3" v-else>
                                             <label for="inputEmail4">Photo</label>
                                             <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
                                             <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'co_borrower','Image')">
@@ -581,6 +663,11 @@ export default {
             if(!files.length) return
             this[object].photo = files[0];
         },
+        updatePhoto(model){
+            this[model].file_path = '';
+            this[model].file_name = '';
+            this[model].photo = '';
+        },
         toggleSelected(value,object,model,fields = '') {
             this[object][model] = value.id;
             if(fields == 'countries') this.fetchRegions(object);
@@ -590,6 +677,7 @@ export default {
         async fetchBorrower(){
             const response = await axios.get('/borrowers/show/'+this.id);
             this.borrower = response.data;
+            this.$set(this.borrower, 'photo', response.data.file_name);
             this.fetchAddressDropDown('borrower');
         },
         fetchRegions(object){
@@ -607,6 +695,7 @@ export default {
         async fetchCoBorrower(){
             const response = await axios.get('/co-borrowers/show/'+this.id);
             this.co_borrower = response.data;
+            this.$set(this.co_borrower, 'photo', response.data.file_name);
             this.fetchAddressDropDown('co_borrower');
         },
         fetchAddressDropDown(model){
@@ -628,7 +717,6 @@ export default {
             this.commonPostRequest('/borrowers/store');
         },
         saveCoBorrower(){
-            this.form_data.append('borrower_id', this.id);
             this.appendFormData(this.co_borrower);
             this.commonPostRequest('/co-borrowers/store');
         },
@@ -661,6 +749,7 @@ export default {
             })
         },
         commonPostRequest(end_point){
+            this.errors = [];
             axios.post(end_point,this.form_data)
             .then(response => {
                 window.location.href = '/borrowers/edit/'+ this.id ? this.id : response.data.id;
