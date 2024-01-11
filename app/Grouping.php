@@ -16,6 +16,10 @@ class Grouping extends Model implements Auditable
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name','loan_officer_id'
     ];
+
+    public function loanOfficer(){
+        return $this->belongsTo(User::class,'loan_officer_id');
+    }
 }

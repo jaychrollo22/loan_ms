@@ -3,30 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
+use DB;
+use Auth;
+use App\{
+    Grouping
+};
 
-use Alert;
-
-class UserController extends Controller
+class GroupingController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->search;
-        $users = User::when($search,function($q) use($search){
-                        $q->where('name', 'like' , '%' .  $search . '%');
-                    })
-                    ->get();
-
-
-        return view('users.index',array(
-            'users'=>$users,
-            'search'=>$search,
-        ));
+        return view('settings.groupings.index');
     }
 
     /**
@@ -47,7 +39,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'loan_officer' => 'required'
+        ]);
+
+        DB::beginTransaction();
+        try {
+             $grouping = Grouping::create([
+                    'name' => $request->name,
+                    'loan_officer_id' => 1
+                ]);
+
+            DB::commit();
+            return $grouping;
+        } catch (Exception $e) {
+            DB::rollBack();
+            // return GlobalController::errorLogs($e->getMessage(),'App\DocumentRfp');
+        }
     }
 
     /**
@@ -90,45 +99,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Grouping $grouping)
     {
-        //
-    }
-
-    public function changePassword(User $user){
-
-        
-        $user = User::where('id',$user->id)->first();
-
-        return view('users.change_password',
-        array(
-            'header' => 'users',
-            'user' => $user
-        ));
-
-    }
-
-    public function updateUserPassword(Request $request,User $user){
-
-        $validator = $request->validate([
-            'password' => 'required|confirmed',
-            'password_confirmation' => 'required'
-        ]);
-    
-        $user = User::findOrFail($user->id);
-        $user->password = bcrypt($request->input('password'));
-        $user->save();
-
-        Alert::success('Successfully Updated')->persistent('Dismiss');
-        return redirect('/users');
-
+        return $grouping->delete();
     }
 
     /**
-     * Display all resourced(Loan Officer).
+     * Display all resources.
      *
+     * @return \Illuminate\Http\Response
      */
-    public function getLoanOfficers(){
-        return User::all();
+    public function lists(){
+        return Grouping::with('loanOfficer')
+            ->get();
     }
 }

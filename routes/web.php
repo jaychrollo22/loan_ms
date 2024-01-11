@@ -60,6 +60,7 @@ Route::get('edit-user/{id}', 'UserController@edit');
 Route::post('update-user/{id}', 'UserController@update');
 Route::get('/change-password/{user}','UserController@changePassword');
 Route::post('/update-user-password/{user}','UserController@updateUserPassword');
+Route::get('users/loan-officers', 'UserController@getLoanOfficers');
 
 Route::group(['prefix' => 'borrower-types'], function () {
     Route::get('/lists', 'BorrowerTypeController@lists');
@@ -117,4 +118,11 @@ Route::group(['prefix' => 'documents'], function () {
     Route::get('/lists/{id}', 'DocumentController@lists');
     Route::post('/store', 'DocumentController@store');
     Route::delete('/delete/{document}', 'DocumentController@destroy');
+});
+
+Route::group(['prefix' => 'groupings'], function () {
+    Route::get('/main', 'GroupingController@index');
+    Route::get('/lists', 'GroupingController@lists');
+    Route::post('/store', 'GroupingController@store');
+    Route::delete('/delete/{grouping}', 'GroupingController@destroy');
 });
