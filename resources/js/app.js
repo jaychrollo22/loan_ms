@@ -24,6 +24,7 @@ Vue.component('error-messages', require('./components/Common/Errors.vue').defaul
 Vue.component('borrower', require('./components/Borrowers/Index.vue').default);
 Vue.component('borrower-form', require('./components/Borrowers/Form.vue').default);
 Vue.component('grouping', require('./components/Settings/Groupings/Index.vue').default);
+Vue.component('grouping-form', require('./components/Settings/Groupings/Form.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

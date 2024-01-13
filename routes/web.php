@@ -124,5 +124,7 @@ Route::group(['prefix' => 'groupings'], function () {
     Route::get('/main', 'GroupingController@index');
     Route::get('/lists', 'GroupingController@lists');
     Route::post('/store', 'GroupingController@store');
+    Route::get('/show/{id}', 'GroupingController@show');
+    Route::get('/edit/{id}', 'GroupingController@edit');
     Route::delete('/delete/{grouping}', 'GroupingController@destroy');
 });

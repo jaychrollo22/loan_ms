@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
+use Alert;
 use App\{
     Grouping
 };
@@ -46,12 +47,13 @@ class GroupingController extends Controller
 
         DB::beginTransaction();
         try {
-             $grouping = Grouping::create([
-                    'name' => $request->name,
-                    'loan_officer_id' => 1
-                ]);
+            if($request->id){
+                $grouping = Grouping::findOrFail($request->id);
+                $grouping->update($request->all());
+            }else{ $grouping = Grouping::create($request->all()); }
 
             DB::commit();
+            Alert::success('Successfully Store')->persistent('Dismiss');
             return $grouping;
         } catch (Exception $e) {
             DB::rollBack();
@@ -67,7 +69,9 @@ class GroupingController extends Controller
      */
     public function show($id)
     {
-        //
+        return Grouping::with('loanOfficer')
+            ->where('id',$id)
+            ->first();
     }
 
     /**
@@ -78,7 +82,7 @@ class GroupingController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('settings.groupings.form',compact('id'));
     }
 
     /**

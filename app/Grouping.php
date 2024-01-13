@@ -16,7 +16,7 @@ class Grouping extends Model implements Auditable
      * @var array
      */
     protected $fillable = [
-        'name','loan_officer_id'
+        'name','loan_officer_id','status'
     ];
 
     public function loanOfficer(){

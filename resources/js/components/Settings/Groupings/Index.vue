@@ -11,27 +11,26 @@
                             New
                         </a>
                     </p>
-                
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered tablewithSearch">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
                                     <th>Name</th>
                                     <th>Loan Officer</th>
-                                    <th>Action</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(grouping, g) in groupings" :key="g">
-                                    <td>{{ grouping.id}}</td>
-                                    <td>{{ grouping.name}}</td>
-                                    <td>{{ grouping.loan_officer.name }}</td>
                                     <td>
-                                        <a :href="'/borrowers/view/'+grouping.id"  class="btn btn-primary"> View</a>
-                                        <a :href="'/borrowers/edit/'+grouping.id"  class="btn btn-success"> Edit</a>
-                                        <button class="btn btn-danger" title="Delete Request" @click="deleteGrouping(grouping.id,g)">Delete</button>
+                                        <a :href="'/groupings/edit/'+grouping.id" class="ml-3 mr-3">
+                                            <i class="ti-pencil"></i>
+                                        </a>
+                                        {{ grouping.name}}
                                     </td>
+                                    <td>{{ grouping.loan_officer.name }}</td>
+                                    <td>{{ grouping.status }}</td>
+                                    <!-- <td><button class="btn btn-danger" title="Delete Request" @click="deleteGrouping(grouping.id,g)">Delete</button></td> -->
                                 </tr>
                             </tbody>
                         </table>
@@ -65,10 +64,14 @@
                                 track-by="id"
                                 :custom-label="customLabel"
                                 placeholder="Select Loan Officer"
+                                @input="toggleSelected(grouping.loan_officer,'grouping','loan_officer_id')"
                              >
                             </multiselect>
                         </div>
-                    </div>  
+                    </div>
+                    <!-- Start: Error Message-->
+                    <error-messages :errors="errors" v-if="errors.length > 0"/>
+                    <!-- End: Error Message -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -90,7 +93,8 @@ export default {
             groupings: [],
             grouping: {
                 'name' : '',
-                'loan_officer': ''
+                'loan_officer': '',
+                'status': 'Active'
             },
             loan_officers: [],
             errors: []
@@ -113,12 +117,10 @@ export default {
         },
         storeGrouping(){
             this.errors = [];
-            axios.post('/groupings/store',{
-                name: this.grouping.name,
-                loan_officer: this.grouping.loan_officer,
-            })
+            document.getElementById("loader").style.display = "block";
+            axios.post('/groupings/store',this.grouping)
             .then(response => {
-                window.location.href = '/borrowers/edit/'+ this.id ? this.id : response.data.id;
+                window.location.href = '/groupings/main';
             })
             .catch(errors => {
                 this.errors = Object.values(errors.response.data.errors);
@@ -132,6 +134,9 @@ export default {
             .catch(errors => {
                 this.errors = errors.response.data.errors;
             })
+        },
+        toggleSelected(value,object,model) {
+            this[object][model] = value.id;
         }
     }
 }
