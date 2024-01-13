@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Alert;
 use Storage;
 use Illuminate\Http\Request;
 use App\{
@@ -57,6 +58,7 @@ class DocumentController extends Controller
             ]);
 
             DB::commit();
+            Alert::success('Successfully Store')->persistent('Dismiss');
             return $document;
         } catch (Exception $e) {
             DB::rollBack();
@@ -106,6 +108,7 @@ class DocumentController extends Controller
      */
     public function destroy(Document $document)
     {
+        Alert::success('Successfully Deleted')->persistent('Dismiss');
         return $document->delete();
     }
 

@@ -28,14 +28,6 @@
                                 <hr/>
                                 <form>
                                     <div class="form-row">
-                                        <!-- <div class="form-group col-md-3 text-center" v-if="borrower.file_path">
-                                            <a :href="'../../storage/'+borrower.file_path" target="_blank">
-                                                <img :src="'../../storage/'+borrower.file_path" style='width:100px;height:100px;'>
-                                            </a>
-                                            <a type="button" class="text-primary">
-                                                <i class="fas fa-pen"></i>
-                                            </a>
-                                        </div> -->
                                         <div class="form-group col-md-3" v-if="borrower.file_path">
                                             <div class="row justify-content-center">
                                                 <div class="col-lg-3 order-lg-2">
@@ -75,7 +67,6 @@
                                         </div>
                                         <div class="form-group col-md-3" v-else>
                                             <label for="inputEmail4">Photo</label>
-                                            <!-- <img class="rounded-circle" style='width:34px;height:34px;' :src="preview_image"/> -->
                                             <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="photo" @change="uploadPhoto($event,'borrower','Image')">
                                         </div>
                                         <div class="form-group col-md-3">
@@ -91,7 +82,33 @@
                                             >
                                             </multiselect>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-3" v-if="borrower.borrower_type_id == 1">
+                                            <label for="inputEmail4">Loan Officer</label>
+                                            <multiselect
+                                                v-model="borrower.loan_officer"
+                                                :options="loan_officers"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Group"
+                                                @input="toggleSelected(borrower.loan_officer,'borrower','loan_officer_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3" v-if="borrower.borrower_type_id == 2">
+                                            <label for="inputEmail4">Group</label>
+                                            <multiselect
+                                                v-model="borrower.grouping"
+                                                :options="groupings"
+                                                :multiple="false"
+                                                track-by="id"
+                                                :custom-label="customLabel"
+                                                placeholder="Select Group"
+                                                @input="toggleSelected(borrower.grouping,'borrower','grouping_id')"
+                                            >
+                                            </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
                                             <label for="inputEmail4">Business Name</label>
                                             <input type="text" class="form-control" id="inputEmail4" placeholder="Business Name" v-model="borrower.business_name">
                                         </div>
@@ -194,7 +211,7 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Age</label>
-                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Age" v-model="borrower.age">
+                                            <input type="number" class="form-control" id="inputAddress2" placeholder="Age" v-model="borrower.age">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Civil Status</label>
@@ -270,11 +287,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Monthly Sale</label>
-                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="borrower.monthly_sale">
+                                            <input type="number" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="borrower.monthly_sale">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Monthly Profit</label>
-                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="borrower.monthly_profit">
+                                            <input type="number" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="borrower.monthly_profit">
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-primary" @click="saveBorrower">Save</button>
@@ -430,7 +447,7 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Age</label>
-                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Age" v-model="co_borrower.age">
+                                            <input type="number" class="form-control" id="inputAddress2" placeholder="Age" v-model="co_borrower.age">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Civil Status</label>
@@ -506,11 +523,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Monthly Sale</label>
-                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="co_borrower.monthly_sale">
+                                            <input type="number" class="form-control" id="inputAddress2" placeholder="Monthly Sale" v-model="co_borrower.monthly_sale">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="inputAddress2">Monthly Profit</label>
-                                            <input type="text" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="co_borrower.monthly_profit">
+                                            <input type="number" class="form-control" id="inputAddress2" placeholder="Monthly Profit" v-model="co_borrower.monthly_profit">
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-primary" @click="saveCoBorrower">Save</button>
@@ -528,22 +545,23 @@
                                     <table class="table table-hover table-bordered tablewithSearch">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
                                                 <th>Title</th>
                                                 <th>File Name</th>
                                                 <th>Date Uploaded</th>
-                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(document, d) in documents" :key="d">
-                                                <td>{{ document.id }}</td>
-                                                <td>{{ document.title }}</td>
+                                                <td> 
+                                                    <a type="button" class="ml-3 mr-3" @click="deleteDocument(document.id,d)">
+                                                        <i class="ti-trash text-danger"></i>
+                                                    </a>
+                                                    {{ document.title }}</td>
                                                 <td><a :href="'../../storage/'+document.file_path" target="_blank" >{{ document.file_name }}</a></td>
                                                 <td>{{ document.created_at }}</td>
-                                                <td>
+                                                <!-- <td>
                                                     <button class="btn btn-danger" title="Delete Document" @click="deleteDocument(document.id,d)">Delete</button>
-                                                </td>
+                                                </td> -->
                                             </tr>
                                         </tbody>
                                     </table>
@@ -606,7 +624,8 @@ export default {
                 county: '',
                 county_id: '',
                 township: '',
-                township_id: ''
+                township_id: '',
+                status: 'Active'
             },
             co_borrower: {
                 region: '',
@@ -617,6 +636,8 @@ export default {
                 township_id: ''
             },
             borrower_types: [],
+            loan_officers: [],
+            groupings: [],
             countries: [],
             regions: [],
             counties: [],
@@ -633,6 +654,8 @@ export default {
     },
     created() {
         this.commonRequest('/borrower-types/lists','borrower_types');
+        this.commonRequest('/groupings/lists','groupings');
+        this.commonRequest('/users/loan-officers','loan_officers');
         this.commonRequest('/countries/lists','countries');
         this.commonRequest('/civil-statuses/lists','civil_statuses');
         this.commonRequest('/valid-id-types/lists','valid_id_types');
@@ -750,11 +773,13 @@ export default {
         },
         commonPostRequest(end_point){
             this.errors = [];
+            document.getElementById("loader").style.display = "block";
             axios.post(end_point,this.form_data)
             .then(response => {
-                window.location.href = '/borrowers/edit/'+ this.id ? this.id : response.data.id;
+                window.location.href = '/borrowers/edit/'+(this.id != 0 ? this.id : response.data.id);
             })
             .catch(errors => {
+                document.getElementById("loader").style.display = "none";
                 this.errors = Object.values(errors.response.data.errors);
             })
         }

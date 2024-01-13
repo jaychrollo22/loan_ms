@@ -60,7 +60,7 @@ Route::get('edit-user/{id}', 'UserController@edit');
 Route::post('update-user/{id}', 'UserController@update');
 Route::get('/change-password/{user}','UserController@changePassword');
 Route::post('/update-user-password/{user}','UserController@updateUserPassword');
-Route::get('users/loan-officers', 'UserController@getLoanOfficers');
+Route::get('/users/loan-officers', 'UserController@getLoanOfficers');
 
 Route::group(['prefix' => 'borrower-types'], function () {
     Route::get('/lists', 'BorrowerTypeController@lists');

@@ -17,14 +17,22 @@ class Borrower extends Model implements Auditable
      */
     protected $fillable = [
         'borrower_code','borrower_type_id','grouping_id','loan_officer_id','business_name','first_name',
-        'middle_name','last_name','suffix','country_id','region_id','county_id','township_id','address',
+        'middle_name','last_name','suffix','country_id','region_id','county_id','township_id','city','address',
         'property_type_id','age','civil_status_id','contact_number','email_address','valid_id_type_id',
         'id_number','nature_of_business_id','business_address','business_property_type_id','monthly_sale',
-        'monthly_profit','file_name','file_path'
+        'monthly_profit','file_name','file_path','status'
     ];
 
     public function borrowerType(){
         return $this->belongsTo(BorrowerType::class);
+    }
+
+    public function loanOfficer(){
+        return $this->belongsTo(User::class,'loan_officer_id');
+    }
+
+    public function grouping(){
+        return $this->belongsTo(Grouping::class);
     }
 
     public function country(){

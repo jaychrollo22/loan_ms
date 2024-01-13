@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Alert;
 use Storage;
 use Illuminate\Http\Request;
 use App\{
@@ -99,6 +100,7 @@ class CoBorrowerController extends Controller
             }
 
             DB::commit();
+            Alert::success('Successfully Store')->persistent('Dismiss');
             return $co_borrower;
         } catch (Exception $e) {
             DB::rollBack();

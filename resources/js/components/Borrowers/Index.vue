@@ -16,26 +16,29 @@
                         <table class="table table-hover table-bordered tablewithSearch">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
                                     <th>First Name</th>
                                     <th>Middle Name</th>
                                     <th>Last Name</th>
                                     <th>Suffix</th>
-                                    <th>Action</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(borrower, b) in borrowers" :key="b">
-                                    <td>{{ borrower.id}}</td>
-                                    <td>{{ borrower.first_name}}</td>
-                                    <td>{{ borrower.middle_name}}</td>
-                                    <td>{{ borrower.last_name}}</td>
-                                    <td>{{ borrower.suffix}}</td>
                                     <td>
-                                        <a :href="'/borrowers/view/'+borrower.id"  class="btn btn-primary"> View</a>
+                                        <a :href="'/borrowers/edit/'+borrower.id" class="ml-3 mr-3">
+                                            <i class="ti-pencil"></i>
+                                        </a>
+                                        {{ borrower.id +'. '+ borrower.first_name }}
+                                    </td>
+                                    <td>{{ borrower.middle_name }}</td>
+                                    <td>{{ borrower.last_name }}</td>
+                                    <td>{{ borrower.suffix }}</td>
+                                    <td>{{ borrower.status }}</td>
+                                    <!-- <td>
                                         <a :href="'/borrowers/edit/'+borrower.id"  class="btn btn-success"> Edit</a>
                                         <button class="btn btn-danger" title="Delete Request" @click="deleteBorrower(borrower.id,b)">Delete</button>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             </tbody>
                         </table>

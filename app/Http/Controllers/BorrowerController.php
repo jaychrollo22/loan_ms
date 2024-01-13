@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Alert;
 use Storage;
 use Illuminate\Http\Request;
 use App\{
@@ -91,10 +92,10 @@ class BorrowerController extends Controller
                             ]);
                     }
             }else{
-                $borrower = Borrower::create($request->all() + ['loan_officer_id' => Auth::user()->id]);
+                $borrower = Borrower::create($request->all());
             
                 $borrower_type = $request->borrower_type_id == 1 ? 'BI' : 'BG';
-                $borrower_code = $borrower_type.now()->year.$this->pad(now()->month,2).$this->pad($borrower->id,5);
+                $borrower_code = $borrower_type.'-'.now()->year.$this->pad(now()->month,2).'-'.$this->pad($borrower->id,5);
                 $borrower->update([
                         'borrower_code' => $borrower_code, 
                         'file_path' => Storage::disk('public')->put('Borrowers/'.'ID-'.$borrower->id.'/Photos', $request->photo),
@@ -103,6 +104,7 @@ class BorrowerController extends Controller
             }
 
             DB::commit();
+            Alert::success('Successfully Store')->persistent('Dismiss');
             return $borrower;
         } catch (Exception $e) {
             DB::rollBack();
@@ -118,7 +120,7 @@ class BorrowerController extends Controller
      */
     public function show($id)
     {
-        return Borrower::with('borrowerType','country','region','county','township',
+        return Borrower::with('borrowerType','loanOfficer','grouping','country','region','county','township',
             'propertyType','civilStatus','validIdType','natureOfBusiness','businessPropertyType')
             ->where('id',$id)
             ->first();

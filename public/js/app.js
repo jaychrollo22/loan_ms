@@ -1935,7 +1935,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         county: '',
         county_id: '',
         township: '',
-        township_id: ''
+        township_id: '',
+        status: 'Active'
       },
       co_borrower: {
         region: '',
@@ -1946,6 +1947,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         township_id: ''
       },
       borrower_types: [],
+      loan_officers: [],
+      groupings: [],
       countries: [],
       regions: [],
       counties: [],
@@ -1962,6 +1965,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   created: function created() {
     this.commonRequest('/borrower-types/lists', 'borrower_types');
+    this.commonRequest('/groupings/lists', 'groupings');
+    this.commonRequest('/users/loan-officers', 'loan_officers');
     this.commonRequest('/countries/lists', 'countries');
     this.commonRequest('/civil-statuses/lists', 'civil_statuses');
     this.commonRequest('/valid-id-types/lists', 'valid_id_types');
@@ -2116,9 +2121,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     commonPostRequest: function commonPostRequest(end_point) {
       var _this6 = this;
       this.errors = [];
+      document.getElementById("loader").style.display = "block";
       axios.post(end_point, this.form_data).then(function (response) {
-        window.location.href =  true ? _this6.id : undefined;
+        window.location.href = '/borrowers/edit/' + (_this6.id != 0 ? _this6.id : response.data.id);
       })["catch"](function (errors) {
+        document.getElementById("loader").style.display = "none";
         _this6.errors = Object.values(errors.response.data.errors);
       });
     }
@@ -2521,8 +2528,60 @@ var render = function render() {
       },
       expression: "borrower.borrower_type"
     }
-  })], 1), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
+  })], 1), _vm._v(" "), _vm.borrower.borrower_type_id == 1 ? _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "inputEmail4"
+    }
+  }, [_vm._v("Loan Officer")]), _vm._v(" "), _c("multiselect", {
+    attrs: {
+      options: _vm.loan_officers,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Group"
+    },
+    on: {
+      input: function input($event) {
+        return _vm.toggleSelected(_vm.borrower.loan_officer, "borrower", "loan_officer_id");
+      }
+    },
+    model: {
+      value: _vm.borrower.loan_officer,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "loan_officer", $$v);
+      },
+      expression: "borrower.loan_officer"
+    }
+  })], 1) : _vm._e(), _vm._v(" "), _vm.borrower.borrower_type_id == 2 ? _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "inputEmail4"
+    }
+  }, [_vm._v("Group")]), _vm._v(" "), _c("multiselect", {
+    attrs: {
+      options: _vm.groupings,
+      multiple: false,
+      "track-by": "id",
+      "custom-label": _vm.customLabel,
+      placeholder: "Select Group"
+    },
+    on: {
+      input: function input($event) {
+        return _vm.toggleSelected(_vm.borrower.grouping, "borrower", "grouping_id");
+      }
+    },
+    model: {
+      value: _vm.borrower.grouping,
+      callback: function callback($$v) {
+        _vm.$set(_vm.borrower, "grouping", $$v);
+      },
+      expression: "borrower.grouping"
+    }
+  })], 1) : _vm._e(), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputEmail4"
@@ -2870,7 +2929,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text",
+      type: "number",
       id: "inputAddress2",
       placeholder: "Age"
     },
@@ -3118,7 +3177,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text",
+      type: "number",
       id: "inputAddress2",
       placeholder: "Monthly Sale"
     },
@@ -3146,7 +3205,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text",
+      type: "number",
       id: "inputAddress2",
       placeholder: "Monthly Profit"
     },
@@ -3585,7 +3644,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text",
+      type: "number",
       id: "inputAddress2",
       placeholder: "Age"
     },
@@ -3833,7 +3892,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text",
+      type: "number",
       id: "inputAddress2",
       placeholder: "Monthly Sale"
     },
@@ -3861,7 +3920,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text",
+      type: "number",
       id: "inputAddress2",
       placeholder: "Monthly Profit"
     },
@@ -3896,22 +3955,24 @@ var render = function render() {
   }, [_vm._m(5), _vm._v(" "), _c("tbody", _vm._l(_vm.documents, function (document, d) {
     return _c("tr", {
       key: d
-    }, [_c("td", [_vm._v(_vm._s(document.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.title))]), _vm._v(" "), _c("td", [_c("a", {
+    }, [_c("td", [_c("a", {
+      staticClass: "ml-3 mr-3",
       attrs: {
-        href: "../../storage/" + document.file_path,
-        target: "_blank"
-      }
-    }, [_vm._v(_vm._s(document.file_name))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.created_at))]), _vm._v(" "), _c("td", [_c("button", {
-      staticClass: "btn btn-danger",
-      attrs: {
-        title: "Delete Document"
+        type: "button"
       },
       on: {
         click: function click($event) {
           return _vm.deleteDocument(document.id, d);
         }
       }
-    }, [_vm._v("Delete")])])]);
+    }, [_c("i", {
+      staticClass: "ti-trash text-danger"
+    })]), _vm._v("\n                                                " + _vm._s(document.title))]), _vm._v(" "), _c("td", [_c("a", {
+      attrs: {
+        href: "../../storage/" + document.file_path,
+        target: "_blank"
+      }
+    }, [_vm._v(_vm._s(document.file_name))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(document.created_at))])]);
   }), 0)])])])])]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
     attrs: {
       errors: _vm.errors
@@ -4074,7 +4135,7 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("thead", [_c("tr", [_c("th", [_vm._v("ID")]), _vm._v(" "), _c("th", [_vm._v("Title")]), _vm._v(" "), _c("th", [_vm._v("File Name")]), _vm._v(" "), _c("th", [_vm._v("Date Uploaded")]), _vm._v(" "), _c("th", [_vm._v("Action")])])]);
+  return _c("thead", [_c("tr", [_c("th", [_vm._v("Title")]), _vm._v(" "), _c("th", [_vm._v("File Name")]), _vm._v(" "), _c("th", [_vm._v("Date Uploaded")])])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -4136,27 +4197,14 @@ var render = function render() {
   }, [_vm._m(1), _vm._v(" "), _c("tbody", _vm._l(_vm.borrowers, function (borrower, b) {
     return _c("tr", {
       key: b
-    }, [_c("td", [_vm._v(_vm._s(borrower.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.first_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.middle_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.last_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.suffix))]), _vm._v(" "), _c("td", [_c("a", {
-      staticClass: "btn btn-primary",
-      attrs: {
-        href: "/borrowers/view/" + borrower.id
-      }
-    }, [_vm._v(" View")]), _vm._v(" "), _c("a", {
-      staticClass: "btn btn-success",
+    }, [_c("td", [_c("a", {
+      staticClass: "ml-3 mr-3",
       attrs: {
         href: "/borrowers/edit/" + borrower.id
       }
-    }, [_vm._v(" Edit")]), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-danger",
-      attrs: {
-        title: "Delete Request"
-      },
-      on: {
-        click: function click($event) {
-          return _vm.deleteBorrower(borrower.id, b);
-        }
-      }
-    }, [_vm._v("Delete")])])]);
+    }, [_c("i", {
+      staticClass: "ti-pencil"
+    })]), _vm._v("\n                                    " + _vm._s(borrower.id + ". " + borrower.first_name) + "\n                                ")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.middle_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.last_name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.suffix))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(borrower.status))])]);
   }), 0)])])])])])])]);
 };
 var staticRenderFns = [function () {
@@ -4175,7 +4223,7 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("thead", [_c("tr", [_c("th", [_vm._v("Id")]), _vm._v(" "), _c("th", [_vm._v("First Name")]), _vm._v(" "), _c("th", [_vm._v("Middle Name")]), _vm._v(" "), _c("th", [_vm._v("Last Name")]), _vm._v(" "), _c("th", [_vm._v("Suffix")]), _vm._v(" "), _c("th", [_vm._v("Action")])])]);
+  return _c("thead", [_c("tr", [_c("th", [_vm._v("First Name")]), _vm._v(" "), _c("th", [_vm._v("Middle Name")]), _vm._v(" "), _c("th", [_vm._v("Last Name")]), _vm._v(" "), _c("th", [_vm._v("Suffix")]), _vm._v(" "), _c("th", [_vm._v("Status")])])]);
 }];
 render._withStripped = true;
 
