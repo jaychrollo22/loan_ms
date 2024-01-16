@@ -41,7 +41,10 @@
                                                 <div class="card-profile-stats d-flex float-right">
                                                         <div>
                                                             <span class="heading">
-                                                                <a type="button" class="text-warning" @click="updatePhoto('borrower')">Update Photo</a>
+                                                                <a type="button" class="btn btn-outline-info btn-icon-text btn-sm" @click="updatePhoto('borrower')">
+                                                                    <i class="ti-pencil btn-icon-append"></i>
+                                                                    Update Photo
+                                                                </a>
                                                             </span>
                                                             <span class="description"></span>
                                                         </div>
@@ -315,7 +318,10 @@
                                                 <div class="card-profile-stats d-flex float-right">
                                                         <div>
                                                             <span class="heading">
-                                                                <a type="button" class="text-warning" @click="updatePhoto('co_borrower')">Update Photo</a>
+                                                                <a type="button" class="btn btn-outline-info btn-icon-text btn-sm" @click="updatePhoto('co_borrower')">
+                                                                    <i class="ti-pencil btn-icon-append"></i>
+                                                                    Update Photo
+                                                                </a>
                                                             </span>
                                                             <span class="description"></span>
                                                         </div>

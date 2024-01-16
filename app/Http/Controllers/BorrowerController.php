@@ -20,7 +20,8 @@ class BorrowerController extends Controller
      */
     public function index()
     {
-        return view('borrowers.index');
+        $borrowers = $this->lists();
+        return view('borrowers.index',compact('borrowers'));
     }
 
     /**

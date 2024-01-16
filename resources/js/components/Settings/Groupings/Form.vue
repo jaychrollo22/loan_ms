@@ -6,7 +6,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Edit Group: {{ default_name }}</h4>
                     <div class="col-md-12">
-                            <div class="row">
+                        <div class="row">
                             <div class='col-md-6 form-group'>
                                 Name
                                 <input type="text" name="name" class="form-control" v-model="grouping.name">
@@ -24,7 +24,7 @@
                                 >
                                 </multiselect>
                             </div>
-                            <div class='col-md-6 form-group'>
+                            <div class='col-md-6 form-group' v-if="id != 0">
                                 Status
                                 <select class="form-control" name="status" v-model="grouping.status">
                                     <option value="" disabled>Choose Status</option>
@@ -33,6 +33,9 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Start: Error Message-->
+                        <error-messages :errors="errors" v-if="errors.length > 0"/>
+                        <!-- End: Error Message -->
                         <a href='/groupings/main' type="button" class="btn btn-secondary">Close</a>
                         <button type="submit" class="btn btn-primary" @click="updateGrouping">Save</button>
                     </div>
@@ -62,7 +65,7 @@ export default {
         }
     },
     created() {
-        this.fetchGrouping();
+        if(this.id) this.fetchGrouping();
         this.commonRequest('/users/loan-officers','loan_officers');
     },
     methods:{
@@ -80,6 +83,7 @@ export default {
                 window.location.href = '/groupings/main';
             })
             .catch(errors => {
+                document.getElementById("loader").style.display = "none";
                 this.errors = Object.values(errors.response.data.errors);
             })
         },

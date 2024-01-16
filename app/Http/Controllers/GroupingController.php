@@ -19,7 +19,8 @@ class GroupingController extends Controller
      */
     public function index()
     {
-        return view('settings.groupings.index');
+        $groupings = $this->lists();
+        return view('settings.groupings.index',compact('groupings'));
     }
 
     /**
@@ -80,7 +81,7 @@ class GroupingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id = null)
     {
         return view('settings.groupings.form',compact('id'));
     }

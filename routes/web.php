@@ -123,6 +123,7 @@ Route::group(['prefix' => 'documents'], function () {
 Route::group(['prefix' => 'groupings'], function () {
     Route::get('/main', 'GroupingController@index');
     Route::get('/lists', 'GroupingController@lists');
+    Route::get('/create', 'GroupingController@edit');
     Route::post('/store', 'GroupingController@store');
     Route::get('/show/{id}', 'GroupingController@show');
     Route::get('/edit/{id}', 'GroupingController@edit');

@@ -2241,7 +2241,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   created: function created() {
-    this.fetchGrouping();
+    if (this.id) this.fetchGrouping();
     this.commonRequest('/users/loan-officers', 'loan_officers');
   },
   methods: {
@@ -2275,6 +2275,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       axios.post('/groupings/store', this.grouping).then(function (response) {
         window.location.href = '/groupings/main';
       })["catch"](function (errors) {
+        document.getElementById("loader").style.display = "none";
         _this2.errors = Object.values(errors.response.data.errors);
       });
     },
@@ -2472,7 +2473,7 @@ var render = function render() {
   }, [_c("div", [_c("span", {
     staticClass: "heading"
   }, [_c("a", {
-    staticClass: "text-warning",
+    staticClass: "btn btn-outline-info btn-icon-text btn-sm",
     attrs: {
       type: "button"
     },
@@ -2481,7 +2482,9 @@ var render = function render() {
         return _vm.updatePhoto("borrower");
       }
     }
-  }, [_vm._v("Update Photo")])]), _vm._v(" "), _c("span", {
+  }, [_c("i", {
+    staticClass: "ti-pencil btn-icon-append"
+  }), _vm._v("\n                                                                Update Photo\n                                                            ")])]), _vm._v(" "), _c("span", {
     staticClass: "description"
   })])])]), _vm._v(" "), _vm._m(2)])]) : _c("div", {
     staticClass: "form-group col-md-3"
@@ -3265,7 +3268,7 @@ var render = function render() {
   }, [_c("div", [_c("span", {
     staticClass: "heading"
   }, [_c("a", {
-    staticClass: "text-warning",
+    staticClass: "btn btn-outline-info btn-icon-text btn-sm",
     attrs: {
       type: "button"
     },
@@ -3274,7 +3277,9 @@ var render = function render() {
         return _vm.updatePhoto("co_borrower");
       }
     }
-  }, [_vm._v("Update Photo")])]), _vm._v(" "), _c("span", {
+  }, [_c("i", {
+    staticClass: "ti-pencil btn-icon-append"
+  }), _vm._v("\n                                                                Update Photo\n                                                            ")])]), _vm._v(" "), _c("span", {
     staticClass: "description"
   })])])]), _vm._v(" "), _vm._m(3)])]) : _c("div", {
     staticClass: "form-group col-md-3"
@@ -4378,7 +4383,7 @@ var render = function render() {
       },
       expression: "grouping.loan_officer"
     }
-  })], 1), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _vm.id != 0 ? _c("div", {
     staticClass: "col-md-6 form-group"
   }, [_vm._v("\n                            Status\n                            "), _c("select", {
     directives: [{
@@ -4415,7 +4420,11 @@ var render = function render() {
     attrs: {
       value: "Inactive"
     }
-  }, [_vm._v("Inactive")])])])]), _vm._v(" "), _c("a", {
+  }, [_vm._v("Inactive")])])]) : _vm._e()]), _vm._v(" "), _vm.errors.length > 0 ? _c("error-messages", {
+    attrs: {
+      errors: _vm.errors
+    }
+  }) : _vm._e(), _vm._v(" "), _c("a", {
     staticClass: "btn btn-secondary",
     attrs: {
       href: "/groupings/main",
@@ -4429,7 +4438,7 @@ var render = function render() {
     on: {
       click: _vm.updateGrouping
     }
-  }, [_vm._v("Save")])])])])])])]);
+  }, [_vm._v("Save")])], 1)])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
