@@ -129,3 +129,10 @@ Route::group(['prefix' => 'groupings'], function () {
     Route::get('/edit/{id}', 'GroupingController@edit');
     Route::delete('/delete/{grouping}', 'GroupingController@destroy');
 });
+
+Route::group(['prefix' => 'companies'], function () {
+    Route::get('/main', 'CompanyController@index');
+    Route::get('/lists', 'CompanyController@lists');
+    Route::get('/create', 'CompanyController@edit');
+    Route::get('/edit/{id}', 'CompanyController@edit');
+});

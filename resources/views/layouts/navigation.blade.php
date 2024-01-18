@@ -95,6 +95,7 @@
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-interests') }}">Loan Interests</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/users') }}">Users</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/groupings/main') }}">Groupings</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ url('/companies/main') }}">Companies</a></li>
                         </ul>
                     </div>
                 </li>

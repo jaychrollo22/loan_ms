@@ -25,6 +25,7 @@ Vue.component('borrower', require('./components/Borrowers/Index.vue').default);
 Vue.component('borrower-form', require('./components/Borrowers/Form.vue').default);
 Vue.component('grouping', require('./components/Settings/Groupings/Index.vue').default);
 Vue.component('grouping-form', require('./components/Settings/Groupings/Form.vue').default);
+Vue.component('company-form', require('./components/Settings/Companies/Form.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
