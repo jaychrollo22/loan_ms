@@ -18,7 +18,7 @@ class CreateCompaniesTable extends Migration
             $table->char('name',50);
             $table->string('address');
             $table->char('file_name',80)->nullable();
-            $table->string('file_path');
+            $table->string('file_path')->nullable();
             $table->char('status',50);
             $table->timestamps();
             $table->softDeletes();

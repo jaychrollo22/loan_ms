@@ -2218,6 +2218,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
 /* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_0__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2226,18 +2232,19 @@ __webpack_require__.r(__webpack_exports__);
   props: ['id'],
   data: function data() {
     return {
+      form_data: new FormData(),
       default_name: '',
       company: {
         'name': '',
         'logo': '',
+        'address': '',
         'status': 'Active'
       },
-      companies: [],
       errors: []
     };
   },
   created: function created() {
-    if (this.id) this.commonRequest('/comapanies/lists', 'companies');
+    if (this.id) this.commonRequest('/companies/show/' + this.id, 'company');
   },
   methods: {
     uploadLogo: function uploadLogo(e) {
@@ -2249,25 +2256,36 @@ __webpack_require__.r(__webpack_exports__);
       }
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
-      thiscompany.logo = files[0];
+      this.company.logo = files[0];
     },
     updateCompany: function updateCompany() {
       var _this = this;
       this.errors = [];
+      this.form_data.append('id', this.id);
+      this.appendFormData(this.company);
       document.getElementById("loader").style.display = "block";
-      axios.post('/companies/store', this.grouping).then(function (response) {
+      axios.post('/companies/store', this.form_data).then(function (response) {
         window.location.href = '/companies/main';
       })["catch"](function (errors) {
         document.getElementById("loader").style.display = "none";
         _this.errors = Object.values(errors.response.data.errors);
       });
     },
-    commonRequest: function commonRequest(end_point, model) {
+    appendFormData: function appendFormData(model) {
       var _this2 = this;
+      Object.entries(model).forEach(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          key = _ref2[0],
+          value = _ref2[1];
+        if (value && !['created_at', 'updated_at'].includes(key)) _this2.form_data.append(key, value);
+      });
+    },
+    commonRequest: function commonRequest(end_point, model) {
+      var _this3 = this;
       axios.get(end_point).then(function (response) {
-        _this2[model] = response.data;
+        _this3[model] = response.data;
       })["catch"](function (errors) {
-        _this2.errors = errors.response.data.errors;
+        _this3.errors = errors.response.data.errors;
       });
     }
   }
@@ -4446,7 +4464,30 @@ var render = function render() {
     }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "row"
-  }, [_vm.id != 0 ? _c("div", {
+  }, [_c("div", {
+    staticClass: "col-md-6 form-group"
+  }, [_vm._v("\n                            Address\n                            "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.company.address,
+      expression: "company.address"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "address"
+    },
+    domProps: {
+      value: _vm.company.address
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.company, "address", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _vm.id != 0 ? _c("div", {
     staticClass: "col-md-6 form-group"
   }, [_vm._v("\n                            Status\n                            "), _c("select", {
     directives: [{

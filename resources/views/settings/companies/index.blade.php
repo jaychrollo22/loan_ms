@@ -17,22 +17,24 @@
                     <table class="table table-hover table-bordered tablewithSearch">
                         <thead>
                             <tr>
+                                <th>Logo</th>
                                 <th>Name</th>
                                 <th>Address</th>
-                                <th>Logo</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($companies as $company)
                                 <tr>
+                                    <td>
+                                        <img src="{{ asset('storage/'. $company->file_path) }}" onerror="this.src='{{ URL::asset('/images/no_image.png') }}';" style="height:auto" alt="logo" />
+                                    </td>
                                     <td> 
                                         <a href="/companies/edit/{{ $company->id }}" class="ml-3 mr-3">
                                             <i class="ti-pencil"></i>
                                         </a> {{ $company->name  }}
                                     </td>
                                     <td>{{ $company->address }}</td>
-                                    <td>{{ $company->file_path }}</td>
                                     <td>{{ $company->status }}</td>
                                 </tr>
                             @endforeach

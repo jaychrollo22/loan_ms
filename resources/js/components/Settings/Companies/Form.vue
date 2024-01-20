@@ -17,6 +17,10 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class='col-md-6 form-group'>
+                                Address
+                                <input type="text" name="address" class="form-control" v-model="company.address">
+                            </div>
                             <div class='col-md-6 form-group' v-if="id != 0">
                                 Status
                                 <select class="form-control" name="status" v-model="company.status">
@@ -47,18 +51,19 @@ export default {
     props:['id'],
     data(){
         return {
+            form_data: new FormData(),
             default_name: '',
             company: {
                 'name' : '',
                 'logo': '',
+                'address': '',
                 'status': 'Active'
             },
-            companies: [],
             errors: []
         }
     },
     created() {
-        if(this.id)  this.commonRequest('/comapanies/lists','companies');
+        if(this.id) this.commonRequest('/companies/show/'+this.id,'company');
     },
     methods:{
         uploadLogo(e){
@@ -71,12 +76,14 @@ export default {
 
             let files = e.target.files || e.dataTransfer.files;
             if(!files.length) return
-            thiscompany.logo = files[0];
+            this.company.logo = files[0];
         },
         updateCompany(){
             this.errors = [];
+            this.form_data.append('id', this.id);
+            this.appendFormData(this.company);
             document.getElementById("loader").style.display = "block";
-            axios.post('/companies/store',this.grouping)
+            axios.post('/companies/store',this.form_data)
             .then(response => {
                 window.location.href = '/companies/main';
             })
@@ -84,6 +91,11 @@ export default {
                 document.getElementById("loader").style.display = "none";
                 this.errors = Object.values(errors.response.data.errors);
             })
+        },
+        appendFormData(model){
+            Object.entries(model).forEach(([key, value]) => {
+                if(value && !['created_at','updated_at'].includes(key)) this.form_data.append(key, value);
+            });
         },
         commonRequest(end_point,model){
             axios.get(end_point)

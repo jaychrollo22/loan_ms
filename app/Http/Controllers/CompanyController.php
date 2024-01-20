@@ -42,7 +42,40 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'logo' => 'required',
+            'address' => 'required',
+            'status' => 'required'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            if($request->id){
+                $company =  Company::findOrFail($request->id);
+                $company->update($request->all());    
+                // Update photo
+                if(!$request->has('file_name')){
+                    $company->update([
+                            'file_path' => Storage::disk('public')->put('Companies/'.'ID-'.$company->id, $request->logo),
+                            'file_name' => $request->logo->getClientOriginalName()
+                        ]);
+                }
+            }else{
+                $company = Company::create($request->all());
+                $company->update([
+                        'file_path' => Storage::disk('public')->put('Companies/'.'ID-'.$company->id, $request->logo),
+                        'file_name' => $request->logo->getClientOriginalName()
+                    ]);
+            }
+
+            DB::commit();
+            Alert::success('Successfully Store')->persistent('Dismiss');
+            return $company;
+        } catch (Exception $e) {
+            DB::rollBack();
+            // return GlobalController::errorLogs($e->getMessage(),'App\DocumentRfp');
+        }
     }
 
     /**
@@ -53,7 +86,7 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        //
+        return Company::findOrFail($id);
     }
 
     /**

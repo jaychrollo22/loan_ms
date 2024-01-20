@@ -134,5 +134,7 @@ Route::group(['prefix' => 'companies'], function () {
     Route::get('/main', 'CompanyController@index');
     Route::get('/lists', 'CompanyController@lists');
     Route::get('/create', 'CompanyController@edit');
+    Route::post('/store', 'CompanyController@store');
+    Route::get('/show/{id}', 'CompanyController@show');
     Route::get('/edit/{id}', 'CompanyController@edit');
 });
