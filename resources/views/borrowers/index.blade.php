@@ -31,7 +31,11 @@
                                     <td> 
                                         <a href="/borrowers/edit/{{ $borrower->id }}" class="ml-3 mr-3">
                                             <i class="ti-pencil"></i>
-                                        </a> {{ $borrower->id.'. '.$borrower->first_name  }}
+                                        </a>
+                                        <a href="/borrowers/view/{{ $borrower->id }}" class="ml-3 mr-3">
+                                            <i class="ti-eye"></i>
+                                        </a>
+                                        {{ $borrower->first_name  }}
                                     </td>
                                     <td>{{ $borrower->middle_name }}</td>
                                     <td>{{ $borrower->last_name }}</td>

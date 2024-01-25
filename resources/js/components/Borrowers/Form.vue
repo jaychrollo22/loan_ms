@@ -548,7 +548,7 @@
                                 </p>
                             
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-bordered tablewithSearch">
+                                    <table class="table table-hover table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>Title</th>
@@ -723,9 +723,11 @@ export default {
         },
         async fetchCoBorrower(){
             const response = await axios.get('/co-borrowers/show/'+this.id);
-            this.co_borrower = response.data;
-            this.$set(this.co_borrower, 'photo', response.data.file_name);
-            this.fetchAddressDropDown('co_borrower');
+            if(response.data){
+                this.co_borrower = response.data;
+                this.$set(this.co_borrower, 'photo', response.data.file_name);
+                this.fetchAddressDropDown('co_borrower');
+            }
         },
         fetchAddressDropDown(model){
             this.fetchRegions(model);
@@ -746,6 +748,7 @@ export default {
             this.commonPostRequest('/borrowers/store');
         },
         saveCoBorrower(){
+            this.form_data.append('borrower_id', this.id);
             this.appendFormData(this.co_borrower);
             this.commonPostRequest('/co-borrowers/store');
         },
