@@ -106,9 +106,6 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <!--end::Webpack-->
 
-
-    
-
     @yield('footer')
     </div>
 </body>

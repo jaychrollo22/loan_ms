@@ -15,7 +15,7 @@ class CreateBorrowersTable extends Migration
     {
         Schema::create('borrowers', function (Blueprint $table) {
             $table->id();
-            $table->char('borrower_code',50);
+            $table->char('borrower_code',50)->nullable();
             $table->integer('borrower_type_id')->nullable();
             $table->integer('grouping_id')->nullable();
             $table->bigInteger('loan_officer_id');
