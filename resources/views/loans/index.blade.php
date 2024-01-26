@@ -22,7 +22,7 @@
                     <thead>
                         <tr>
                             <th>Loan No.</th>
-                            <th>Borrower No.</th>
+                            <th>Borrower Code</th>
                             <th>Name</th>
                             <th>Type</th>
                             <th>Term</th>
@@ -37,11 +37,14 @@
                     <tbody>
                         @foreach($loans as $item)
                         <tr>
-                            <td> <a href="/edit-loan/{{$item->id}}" class="ml-3 mr-3" title="Edit">
+                            <td>
+                              @if($item->status == "For Approval")
+                              <a href="/edit-loan/{{$item->id}}" class="ml-3 mr-3" title="Edit">
                                 <i class="ti-pencil"></i>
-                            </a>
-                            {{$item->loan_number}}</td>
-                            <td>{{$item->borrower ? $item->borrower->id : "" }}</td>
+                              </a>
+                              @endif
+                              {{$item->loan_number}}</td>
+                            <td>{{$item->borrower ? $item->borrower->borrower_code : "" }}</td>
                             <td>{{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }}</td>
                             <td>{{$item->type_info ? $item->type_info->name : "" }}</td>
                             <td>{{$item->term }}</td>

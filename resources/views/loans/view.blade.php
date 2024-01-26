@@ -128,11 +128,12 @@
                             </div>
 
                             <div class="col-md-6">
+                                <br>
                                 <h4>Borrower Details</h4>
                                 <table class="table-bordered" style="width:100%">
                                     <tr>
-                                        <td width="200px">Borrower ID</td>
-                                        <td>{{$loan->borrower->id}}</td>
+                                        <td width="200px">Borrower Code</td>
+                                        <td>{{$loan->borrower->borrower_code}}</td>
                                     </tr>
                                     <tr>
                                         <td>Borrower Name</td>
@@ -140,15 +141,45 @@
                                     </tr>
                                     <tr>
                                         <td>Borrower Type</td>
-                                        <td>XXX</td>
+                                        <td>{{ $loan->borrower->borrowerType ? $loan->borrower->borrowerType->name : "" }}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td>
-                                            <a href="http://" target="_blank" class="btn btn-primary btn-sm mt-2 mb-2 ml-2">View Details</a>
+                                            <a href="/borrowers/view/{{$loan->borrower->id}}" target="_blank" class="btn btn-primary btn-sm mt-2 mb-2 ml-2">View Details</a>
                                         </td>
                                     </tr>
                                 </table>
+                                <br>
+                                <h4>Actual Payments</h4>
+                                <div class="col-md-12">
+                                    <table class="table-bordered" width="100%">
+                                        <thead>
+                                            <th class="text-center">Actual Payment</th>
+                                            <th class="text-center">Log Date</th>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                            
+                                                $total_actual_payment = 0;
+                                                foreach($loan->payments as $item)
+                                                {
+                                                    echo "<tr>";
+                                                    echo '<td align="center">'. number_format($item['actual_payment'], 2, '.', ',') .'</td>';
+                                                    echo '<td align="center">'.date('Y-m-d h:i A',strtotime($item['created_at'])).'</td>';
+                                                    echo "</tr>";
+
+                                                    $total_actual_payment += $item['actual_payment'];
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td align="center"> <strong>{{number_format($total_actual_payment, 2, '.', ',')}}</strong> </td>
+                                                <td align="center" style="background-color: rgb(17, 126, 214);color:white"><strong>Grand Total</strong></td>
+                                            </tr>   
+                                        </tbody>
+                                    </table>
+                                </div>
+
                             </div>
 
                         </div>

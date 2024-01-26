@@ -34,14 +34,22 @@ class PaymentController extends Controller
     {
 
         $search = $request->search;
+
+        $borrowers = Borrower::when($search,function($q) use($search){
+                                        $q->where(function($w) use($search){
+                                            $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
+                                            ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
+                                            ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
+                                            ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
+                                        });
+                                    })
+                                    ->pluck('id')
+                                    ->toArray();
     
         $loans = Loan::with('borrower','type_info','payments','billings','amount_to_pay')
-                                ->where('loan_number','=',$search)
-                                ->orWhereHas('borrower',function($q) use($search){
-                                    $q->where('first_name','LIKE','%'.$search.'%')
-                                        ->where('last_name','LIKE','%'.$search.'%');
-                                })
                                 ->whereHas('billings')
+                                ->where('loan_number','=',$search)
+                                ->orWhereIn('borrower_id',$borrowers)
                                 ->get();
 
         return view(

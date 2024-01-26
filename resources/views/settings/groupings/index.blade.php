@@ -30,7 +30,7 @@
                                             <i class="ti-pencil"></i>
                                         </a> {{ $grouping->name  }}
                                     </td>
-                                    <td>{{ $grouping->loanOfficer->name }}</td>
+                                    <td>{{ $grouping->loanOfficer ? $grouping->loanOfficer->name : "" }}</td>
                                     <td>{{ $grouping->status }}</td>
                                 </tr>
                             @endforeach

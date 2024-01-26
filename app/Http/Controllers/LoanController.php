@@ -115,7 +115,7 @@ class LoanController extends Controller
     public function show($id,Request $request)
     {
         $payment_start_date = isset($request->payment_start_date) ?  $request->payment_start_date : "";
-        $loan = Loan::with('borrower','type_info')
+        $loan = Loan::with('borrower.borrowerType','type_info','payments','billings','amount_to_pay')
                         ->where('id',$id)
                         ->first();
 

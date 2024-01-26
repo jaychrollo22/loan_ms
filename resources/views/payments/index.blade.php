@@ -30,8 +30,8 @@
                                       <th>Borrower No.</th>
                                       <th>Name</th>
                                       <th>Total Payment</th>
-                                      <th>Last Payment</th>
-                                      <th>Amount to Pay</th>
+                                      {{-- <th>Last Payment</th>
+                                      <th>Amount to Pay</th> --}}
                                       <th>Remaining Balance</th>
                                       <th>Action</th>
                                   </tr>
@@ -39,29 +39,39 @@
                               <tbody>
                                 @foreach($loans as $item)
                                     <tr>
-                                        <td> <a href="/edit-loan/{{$item->id}}" class="ml-3 mr-3" title="Edit">
-                                            <i class="ti-pencil"></i>
-                                        </a>
-                                        {{$item->loan_number}}</td>
-                                        <td>{{$item->borrower ? $item->borrower->id : "" }}</td>
+                                        <td>
+                                            {{$item->loan_number}}</td>
+                                        <td>{{$item->borrower ? $item->borrower->borrower_code : "" }}</td>
                                         <td>{{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }}</td>
                                         <td>
                                             @php
-                                                $totalPayments = $item->payments->sum('actual_payment');
+                                                $total_payments = $item->payments->sum('actual_payment');
                                             @endphp
-                                            {{ number_format($totalPayments, 2, '.', ',')}}
+                                            {{ number_format($total_payments, 2, '.', ',')}}
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             @php
                                                 $latestPayments = $item->payments->first();
                                             @endphp
                                             {{ $latestPayments ? number_format($latestPayments->actual_payment, 2, '.', ',') : "" }} <br>
                                             <small> {{ $latestPayments ? 'Date ' . date('Y-m-d', strtotime($latestPayments->created_at)) : "" }} </small>
+                                        </td> --}}
+                                        {{-- <td></td> --}}
+                                        <td>
+                                            @php
+                                                $remaining_balance = $item->total_amount - $total_payments;
+                                            @endphp
+                                            {{ number_format($remaining_balance, 2, '.', ',')}}
+
                                         </td>
-                                        <td></td>
-                                        <td></td>
                                         <td align="center">
-                                            <button class="btn btn-primary" id="{{ $item->id }}" data-target="#pay-{{ $item->id }}" data-toggle="modal" title='Approve' onclick="openModal({{ $item->id }})">Pay</button>
+                                            @if($remaining_balance <= 0 )
+                                                <button class="btn btn-primary" id="{{ $item->id }}" data-target="#pay-{{ $item->id }}" data-toggle="modal" title='Approve' onclick="openModal({{ $item->id }})">Paid</button>
+                                            @else
+                                                <button class="btn btn-primary" id="{{ $item->id }}" data-target="#pay-{{ $item->id }}" data-toggle="modal" title='Approve' onclick="openModal({{ $item->id }})">Pay</button>
+                                            @endif
+                                            
+                                            <a href="view-loan/{{$item->id}}" target="_blank" class="btn btn-success">View</button>
                                         </td>
                                     </tr>
                                 @endforeach
