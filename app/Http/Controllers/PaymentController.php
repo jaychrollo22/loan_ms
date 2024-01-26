@@ -10,6 +10,7 @@ use App\LoanPayment;
 
 use Illuminate\Database\Eloquent\Builder;
 
+use Alert;
 use DB;
 class PaymentController extends Controller
 {
@@ -36,6 +37,11 @@ class PaymentController extends Controller
     
         $loans = Loan::with('borrower','type_info','payments','billings','amount_to_pay')
                                 ->where('loan_number','=',$search)
+                                ->orWhereHas('borrower',function($q) use($search){
+                                    $q->where('first_name','LIKE','%'.$search.'%')
+                                        ->where('last_name','LIKE','%'.$search.'%');
+                                })
+                                ->whereHas('billings')
                                 ->get();
 
         return view(
@@ -65,9 +71,23 @@ class PaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+
+        $loan_details = Loan::where('id',$id)->first();
+
+        if($loan_details){
+            $loan_payment = new LoanPayment;
+            $loan_payment->loan_id = $loan_details->id;
+            $loan_payment->borrower_id = $loan_details->borrower_id;
+            $loan_payment->actual_payment = $request->payment;
+            $loan_payment->save();
+
+            Alert::success('Payment has been successfully saved!')->persistent('Dismiss');
+            return back();
+
+        }
+
     }
 
     /**

@@ -61,7 +61,7 @@
                                         <td></td>
                                         <td></td>
                                         <td align="center">
-                                            <button class="btn btn-primary">Pay</button>
+                                            <button class="btn btn-primary" id="{{ $item->id }}" data-target="#pay-{{ $item->id }}" data-toggle="modal" title='Approve' onclick="openModal({{ $item->id }})">Pay</button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -74,4 +74,17 @@
         </div>
     </div>
 </div>
+
+@foreach ($loans as $loan)
+  @include('payments.pay')
+@endforeach
+
 @endsection
+<script>
+    // Function to open the modal and autofocus on the input
+    function openModal(id) {
+        var modalInput = document.getElementById("input-" + id);
+        modalInput.focus();
+    }
+</script>
+
