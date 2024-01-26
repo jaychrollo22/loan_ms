@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="mb-2">
+                    <div class="mb-2" v-if="co_borrower">
                         <div class="row">
                             <h3>CO-BORROWER PROFILE</h3>
                         </div>
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="mb-2">
+                    <div class="mb-2" v-if="documents.length > 0">
                         <div class="row">
                             <h3>DOCUMENTS</h3>
                             <div class="table-responsive">
