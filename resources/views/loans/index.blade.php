@@ -8,6 +8,33 @@
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Loans</h4>
+                <div class="col-md-12">
+                  <form method='GET' action='{{url('payments')}}' onsubmit='show()' enctype="multipart/form-data">
+                      <div class=row>
+                          <div class='col-md-3'>
+                              <div class="form-group">
+                                  <input type="text" class="form-control" name="search" placeholder="Search Loan Number / Borrower" value="{{$search}}">
+                              </div>
+                          </div>
+                          <div class='col-md-3'>
+                              <div class="form-group">
+                                  
+                                  <select data-placeholder="Select Groupings" class="form-control form-control-sm required js-example-basic-single" style='width:100%;' name='grouping'>
+                                      <option value="">-- Select Groupings --</option>
+                                      @foreach($groupings as $item)
+                                      <option value="{{$item->id}}" @if ($item->id == $grouping) selected @endif>{{$item->name}} {{ $item->loanOfficer ? '- ' . $item->loanOfficer->name : ""}}</option>
+                                      @endforeach
+                                  </select>
+                                  
+                              </div>
+                          </div>
+                          <div class='col-md-2'>
+                              <button type="submit" class="btn btn-primary">Search</button>
+                              <a href="/loans" class="btn btn-warning">Clear Filter</a>
+                          </div>
+                      </div>
+                  </form>
+              </div>
                 <p class="card-description">
 
                     <a href="/create-loan" class="btn btn-outline-success btn-icon-text">
@@ -45,7 +72,20 @@
                               @endif
                               {{$item->loan_number}}</td>
                             <td>{{$item->borrower ? $item->borrower->borrower_code : "" }}</td>
-                            <td>{{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }}</td>
+                            <td>
+                              {{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }} <br>
+                              <small>
+                                {{$item->borrower->borrowerType ?  $item->borrower->borrowerType->name  : "" }}
+                                @php
+                                  $group = '';
+                                  $borrower_type = $item->borrower->borrowerType ?  $item->borrower->borrowerType->name : "";
+                                  if($borrower_type == 'Group'){
+                                    $group = $item->borrower->grouping ?  ' : ' . $item->borrower->grouping->name : "";
+                                  }
+                                @endphp
+                              </small>
+                              <small>{{$group}}</small>
+                            </td>
                             <td>{{$item->type_info ? $item->type_info->name : "" }}</td>
                             <td>{{$item->term }}</td>
                             <td>{{ '₱ ' . number_format($item->amount, 2, '.', ',') }}</td>

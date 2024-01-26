@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Borrower;
 use App\Loan;
 use App\LoanPayment;
+use App\Grouping;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -34,17 +35,21 @@ class PaymentController extends Controller
     {
 
         $search = $request->search;
+        $grouping = $request->grouping;
 
         $borrowers = Borrower::when($search,function($q) use($search){
-                                        $q->where(function($w) use($search){
-                                            $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
-                                            ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
-                                            ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
-                                            ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
-                                        });
-                                    })
-                                    ->pluck('id')
-                                    ->toArray();
+                                $q->where(function($w) use($search){
+                                    $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
+                                    ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
+                                    ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
+                                    ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
+                                });
+                            })
+                            ->when($grouping,function($q) use($grouping){
+                                $q->where('grouping_id',$grouping);
+                            })
+                            ->pluck('id')
+                            ->toArray();
     
         $loans = Loan::with('borrower','type_info','payments','billings','amount_to_pay')
                                 ->whereHas('billings')
@@ -52,12 +57,16 @@ class PaymentController extends Controller
                                 ->orWhereIn('borrower_id',$borrowers)
                                 ->get();
 
+        $groupings = Grouping::with('loanOfficer')->where('status','Active')->get();
+
         return view(
             'payments.index',
             array(
                 'header' => 'payments',
                 'loans' => $loans,
-                'search' => $search
+                'search' => $search,
+                'groupings' => $groupings,
+                'grouping' => $grouping,
 
             )
         );

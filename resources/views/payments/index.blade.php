@@ -10,13 +10,26 @@
                         <div class="col-md-12">
                             <form method='GET' action='{{url('payments')}}' onsubmit='show()' enctype="multipart/form-data">
                                 <div class=row>
-                                    <div class='col-md-4'>
+                                    <div class='col-md-3'>
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="search" placeholder="Search Loan Number / Borrower" value="{{$search}}">
                                         </div>
                                     </div>
+                                    <div class='col-md-3'>
+                                        <div class="form-group">
+                                            
+                                            <select data-placeholder="Select Groupings" class="form-control form-control-sm required js-example-basic-single" style='width:100%;' name='grouping'>
+                                                <option value="">-- Select Groupings --</option>
+                                                @foreach($groupings as $item)
+                                                <option value="{{$item->id}}" @if ($item->id == $grouping) selected @endif>{{$item->name}} {{ $item->loanOfficer ? '- ' . $item->loanOfficer->name : ""}}</option>
+                                                @endforeach
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
                                     <div class='col-md-2'>
                                         <button type="submit" class="btn btn-primary">Search</button>
+                                        <a href="/payments" class="btn btn-warning">Clear Filter</a>
                                     </div>
                                 </div>
                             </form>
@@ -29,6 +42,7 @@
                                       <th>Loan No.</th>
                                       <th>Borrower No.</th>
                                       <th>Name</th>
+                                      <th>Loan Amount</th>
                                       <th>Total Payment</th>
                                       {{-- <th>Last Payment</th>
                                       <th>Amount to Pay</th> --}}
@@ -43,6 +57,9 @@
                                             {{$item->loan_number}}</td>
                                         <td>{{$item->borrower ? $item->borrower->borrower_code : "" }}</td>
                                         <td>{{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }}</td>
+                                        <td>
+                                            {{ number_format($item->total_amount, 2, '.', ',')}}
+                                        </td>
                                         <td>
                                             @php
                                                 $total_payments = $item->payments->sum('actual_payment');

@@ -43,7 +43,7 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/account-setting') }}" onclick='show()'>
+                    <a class="nav-link" href="{{ url('/home') }}" onclick='show()'>
                         <i class="ti-user menu-icon"></i>
                         <span class="menu-title">{{auth()->user()->name}}</span>   
                     </a>
