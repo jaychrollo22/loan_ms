@@ -9,8 +9,8 @@
                             <h3>BORROWER PROFILE</h3>
                         </div>
                         <div class="row">
-                            <div class="col-md-2">
-                                <img :src="'../../storage/'+borrower.file_path" style='width:150px;height:150px;'>
+                            <div class="col-md-2 text-center">
+                                <img :src="'../../storage/'+borrower.file_path" style="max-width:150px;min-height:150px;height:auto;">
                             </div>
                             <div class="col-md-10">
                                 <h3>{{ borrower.first_name+' '+borrower.middle_name+' '+borrower.last_name }}</h3>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <img :src="'../../storage/'+co_borrower.file_path" style='width:150px;height:150px;'>
+                                <img :src="'../../storage/'+co_borrower.file_path" style="max-width:150px;min-height:150px;height:auto;">
                             </div>
                             <div class="col-md-10">
                                 <h3>{{ co_borrower.first_name+' '+co_borrower.middle_name+' '+co_borrower.last_name }}</h3>

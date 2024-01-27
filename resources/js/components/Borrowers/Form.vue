@@ -28,42 +28,17 @@
                                 <hr/>
                                 <form>
                                     <div class="form-row">
-                                        <div class="form-group col-md-3" v-if="borrower.file_path">
+                                        <div class="form-group col-md-3" v-if="borrower.file_path"> 
                                             <div class="row justify-content-center">
-                                                <div class="col-lg-3 order-lg-2">
+                                                <div class="col-lg-12">
                                                     <div class="card-profile-image">
-                                                    <a :href="'../../storage/'+borrower.file_path" target="_blank">
-                                                        <img :src="'../../storage/'+borrower.file_path" style='width:100px;height:100px;'>
-                                                    </a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
-                                                <div class="card-profile-stats d-flex float-right">
-                                                        <div>
-                                                            <span class="heading">
-                                                                <a type="button" class="btn btn-outline-info btn-icon-text btn-sm" @click="updatePhoto('borrower')">
-                                                                    <i class="ti-pencil btn-icon-append"></i>
-                                                                    Update Photo
-                                                                </a>
-                                                            </span>
-                                                            <span class="description"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 order-lg-1">
-                                                    <div class="card-profile-stats d-flex justify-content-center">
-                                                        <div>
-                                                            <span class="heading"></span>
-                                                            <span class="description"></span>
-                                                        </div>
-                                                        <div>
-                                                            <span class="heading"></span>
-                                                            <span class="description"></span>
-                                                        </div>
-                                                        <div>
-                                                            <span class="heading"></span>
-                                                            <span class="description"></span>
-                                                        </div>
+                                                        <a :href="'../../storage/'+borrower.file_path" target="_blank">
+                                                            <img :src="'../../storage/'+borrower.file_path" style='width:200px;height:auto;'>
+                                                        </a>
+                                                        <a type="button" class="btn btn-outline-info btn-icon-text btn-sm" @click="updatePhoto('borrower')">
+                                                            <i class="ti-pencil btn-icon-append"></i>
+                                                            Update Photo
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -307,14 +282,20 @@
                                     <div class="form-row">
                                          <div class="form-group col-md-3" v-if="co_borrower.file_path">
                                             <div class="row justify-content-center">
-                                                <div class="col-lg-3 order-lg-2">
+                                                <div class="col-lg-12 order-lg-2">
                                                     <div class="card-profile-image">
                                                     <a :href="'../../storage/'+co_borrower.file_path" target="_blank">
-                                                        <img :src="'../../storage/'+co_borrower.file_path" style='width:100px;height:100px;'>
+                                                        <img :src="'../../storage/'+co_borrower.file_path" style='width:200px;height:auto;'>
+                                                    </a>
+                                                    <a type="button" class="btn btn-outline-info btn-icon-text btn-sm" @click="updatePhoto('co_borrower')">
+                                                        <i class="ti-pencil btn-icon-append"></i>
+                                                        Update Photo
                                                     </a>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
+                                                <!-- <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
+
+                                                    
                                                 <div class="card-profile-stats d-flex float-right">
                                                         <div>
                                                             <span class="heading">
@@ -342,7 +323,7 @@
                                                             <span class="description"></span>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                         <div class="form-group col-md-3" v-else>

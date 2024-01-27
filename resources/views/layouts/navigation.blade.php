@@ -83,12 +83,12 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="collapse" href="#biometrics" aria-expanded="false" aria-controls="ui-basic">
+                    <a class="nav-link" data-toggle="collapse" href="#settings" aria-expanded="false" aria-controls="ui-basic">
                         <i class="icon-cog menu-icon"></i>
                         <span class="menu-title">Settings</span>
                         <i class="menu-arrow"></i>
                     </a>
-                    <div class="collapse" id="biometrics">
+                    <div class="collapse" id="settings">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-types') }}">Loan Types</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-terms') }}">Loan Terms</a></li>
