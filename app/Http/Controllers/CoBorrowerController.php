@@ -54,6 +54,7 @@ class CoBorrowerController extends Controller
             'township_id' => 'required',
             'address' => 'required',
             'property_type_id' => 'required',
+            'birthday' => 'required',
             'age' => 'required',
             'civil_status_id' => 'required',
             'contact_number' => 'required',

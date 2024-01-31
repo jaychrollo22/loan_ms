@@ -131,4 +131,16 @@ class CompanyController extends Controller
     public function lists(){
         return Company::get();
     }
+
+    /**
+     * Get active company
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public static function active(){
+        $company = Company::where('status','Active')
+            ->first();
+
+        return $company ? $company->file_path : '';
+    }
 }

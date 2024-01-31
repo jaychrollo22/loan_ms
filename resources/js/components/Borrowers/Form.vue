@@ -168,7 +168,7 @@
                                             <label for="inputAddress2">City</label>
                                             <input type="text" class="form-control" id="inputAddress2" placeholder="City" v-model="borrower.city">
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-3">
                                             <label for="inputAddress2">Home Address</label>
                                             <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="borrower.address">
                                         </div>
@@ -184,6 +184,10 @@
                                                 @input="toggleSelected(borrower.property_type,'borrower','property_type_id')"
                                             >
                                             </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Birthday</label>
+                                            <input type="date" class="form-control" placeholder="Birthday" v-model="borrower.birthday">
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -413,7 +417,7 @@
                                             <label for="inputAddress2">City</label>
                                             <input type="text" class="form-control" id="inputAddress2" placeholder="City" v-model="co_borrower.city">
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-3">
                                             <label for="inputAddress2">Home Address</label>
                                             <input type="text" class="form-control" id="inputAddress2" placeholder="Address" v-model="co_borrower.address">
                                         </div>
@@ -429,6 +433,10 @@
                                                 @input="toggleSelected(co_borrower.property_type,'co_borrower','property_type_id')"
                                             >
                                             </multiselect>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputAddress2">Birthday</label>
+                                            <input type="date" class="form-control" placeholder="Birthday" v-model="co_borrower.birthday">
                                         </div>
                                     </div>
                                     <div class="form-row">

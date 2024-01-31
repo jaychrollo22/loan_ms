@@ -1,4 +1,4 @@
-@extends('layouts.app2')
+@extends('layouts.app2',['logo' => $logo])
 
 @section('content')
 <div class="main-panel">
@@ -13,7 +13,6 @@
                         New 
                     </a>
                 </p>
-            
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered tablewithSearch">
                         <thead>
