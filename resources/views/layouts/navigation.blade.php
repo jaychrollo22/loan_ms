@@ -1,7 +1,7 @@
 <div class="container-scroller" id="app">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo mr-5" href=""> <img src="{{ URL::asset('/images/company_image.png') }}" onerror="this.src='{{ URL::asset('/images/no_image.png') }}';" style="height:auto;max-height:60px" class="mr-2 ml-2" alt="logo" /></a>
+            <a class="navbar-brand brand-logo mr-5" href=""> <img src="{{ URL::asset('/storage/'.$logo) }}" onerror="this.src='{{ URL::asset('/images/no_image.png') }}';" style="height:auto;max-height:60px" class="mr-2 ml-2" alt="logo" /></a>
             <a class="navbar-brand brand-logo-mini" href="{{ url('/') }}"><img src="{{ URL::asset('/images/company_image.png') }}" onerror="this.src='{{ URL::asset('/images/no_image.png') }}';" style="height:auto" alt="logo" /></a>
         </div>
 

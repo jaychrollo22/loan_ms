@@ -2988,7 +2988,7 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
+    staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputAddress2"
@@ -3041,7 +3041,34 @@ var render = function render() {
       },
       expression: "borrower.property_type"
     }
-  })], 1)]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "inputAddress2"
+    }
+  }, [_vm._v("Birthday")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.borrower.birthday,
+      expression: "borrower.birthday"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "date",
+      placeholder: "Birthday"
+    },
+    domProps: {
+      value: _vm.borrower.birthday
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.borrower, "birthday", $event.target.value);
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-3"
@@ -3705,7 +3732,7 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
+    staticClass: "form-group col-md-3"
   }, [_c("label", {
     attrs: {
       "for": "inputAddress2"
@@ -3758,7 +3785,34 @@ var render = function render() {
       },
       expression: "co_borrower.property_type"
     }
-  })], 1)]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-3"
+  }, [_c("label", {
+    attrs: {
+      "for": "inputAddress2"
+    }
+  }, [_vm._v("Birthday")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.co_borrower.birthday,
+      expression: "co_borrower.birthday"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "date",
+      placeholder: "Birthday"
+    },
+    domProps: {
+      value: _vm.co_borrower.birthday
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.co_borrower, "birthday", $event.target.value);
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-3"

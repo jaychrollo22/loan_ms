@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $logo = CompanyController::active();
+        return view('home',compact('logo'));
     }
 }

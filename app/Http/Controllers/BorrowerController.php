@@ -21,7 +21,8 @@ class BorrowerController extends Controller
     public function index()
     {
         $borrowers = $this->lists();
-        return view('borrowers.index',compact('borrowers'));
+        $logo = CompanyController::active();
+        return view('borrowers.index',compact('borrowers','logo'));
     }
 
     /**
@@ -31,7 +32,8 @@ class BorrowerController extends Controller
      */
     public function create()
     {
-        return view('borrowers.form');
+        $logo = CompanyController::active();
+        return view('borrowers.form',compact('logo'));
     }
 
     /**
@@ -58,6 +60,7 @@ class BorrowerController extends Controller
             'township_id' => 'required',
             'address' => 'required',
             'property_type_id' => 'required',
+            'birthday' => 'required',
             'age' => 'required',
             'civil_status_id' => 'required',
             'contact_number' => 'required',
@@ -135,7 +138,8 @@ class BorrowerController extends Controller
      */
     public function edit($id)
     {
-        return view('borrowers.form',compact('id'));
+        $logo = CompanyController::active();
+        return view('borrowers.form',compact('id','logo'));
     }
 
     /**
@@ -186,6 +190,7 @@ class BorrowerController extends Controller
      */
     public function view($id)
     {
-        return view('borrowers.view',compact('id'));
+        $logo = CompanyController::active();
+        return view('borrowers.view',compact('id','logo'));
     }
 }
