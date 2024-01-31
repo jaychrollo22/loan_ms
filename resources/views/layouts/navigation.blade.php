@@ -81,7 +81,12 @@
                         <span class="menu-title">Reports</span>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/expenses') }}" onclick='show()'>
+                        <i class="icon-layout menu-icon"></i>
+                        <span class="menu-title">Expenses</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#settings" aria-expanded="false" aria-controls="ui-basic">
                         <i class="icon-cog menu-icon"></i>

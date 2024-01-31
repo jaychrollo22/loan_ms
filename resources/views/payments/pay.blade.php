@@ -13,7 +13,7 @@
             <div class="row">
               <div class='col-md-12 form-group'>
                 Input Payment 
-                <input id="input-{{$loan->id}}" type="number" name='payment' class="form-control" required min="1">
+                <input id="input-{{$loan->id}}" type="number" step="0.01" name='payment' class="form-control" required min="1">
               </div>
             </div>  
           </div>
