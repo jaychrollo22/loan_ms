@@ -43,6 +43,12 @@ Route::post('new-expense', 'ExpenseController@store');
 Route::get('edit-expense/{id}', 'ExpenseController@edit');
 Route::post('update-expense/{id}', 'ExpenseController@update');
 
+//Savings
+Route::get('savings', 'SavingController@index');
+Route::post('new-saving', 'SavingController@store');
+Route::get('edit-saving/{id}', 'SavingController@edit');
+Route::post('update-saving/{id}', 'SavingController@update');
+
 //Settings > Loan Terms
 Route::get('loan-terms', 'LoanTermController@index');
 Route::post('new-loan-term', 'LoanTermController@store');

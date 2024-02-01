@@ -95,12 +95,13 @@
                     </a>
                     <div class="collapse" id="settings">
                         <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"> <a class="nav-link" href="{{ url('/companies/main') }}">Companies</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ url('/groupings/main') }}">Groupings</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-types') }}">Loan Types</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-terms') }}">Loan Terms</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/loan-interests') }}">Loan Interests</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ url('/savings') }}">Savings</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ url('/users') }}">Users</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="{{ url('/groupings/main') }}">Groupings</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="{{ url('/companies/main') }}">Companies</a></li>
                         </ul>
                     </div>
                 </li>
