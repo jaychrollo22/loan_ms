@@ -21,8 +21,7 @@ class BorrowerController extends Controller
     public function index()
     {
         $borrowers = $this->lists();
-        $logo = CompanyController::active();
-        return view('borrowers.index',compact('borrowers','logo'));
+        return view('borrowers.index',compact('borrowers'));
     }
 
     /**
@@ -32,8 +31,7 @@ class BorrowerController extends Controller
      */
     public function create()
     {
-        $logo = CompanyController::active();
-        return view('borrowers.form',compact('logo'));
+        return view('borrowers.form');
     }
 
     /**
@@ -83,6 +81,25 @@ class BorrowerController extends Controller
 
         DB::beginTransaction();
         try {
+            $borrowers = Borrower::with('loans.payments')
+                ->where('first_name',$request->first_name)
+                ->where('last_name',$request->last_name)
+                ->where('birthday',$request->birthday)
+                ->get();
+
+            $bad_accounts = [];
+            foreach($borrowers as $borrower){
+               foreach($borrower->loans as $loan){
+                    $loan_amount = $loan->amount;
+                    $total_payment = $loan->payments->sum('actual_payment');
+                    if($loan_amount > $total_payment){
+                        $bad_accounts[] =  'Bad Accounts! with total loan of '.$loan_amount.' and with total payment of '.$total_payment;
+                    }
+               }
+            }
+    
+            if($bad_accounts) return $this->commonError($bad_accounts);
+
             if($request->id){
                 $borrower =  Borrower::findOrFail($request->id);
                 $borrower->update($request->except(['borrower_type','country','region','county','township','property_type',
@@ -138,8 +155,7 @@ class BorrowerController extends Controller
      */
     public function edit($id)
     {
-        $logo = CompanyController::active();
-        return view('borrowers.form',compact('id','logo'));
+        return view('borrowers.form',compact('id'));
     }
 
     /**
@@ -190,7 +206,23 @@ class BorrowerController extends Controller
      */
     public function view($id)
     {
-        $logo = CompanyController::active();
-        return view('borrowers.view',compact('id','logo'));
+        return view('borrowers.view',compact('id'));
+    }
+
+    /**
+     * Common Error Message
+     */
+    public static function commonError($message){
+        if(is_array($message)){// Loop error if array
+            $errors = [];
+            foreach($message as $m){
+                $errors[] = [$m];
+            }
+        }else{
+            $errors = [
+                'item' => [$message]
+            ];
+        }
+        return response()->json(['errors' => $errors], 422);
     }
 }

@@ -1,4 +1,4 @@
-@extends('layouts.app2',['logo' => $logo])
+@extends('layouts.app2')
 
 @section('content')
 <div class="main-panel">
