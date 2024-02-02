@@ -42,42 +42,42 @@ class BorrowerController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'photo' => 'required',
-            'borrower_type_id' => 'required',
-            'grouping_id' => '',
-            'loan_officer_id' => '',
-            'business_name' => 'required',
-            'first_name' => 'required',
-            'middle_name' => 'required',
-            'last_name' => 'required',
-            'suffix' => '',
-            'country_id' => 'required',
-            'region_id' => 'required',
-            'county_id' => 'required',
-            'township_id' => 'required',
-            'address' => 'required',
-            'property_type_id' => 'required',
-            'birthday' => 'required',
-            'age' => 'required',
-            'civil_status_id' => 'required',
-            'contact_number' => 'required',
-            'email_address' => 'required',
-            'valid_id_type_id' => 'required',
-            'id_number' => 'required',
-            'nature_of_business_id' => 'required',
-            'business_address' => 'required',
-            'business_property_type_id' => 'required',
-            'monthly_sale' => 'required',
-            'monthly_profit' => 'required'
-        ],[
-            'country_id.required' => 'Country field is required',
-            'region_id.required' => 'Region field is required',
-            'county_id.required' => 'County field is required',
-            'township_id.required' => 'Township field is required',
-            'valid_id_type_id.required' => 'Valid ID Type field is required',
-            'nature_of_business_id.required' => 'Nature of Business field is required',
-        ]);
+        // $request->validate([
+        //     'photo' => 'required',
+        //     'borrower_type_id' => 'required',
+        //     'grouping_id' => '',
+        //     'loan_officer_id' => '',
+        //     'business_name' => 'required',
+        //     'first_name' => 'required',
+        //     'middle_name' => 'required',
+        //     'last_name' => 'required',
+        //     'suffix' => '',
+        //     'country_id' => 'required',
+        //     'region_id' => 'required',
+        //     'county_id' => 'required',
+        //     'township_id' => 'required',
+        //     'address' => 'required',
+        //     'property_type_id' => 'required',
+        //     'birthday' => 'required',
+        //     'age' => 'required',
+        //     'civil_status_id' => 'required',
+        //     'contact_number' => 'required',
+        //     'email_address' => 'required',
+        //     'valid_id_type_id' => 'required',
+        //     'id_number' => 'required',
+        //     'nature_of_business_id' => 'required',
+        //     'business_address' => 'required',
+        //     'business_property_type_id' => 'required',
+        //     'monthly_sale' => 'required',
+        //     'monthly_profit' => 'required'
+        // ],[
+        //     'country_id.required' => 'Country field is required',
+        //     'region_id.required' => 'Region field is required',
+        //     'county_id.required' => 'County field is required',
+        //     'township_id.required' => 'Township field is required',
+        //     'valid_id_type_id.required' => 'Valid ID Type field is required',
+        //     'nature_of_business_id.required' => 'Nature of Business field is required',
+        // ]);
 
         DB::beginTransaction();
         try {
@@ -93,7 +93,8 @@ class BorrowerController extends Controller
                     $loan_amount = $loan->amount;
                     $total_payment = $loan->payments->sum('actual_payment');
                     if($loan_amount > $total_payment){
-                        $bad_accounts[] =  'Bad Accounts! with total loan of '.$loan_amount.' and with total payment of '.$total_payment;
+                        $balance = $loan_amount - $total_payment;
+                        $bad_accounts[] = 'Bad Accounts! with total loan of '.$loan_amount.' and with total payment of '.$total_payment. '. Remaining balance is '.$balance;
                     }
                }
             }
