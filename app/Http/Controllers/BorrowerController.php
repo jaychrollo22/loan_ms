@@ -211,6 +211,16 @@ class BorrowerController extends Controller
     }
 
     /**
+     * Display active resources.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function active(){
+        return Borrower::where('status','Active')
+            ->count();
+    }
+
+    /**
      * Common Error Message
      */
     public static function commonError($message){

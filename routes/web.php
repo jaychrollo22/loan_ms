@@ -31,6 +31,7 @@ Route::post('update-loan/{id}', 'LoanController@update');
 Route::get('view-loan/{id}', 'LoanController@show');
 Route::post('approve-loan/{id}', 'LoanController@approve');
 Route::post('disapprove-loan/{id}', 'LoanController@disapprove');
+Route::get('total-loans/{year}', 'LoanController@loans');
 
 //Payments
 Route::get('payments', 'PaymentController@index');
@@ -121,6 +122,7 @@ Route::group(['prefix' => 'borrowers'], function () {
     Route::get('/show/{id}', 'BorrowerController@show');
     Route::get('/edit/{id}', 'BorrowerController@edit');
     Route::delete('/delete/{borrower}', 'BorrowerController@destroy');
+    Route::get('/active-counts', 'BorrowerController@active');
 });
 
 Route::group(['prefix' => 'co-borrowers'], function () {
@@ -142,6 +144,7 @@ Route::group(['prefix' => 'groupings'], function () {
     Route::get('/show/{id}', 'GroupingController@show');
     Route::get('/edit/{id}', 'GroupingController@edit');
     Route::delete('/delete/{grouping}', 'GroupingController@destroy');
+    Route::get('/active-counts', 'GroupingController@active');
 });
 
 Route::group(['prefix' => 'companies'], function () {

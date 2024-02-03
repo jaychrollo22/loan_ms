@@ -118,4 +118,14 @@ class GroupingController extends Controller
         return Grouping::with('loanOfficer')
             ->get();
     }
+
+    /**
+     * Display active resources.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function active(){
+        return Grouping::where('status','Active')
+            ->count();
+    }
 }

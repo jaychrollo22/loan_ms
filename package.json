@@ -26,6 +26,8 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "apexcharts": "^3.45.2",
+        "vue-apexcharts": "^1.6.2",
         "vue-multiselect": "^2.1.8"
     }
 }
