@@ -12,7 +12,9 @@
                         <div class="col-md-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <h1>{{ active_borrowers }}</h1>
+                                    <h1>
+                                        <a href='/borrowers/main'>{{ active_borrowers }}</a>
+                                    </h1>
                                     <span>Active Borrowers</span>
                                 </div>
                             </div>
@@ -20,7 +22,9 @@
                         <div class="col-md-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <h1>{{ active_groups }}</h1>
+                                    <h1>
+                                        <a href='/groupings/main'>{{ active_groups }}</a>
+                                    </h1>
                                     <span>Active Groups</span>
                                 </div>
                             </div>
@@ -29,7 +33,18 @@
                     <div class="row mt-5">
                          <div class="col-md-12">
                             <div class="card ">
-                                <h5 class="mt-3 ml-3">Total Released Loans with Interest( {{ year }} )</h5>
+                                <div class="row mt-3 ml-3 mr-1">
+                                    <div class="col-md-6">
+                                        <h5>Total Released Loans with Interest( {{ year }} )</h5>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3">
+                                        <select class="custom-select form-control-lg mt-2" v-model="year" @change="changeYear">
+                                            <option value="" disabled>Please Select Year</option> 
+                                            <option v-for="(year, y) in populateYears" :value="year" :key="y">{{ year }}</option>
+                                        </select>
+                                    </div>
+                                </div> 
                                 <apexchart height="500" type="bar" :options="options" :series="series"></apexchart>
                             </div>
                         </div>
@@ -76,9 +91,12 @@ export default {
     created() {
         this.commonRequest('/borrowers/active-counts','active_borrowers');
         this.commonRequest('/groupings/active-counts','active_groups');
-        this.commonRequest(`/total-loans/${this.year}`,'total_loans',true,'computeMontlyLoans');
+        this.changeYear();
     },
     methods:{
+        changeYear(){
+            this.commonRequest(`/total-loans/${this.year}`,'total_loans',true,'computeMontlyLoans');
+        },
         commonRequest(end_point,model,additional_logic = false,function_name = null){
             axios.get(end_point)
             .then(response => {
@@ -108,6 +126,12 @@ export default {
                 { data: total_loans},
                 { data: total_interest}    
             ];
+        }
+    },
+    computed:{
+        populateYears(){
+            const year = 2024;
+            return Array.from(new Array(20), (v, idx) => year + idx);
         }
     }
 }

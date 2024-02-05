@@ -2288,9 +2288,12 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.commonRequest('/borrowers/active-counts', 'active_borrowers');
     this.commonRequest('/groupings/active-counts', 'active_groups');
-    this.commonRequest("/total-loans/".concat(this.year), 'total_loans', true, 'computeMontlyLoans');
+    this.changeYear();
   },
   methods: {
+    changeYear: function changeYear() {
+      this.commonRequest("/total-loans/".concat(this.year), 'total_loans', true, 'computeMontlyLoans');
+    },
     commonRequest: function commonRequest(end_point, model) {
       var _this = this;
       var additional_logic = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -2324,6 +2327,14 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         data: total_interest
       }];
+    }
+  },
+  computed: {
+    populateYears: function populateYears() {
+      var year = 2024;
+      return Array.from(new Array(20), function (v, idx) {
+        return year + idx;
+      });
     }
   }
 });
@@ -4609,21 +4620,66 @@ var render = function render() {
     staticClass: "card"
   }, [_c("div", {
     staticClass: "card-body"
-  }, [_c("h1", [_vm._v(_vm._s(_vm.active_borrowers))]), _vm._v(" "), _c("span", [_vm._v("Active Borrowers")])])])]), _vm._v(" "), _c("div", {
+  }, [_c("h1", [_c("a", {
+    attrs: {
+      href: "/borrowers/main"
+    }
+  }, [_vm._v(_vm._s(_vm.active_borrowers))])]), _vm._v(" "), _c("span", [_vm._v("Active Borrowers")])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-4"
   }, [_c("div", {
     staticClass: "card"
   }, [_c("div", {
     staticClass: "card-body"
-  }, [_c("h1", [_vm._v(_vm._s(_vm.active_groups))]), _vm._v(" "), _c("span", [_vm._v("Active Groups")])])])])]), _vm._v(" "), _c("div", {
+  }, [_c("h1", [_c("a", {
+    attrs: {
+      href: "/groupings/main"
+    }
+  }, [_vm._v(_vm._s(_vm.active_groups))])]), _vm._v(" "), _c("span", [_vm._v("Active Groups")])])])])]), _vm._v(" "), _c("div", {
     staticClass: "row mt-5"
   }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("div", {
     staticClass: "card"
-  }, [_c("h5", {
-    staticClass: "mt-3 ml-3"
-  }, [_vm._v("Total Released Loans with Interest( " + _vm._s(_vm.year) + " )")]), _vm._v(" "), _c("apexchart", {
+  }, [_c("div", {
+    staticClass: "row mt-3 ml-3 mr-1"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("h5", [_vm._v("Total Released Loans with Interest( " + _vm._s(_vm.year) + " )")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-3"
+  }), _vm._v(" "), _c("div", {
+    staticClass: "col-md-3"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.year,
+      expression: "year"
+    }],
+    staticClass: "custom-select form-control-lg mt-2",
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.year = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, _vm.changeYear]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "",
+      disabled: ""
+    }
+  }, [_vm._v("Please Select Year")]), _vm._v(" "), _vm._l(_vm.populateYears, function (year, y) {
+    return _c("option", {
+      key: y,
+      domProps: {
+        value: year
+      }
+    }, [_vm._v(_vm._s(year))]);
+  })], 2)])]), _vm._v(" "), _c("apexchart", {
     attrs: {
       height: "500",
       type: "bar",
