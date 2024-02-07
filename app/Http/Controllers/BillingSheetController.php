@@ -13,7 +13,41 @@ class BillingSheetController extends Controller
      */
     public function index()
     {
-        //
+        $search = $request->search;
+        $grouping = $request->grouping;
+
+        $borrowers = Borrower::when($search,function($q) use($search){
+                                $q->where(function($w) use($search){
+                                    $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
+                                    ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
+                                    ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
+                                    ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
+                                });
+                            })
+                            ->when($grouping,function($q) use($grouping){
+                                $q->where('grouping_id',$grouping);
+                            })
+                            ->pluck('id')
+                            ->toArray();
+
+        $loans = Loan::with('borrower.borrowerType','borrower.grouping','borrower.borrowerType','type_info','payments','billings','amount_to_pay')
+                        ->where('loan_number','=',$search)
+                        ->orWhereIn('borrower_id',$borrowers)
+                        ->get();
+        
+        $groupings = Grouping::with('loanOfficer')->where('status','Active')->get();
+
+        return view(
+            'billing_sheets.index',
+            array(
+                'header' => 'billing_sheets',
+                'loans' => $loans,
+                'search' => $search,
+                'grouping' => $grouping,
+                'groupings' => $groupings,
+
+            )
+        );
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-
+use DB;
 use App\Borrower;
 use App\Loan;
 use App\LoanBilling;
@@ -277,6 +277,7 @@ class LoanController extends Controller
             return back();
         }
     }
+
     public function disapprove(Request $request,$id)
     {
         $loan = Loan::where('id',$id)->first();
@@ -288,5 +289,16 @@ class LoanController extends Controller
             Alert::success('Loan has been Approved')->persistent('Dismiss');
             return back();
         }
+    }
+
+    public function loans($year){
+        return Loan::select(
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('SUM(total_amount) as total_amount'),
+            DB::raw('SUM(total_interest) as total_interest')
+        )
+        ->groupBy('month')
+        ->whereYear('created_at',$year)
+        ->get();
     }
 }

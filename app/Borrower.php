@@ -70,4 +70,8 @@ class Borrower extends Model implements Auditable
     public function businessPropertyType(){
         return $this->belongsTo(PropertyType::class);
     }
+
+    public function loans(){
+        return $this->hasMany(Loan::class);
+    }
 }
