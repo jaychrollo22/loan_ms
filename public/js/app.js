@@ -2262,12 +2262,16 @@ __webpack_require__.r(__webpack_exports__);
     return {
       active_borrowers: 0,
       active_groups: 0,
+      filter_type: 'per_month',
       year: new Date().getFullYear(),
       total_loans: 0,
       total_interest: 0,
       options: {
         chart: {
-          id: 'vuechart-example'
+          id: 'vuechart-example',
+          toolbar: {
+            show: false
+          }
         },
         xaxis: {
           categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -2282,27 +2286,46 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: 'Interest',
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      }]
+      }],
+      is_loading: false
     };
   },
   created: function created() {
     this.commonRequest('/borrowers/active-counts', 'active_borrowers');
     this.commonRequest('/groupings/active-counts', 'active_groups');
-    this.changeYear();
+    this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.filter_type), 'total_loans', true, 'computeMontlyLoans');
   },
   methods: {
-    changeYear: function changeYear() {
-      this.commonRequest("/total-loans/".concat(this.year), 'total_loans', true, 'computeMontlyLoans');
+    filterLoans: function filterLoans() {
+      var _this = this;
+      var function_name = '';
+      switch (this.filter_type) {
+        case 'per_year':
+          var filter_years = Array.from(new Array(12), function (v, idx) {
+            return _this.year + idx;
+          });
+          this.options.xaxis.categories = filter_years;
+          function_name = 'computeYearlyLoans';
+          break;
+        case 'per_month':
+          this.options.xaxis.categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          function_name = 'computeMontlyLoans';
+          break;
+      }
+      this.$refs.chart.refresh();
+      this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.filter_type), 'total_loans', true, function_name);
     },
     commonRequest: function commonRequest(end_point, model) {
-      var _this = this;
+      var _this2 = this;
       var additional_logic = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var function_name = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+      this.is_loading = true;
       axios.get(end_point).then(function (response) {
-        _this[model] = response.data;
-        if (additional_logic) _this[function_name](_this[model]);
+        _this2[model] = response.data;
+        if (additional_logic) _this2[function_name](_this2[model]);
+        _this2.is_loading = false;
       })["catch"](function (errors) {
-        _this.errors = errors.response.data.errors;
+        _this2.errors = errors.response.data.errors;
       });
     },
     computeMontlyLoans: function computeMontlyLoans(loans) {
@@ -2321,6 +2344,27 @@ __webpack_require__.r(__webpack_exports__);
         total_loans.push(loan_amount);
         total_interest.push(interest_amount);
       });
+      this.updateComputation(total_loans, total_interest);
+    },
+    computeYearlyLoans: function computeYearlyLoans(loans) {
+      var total_loans = [];
+      var total_interest = [];
+      this.options.xaxis.categories.filter(function (item, index) {
+        var year = loans.filter(function (loan) {
+          return item == loan.year;
+        });
+        var loan_amount = 0;
+        var interest_amount = 0;
+        if (year.length) {
+          loan_amount = year[0].total_amount;
+          interest_amount = year[0].total_interest;
+        }
+        total_loans.push(loan_amount);
+        total_interest.push(interest_amount);
+      });
+      this.updateComputation(total_loans, total_interest);
+    },
+    updateComputation: function updateComputation(total_loans, total_interest) {
       // In the same way, update the series option
       this.series = [{
         data: total_loans
@@ -4641,14 +4685,48 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "card"
   }, [_c("div", {
-    staticClass: "row mt-3 ml-3 mr-1"
+    staticClass: "row ml-2 mt-2"
   }, [_c("div", {
-    staticClass: "col-md-6"
-  }, [_c("h5", [_vm._v("Total Released Loans with Interest( " + _vm._s(_vm.year) + " )")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-3"
-  }), _vm._v(" "), _c("div", {
+  }, [_c("div", {
+    staticClass: "form-group"
+  }, [_c("label", [_vm._v("Filter By:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filter_type,
+      expression: "filter_type"
+    }],
+    staticClass: "custom-select form-control-lg mt-2",
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.filter_type = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "",
+      disabled: ""
+    }
+  }, [_vm._v("Please Filter By")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "per_month"
+    }
+  }, [_vm._v("Per Month")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "per_year"
+    }
+  }, [_vm._v("Per Year")])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-3"
-  }, [_c("select", {
+  }, [_c("div", {
+    staticClass: "form-group"
+  }, [_c("label", [_vm._v("Year")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -4657,7 +4735,7 @@ var render = function render() {
     }],
     staticClass: "custom-select form-control-lg mt-2",
     on: {
-      change: [function ($event) {
+      change: function change($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
           return o.selected;
         }).map(function (o) {
@@ -4665,7 +4743,7 @@ var render = function render() {
           return val;
         });
         _vm.year = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.changeYear]
+      }
     }
   }, [_c("option", {
     attrs: {
@@ -4679,7 +4757,23 @@ var render = function render() {
         value: year
       }
     }, [_vm._v(_vm._s(year))]);
-  })], 2)])]), _vm._v(" "), _c("apexchart", {
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-3 pt-4"
+  }, [_c("button", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      type: "button",
+      disabled: _vm.is_loading
+    },
+    on: {
+      click: _vm.filterLoans
+    }
+  }, [_vm._v("Filter")])])]), _vm._v(" "), _c("div", {
+    staticClass: "row mt-3 ml-3 mr-1"
+  }, [_c("div", {
+    staticClass: "col-md-12"
+  }, [_c("h5", [_vm._v("Total Released Loans with Interest( " + _vm._s(_vm.year) + " )")])])]), _vm._v(" "), _c("apexchart", {
+    ref: "chart",
     attrs: {
       height: "500",
       type: "bar",
