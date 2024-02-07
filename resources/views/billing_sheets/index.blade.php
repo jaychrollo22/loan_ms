@@ -7,9 +7,9 @@
           <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Loans</h4>
+                <h4 class="card-title">Billing Sheets</h4>
                 <div class="col-md-12">
-                  <form method='GET' action='{{url('payments')}}' onsubmit='show()' enctype="multipart/form-data">
+                  <form method='GET' action='{{url('billing-sheets')}}' onsubmit='show()' enctype="multipart/form-data">
                       <div class=row>
                           <div class='col-md-3'>
                               <div class="form-group">
@@ -48,7 +48,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @foreach($loans as $item)
+                        @foreach($loans as $item)
                         <tr>
                             <td>
                               @if($item->status == "For Approval")
@@ -56,33 +56,28 @@
                                 <i class="ti-pencil"></i>
                               </a>
                               @endif
-                              {{$item->loan_number}}</td>
-                            <td>{{$item->borrower ? $item->borrower->borrower_code : "" }}</td>
-                            <td>
-                              {{$item->borrower ?  $item->borrower->first_name . ' ' . $item->borrower->last_name  : "" }} <br>
-                              <small>
-                                {{$item->borrower->borrowerType ?  $item->borrower->borrowerType->name  : "" }}
-                                @php
-                                  $group = '';
-                                  $borrower_type = $item->borrower->borrowerType ?  $item->borrower->borrowerType->name : "";
-                                  if($borrower_type == 'Group'){
-                                    $group = $item->borrower->grouping ?  ' : ' . $item->borrower->grouping->name : "";
-                                  }
-                                @endphp
-                              </small>
-                              <small>{{$group}}</small>
+                              {{$item->borrower->grouping ? $item->borrower->grouping->name : ""}}
                             </td>
-                            <td>{{$item->type_info ? $item->type_info->name : "" }}</td>
-                            <td>{{$item->term }}</td>
-                            <td>{{ '₱ ' . number_format($item->amount, 2, '.', ',') }}</td>
-                            <td>{{$item->interest . '%' }}</td>
-                            <td>{{ '₱ ' . number_format($item->total_interest, 2, '.', ',') }}</td>
-                            <td>{{ '₱ ' . number_format($item->total_amount, 2, '.', ',') }}</td>
-                            <td>{{$item->release_date }}</td>
-                            <td><a href="/view-loan/{{$item->id}}" class="ml-3 mr-3"> {{$item->status}} </a></td>
+                            <td>
+                              {{$item->borrower->last_name . ', ' . $item->borrower->first_name}}
+                            </td>
+                            <td>
+                              
+                            </td>
+                            <td>
+                              
+                            </td>
+                            <td>
+                              
+                            </td>
+                            <td>
+                              
+                            </td>
+                            <td>
+                              
+                            </td>
                         </tr>
-                        
-                        @endforeach --}}
+                        @endforeach
                     </tbody>
                   </table>
                 </div>

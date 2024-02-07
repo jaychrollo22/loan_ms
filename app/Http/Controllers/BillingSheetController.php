@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Borrower;
+use App\Loan;
+use App\Grouping;
+
 class BillingSheetController extends Controller
 {
     /**
@@ -11,7 +15,7 @@ class BillingSheetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $search = $request->search;
         $grouping = $request->grouping;
