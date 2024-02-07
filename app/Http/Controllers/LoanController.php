@@ -12,6 +12,7 @@ use App\LoanType;
 use App\LoanTerm;
 use App\LoanInterest;
 use App\Grouping;
+use App\Saving;
 
 
 use Alert;
@@ -142,9 +143,11 @@ class LoanController extends Controller
     public function show($id,Request $request)
     {
         $payment_start_date = isset($request->payment_start_date) ?  $request->payment_start_date : "";
+        $saving = isset($request->saving) ?  $request->saving : "0";
         $loan = Loan::with('borrower.borrowerType','type_info','payments','billings','amount_to_pay')
                         ->where('id',$id)
                         ->first();
+        $savings = Saving::where('status','Active')->get();
 
         $release_date = '';
         return view(
@@ -153,7 +156,9 @@ class LoanController extends Controller
                 'header' => 'loans',
                 'loan' => $loan,
                 'payment_start_date' => $payment_start_date,
-                'release_date' => $release_date
+                'saving' => $saving,
+                'release_date' => $release_date,
+                'savings' => $savings
 
             )
         );
@@ -223,6 +228,8 @@ class LoanController extends Controller
      */
     public function approve(Request $request,$id)
     {
+
+        // return $request->all();
         $loan = Loan::where('id',$id)->first();
 
         if($loan){
@@ -241,6 +248,8 @@ class LoanController extends Controller
                 $principal = $loan->amount / $loan->term;
                 $interest = $loan->total_interest / $loan->term;
                 $total_amount = $principal + $interest;
+                $saving = $request->saving;
+                $total_amount_with_saving = $principal + $interest + $saving;
 
                 $new_loan_billing = new LoanBilling;
                 $new_loan_billing->borrower_id = $loan->borrower_id;
@@ -250,6 +259,8 @@ class LoanController extends Controller
                 $new_loan_billing->principal = $principal;
                 $new_loan_billing->interest = $interest;
                 $new_loan_billing->total_amount = $total_amount;
+                $new_loan_billing->savings = $saving;
+                $new_loan_billing->total_amount_with_savings = $total_amount_with_saving;
                 $new_loan_billing->save();
 
                 $type = 'W';

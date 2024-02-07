@@ -55,6 +55,16 @@
                                                     <div class="col-sm-6 form-group">
                                                         <input type="date" name="payment_start_date" class="form-control" value="{{ $payment_start_date }}">
                                                     </div>
+                                                    <div class="col-sm-6 form-group">
+                                                        <select data-placeholder="Select Savings" class="form-control form-control-sm required js-example-basic-single "
+                                                            style='width:100%;' name='saving' required>
+                                                            <option value="">--Select Savings--</option>
+                                                            @foreach ($savings as $item)
+                                                            <option value="{{ $item->amount }}" {{ $saving == $item->amount ? 'selected' : '' }}>
+                                                                {{ $item->amount }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                     <div class="col-sm-6">
                                                         <button type="submit" class="btn btn-primary btn-md">Generate Schedule</button>
                                                     </div>
@@ -62,7 +72,7 @@
                                             @endif
                                             
                                             @if($loan->payment_start || $payment_start_date)
-                                                <div class="col-md-12">
+                                                <div class="col-md-12 mt-3">
                                                     <table class="table-bordered" width="100%">
                                                         <thead>
                                                             <th class="text-center">Week</th>
@@ -70,6 +80,8 @@
                                                             <th class="text-center">Principal</th>
                                                             <th class="text-center">Interest</th>
                                                             <th class="text-center">Total Amount</th>
+                                                            <th class="text-center">Savings</th>
+                                                            <th class="text-center">Total Amount w/ Savings</th>
                                                         </thead>
                                                         <tbody>
 
@@ -83,12 +95,17 @@
                                                                 $grand_total_principal = 0;
                                                                 $grand_total_interest = 0;
                                                                 $grand_total_amount = 0;
+                                                                $grand_saving_amount = 0;
+                                                                $grand_total_amount_with_savings  = 0;
                                                                 for($term = 1 ; $term <= $loan->term; $term++){
 
 
                                                                     $principal = $loan->amount / $loan->term;
                                                                     $interest = $loan->total_interest / $loan->term;
+                                                                    $total_saving = $saving;
+
                                                                     $total_amount = $principal + $interest;
+                                                                    $total_amount_with_saving = $principal + $interest + $saving;
 
                                                                     echo "<tr>";
                                                                     echo '<td align="center">'.$term.'</td>';
@@ -96,6 +113,8 @@
                                                                     echo '<td align="center">'.number_format($principal, 2, '.', ',').'</td>';
                                                                     echo '<td align="center">'.number_format($interest, 2, '.', ',').'</td>';
                                                                     echo '<td align="center">'.number_format($total_amount, 2, '.', ',').'</td>';
+                                                                    echo '<td align="center">'.number_format($saving, 2, '.', ',').'</td>';
+                                                                    echo '<td align="center">'.number_format($total_amount_with_saving, 2, '.', ',').'</td>';
                                                                     echo "</tr>";
 
                                                                     $type = 'W';
@@ -107,7 +126,10 @@
 
                                                                     $grand_total_principal += $principal;
                                                                     $grand_total_interest += $interest;
-                                                                    $grand_total_amount += $total_amount;
+                                                                    $grand_total_amount += $principal + $interest;
+                                                                    $grand_saving_amount += $saving;
+                                                                    $grand_total_amount_with_savings += $total_amount_with_saving;
+                                                                    
                                                                 }
                                                             @endphp
 
@@ -116,6 +138,9 @@
                                                                 <td align="center">{{number_format($grand_total_principal, 2, '.', ',')}}</td>
                                                                 <td align="center">{{number_format($grand_total_interest, 2, '.', ',')}}</td>
                                                                 <td align="center">{{number_format($grand_total_amount, 2, '.', ',')}}</td>
+                                                                <td align="center">{{number_format($grand_saving_amount, 2, '.', ',')}}</t>
+                                                                
+                                                                <td align="center">{{number_format($grand_total_amount_with_savings, 2, '.', ',')}}</td>
                                                             </tr>
                                                             
                                                         </tbody>

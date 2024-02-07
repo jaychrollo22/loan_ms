@@ -8,7 +8,7 @@
                     <div class="card-body">
                         <h4 class="card-title">Edit Loan Interest : {{$loan_interest->name}}</h4>
                         <div class="col-md-12">
-                            <form method='POST' action='{{url('update-loan-term/'.$loan_interest->id)}}' onsubmit='show()' enctype="multipart/form-data">
+                            <form method='POST' action='{{url('update-loan-interest/'.$loan_interest->id)}}' onsubmit='show()' enctype="multipart/form-data">
                                 @csrf
                                
                                 <div class="row">

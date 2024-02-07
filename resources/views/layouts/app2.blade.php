@@ -60,7 +60,7 @@
     <div id="loader" style="display:none;" class="loader">
     </div>
 
-    @include('layouts.navigation', ['logo',$logo]);
+    @include('layouts.navigation');
 
     @include('sweetalert::alert')
 

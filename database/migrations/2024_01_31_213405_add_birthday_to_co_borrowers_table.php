@@ -14,7 +14,7 @@ class AddBirthdayToCoBorrowersTable extends Migration
     public function up()
     {
         Schema::table('co_borrowers', function (Blueprint $table) {
-            $table->date('birthday');
+            $table->date('birthday')->nullable();
         });
     }
 

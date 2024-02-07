@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBirthdayToBorrowersTable extends Migration
+class AddTotalAmountWithSavingsToLoanBillings extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddBirthdayToBorrowersTable extends Migration
      */
     public function up()
     {
-        Schema::table('borrowers', function (Blueprint $table) {
-            $table->date('birthday')->nullable();
+        Schema::table('loan_billings', function (Blueprint $table) {
+            $table->double('total_amount_with_savings',15,2)->after('total_amount')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddBirthdayToBorrowersTable extends Migration
      */
     public function down()
     {
-        Schema::table('borrowers', function (Blueprint $table) {
-            $table->dropColumn('birthday');
+        Schema::table('loan_billings', function (Blueprint $table) {
+            //
         });
     }
 }

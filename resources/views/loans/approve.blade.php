@@ -15,6 +15,7 @@
                             <h4 class="badge badge-success mt-1">Approved</h4>
                         </div>
                         <input type="hidden" name="payment_start" value="{{$payment_start_date}}">
+                        <input type="hidden" name="saving" value="{{$saving}}">
 
 
                         <div class="col-md-12 form-group">
