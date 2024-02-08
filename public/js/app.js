@@ -2262,8 +2262,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       active_borrowers: 0,
       active_groups: 0,
-      filter_type: 'per_month',
+      filter_type: 'perMonth',
       year: new Date().getFullYear(),
+      month: new Date().getMonth(),
       total_loans: 0,
       total_interest: 0,
       options: {
@@ -2293,27 +2294,41 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.commonRequest('/borrowers/active-counts', 'active_borrowers');
     this.commonRequest('/groupings/active-counts', 'active_groups');
-    this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.filter_type), 'total_loans', true, 'computeMontlyLoans');
+    this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.month, "/").concat(this.filter_type), 'total_loans', true, 'computeMonthlyLoans');
   },
   methods: {
     filterLoans: function filterLoans() {
       var _this = this;
       var function_name = '';
       switch (this.filter_type) {
-        case 'per_year':
+        case 'perWeek':
+          var firstDayOfMonth = new Date(this.year, this.month, 1);
+          var lastDayOfMonth = new Date(this.year, this.month + 1, 0);
+          var numberOfDaysInMonth = lastDayOfMonth.getDate();
+          var numberOfWeeks = Math.ceil((numberOfDaysInMonth + firstDayOfMonth.getDay()) / 7);
+          var counter = 1;
+          var weeks = [];
+          while (counter <= numberOfWeeks) {
+            weeks.push('Week ' + counter);
+            counter++;
+          }
+          this.options.xaxis.categories = weeks;
+          function_name = 'computeWeeklyLoans';
+          break;
+        case 'perYear':
           var filter_years = Array.from(new Array(12), function (v, idx) {
             return _this.year + idx;
           });
           this.options.xaxis.categories = filter_years;
           function_name = 'computeYearlyLoans';
           break;
-        case 'per_month':
+        case 'perMonth':
           this.options.xaxis.categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          function_name = 'computeMontlyLoans';
+          function_name = 'computeMonthlyLoans';
           break;
       }
       this.$refs.chart.refresh();
-      this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.filter_type), 'total_loans', true, function_name);
+      this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.month, "/").concat(this.filter_type), 'total_loans', true, function_name);
     },
     commonRequest: function commonRequest(end_point, model) {
       var _this2 = this;
@@ -2328,7 +2343,25 @@ __webpack_require__.r(__webpack_exports__);
         _this2.errors = errors.response.data.errors;
       });
     },
-    computeMontlyLoans: function computeMontlyLoans(loans) {
+    computeWeeklyLoans: function computeWeeklyLoans(loans) {
+      var total_loans = [];
+      var total_interest = [];
+      this.options.xaxis.categories.filter(function (item, index) {
+        var week = loans.filter(function (loan) {
+          return index == loan.week - 4;
+        });
+        var loan_amount = 0;
+        var interest_amount = 0;
+        if (week.length) {
+          loan_amount = week[0].total_amount;
+          interest_amount = week[0].total_interest;
+        }
+        total_loans.push(loan_amount);
+        total_interest.push(interest_amount);
+      });
+      this.updateComputation(total_loans, total_interest);
+    },
+    computeMonthlyLoans: function computeMonthlyLoans(loans) {
       var total_loans = [];
       var total_interest = [];
       this.series[0].data.filter(function (item, index) {
@@ -4716,13 +4749,93 @@ var render = function render() {
     }
   }, [_vm._v("Please Filter By")]), _vm._v(" "), _c("option", {
     attrs: {
-      value: "per_month"
+      value: "perWeek"
+    }
+  }, [_vm._v("Per Week")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "perMonth"
     }
   }, [_vm._v("Per Month")]), _vm._v(" "), _c("option", {
     attrs: {
-      value: "per_year"
+      value: "perYear"
     }
-  }, [_vm._v("Per Year")])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Per Year")])])])]), _vm._v(" "), _vm.filter_type == "perWeek" ? _c("div", {
+    staticClass: "col-md-3"
+  }, [_c("div", {
+    staticClass: "form-group"
+  }, [_c("label", [_vm._v("Month")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.month,
+      expression: "month"
+    }],
+    staticClass: "custom-select form-control-lg mt-2",
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.month = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "",
+      disabled: ""
+    }
+  }, [_vm._v("Please Select Month")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("January")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "1"
+    }
+  }, [_vm._v("February")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "2"
+    }
+  }, [_vm._v("March")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "3"
+    }
+  }, [_vm._v("April")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "4"
+    }
+  }, [_vm._v("May")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "5"
+    }
+  }, [_vm._v("June")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "6"
+    }
+  }, [_vm._v("July")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "7"
+    }
+  }, [_vm._v("August")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "8"
+    }
+  }, [_vm._v("September")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "9"
+    }
+  }, [_vm._v("October")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "10"
+    }
+  }, [_vm._v("November")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "11"
+    }
+  }, [_vm._v("December")])])])]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "col-md-3"
   }, [_c("div", {
     staticClass: "form-group"

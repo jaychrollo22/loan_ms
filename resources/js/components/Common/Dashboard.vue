@@ -39,9 +39,29 @@
                                             <label>Filter By:</label>
                                             <select class="custom-select form-control-lg mt-2" v-model="filter_type">
                                                 <option value="" disabled>Please Filter By</option>
-                                                <!-- <option value="per_week">Per Week</option> -->
-                                                <option value="per_month">Per Month</option>
-                                                <option value="per_year">Per Year</option>
+                                                <option value="perWeek">Per Week</option>
+                                                <option value="perMonth">Per Month</option>
+                                                <option value="perYear">Per Year</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" v-if="filter_type == 'perWeek'">
+                                        <div class="form-group">
+                                            <label>Month</label>
+                                            <select class="custom-select form-control-lg mt-2" v-model="month">
+                                                <option value="" disabled>Please Select Month</option> 
+                                                <option value="0">January</option>
+                                                <option value="1">February</option>
+                                                <option value="2">March</option>
+                                                <option value="3">April</option>
+                                                <option value="4">May</option>
+                                                <option value="5">June</option>
+                                                <option value="6">July</option>
+                                                <option value="7">August</option>
+                                                <option value="8">September</option>
+                                                <option value="9">October</option>
+                                                <option value="10">November</option>
+                                                <option value="11">December</option>
                                             </select>
                                         </div>
                                     </div>
@@ -82,8 +102,9 @@ export default {
         return {
             active_borrowers: 0,
             active_groups: 0,
-            filter_type: 'per_month',
+            filter_type: 'perMonth',
             year: new Date().getFullYear(),
+            month: new Date().getMonth(),
             total_loans: 0,
             total_interest: 0,
             options: {
@@ -114,24 +135,39 @@ export default {
     created() {
         this.commonRequest('/borrowers/active-counts','active_borrowers');
         this.commonRequest('/groupings/active-counts','active_groups');
-        this.commonRequest(`/filter-loans/${this.year}/${this.filter_type}`,'total_loans',true,'computeMontlyLoans');
+        this.commonRequest(`/filter-loans/${this.year}/${this.month}/${this.filter_type}`,'total_loans',true,'computeMonthlyLoans');
     },
     methods:{
         filterLoans(){
             let function_name = '';
             switch(this.filter_type) {
-                case 'per_year':
+                case 'perWeek':
+                    const firstDayOfMonth = new Date(this.year, this.month, 1);
+                    const lastDayOfMonth = new Date(this.year, this.month + 1, 0);
+                    const numberOfDaysInMonth = lastDayOfMonth.getDate();
+                    const numberOfWeeks = Math.ceil((numberOfDaysInMonth + firstDayOfMonth.getDay()) / 7);
+                
+                    let counter = 1;
+                    let weeks = [];
+                    while(counter <= numberOfWeeks){
+                        weeks.push('Week ' + counter);
+                        counter++;
+                    }
+                    this.options.xaxis.categories = weeks;
+                    function_name = 'computeWeeklyLoans';
+                    break;
+                case 'perYear':
                     let filter_years =  Array.from(new Array(12), (v, idx) => this.year + idx);
                     this.options.xaxis.categories = filter_years;
                     function_name = 'computeYearlyLoans';
                     break;
-                case 'per_month':
+                case 'perMonth':
                     this.options.xaxis.categories = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                    function_name = 'computeMontlyLoans';
+                    function_name = 'computeMonthlyLoans';
                     break;
             }
             this.$refs.chart.refresh();
-            this.commonRequest(`/filter-loans/${this.year}/${this.filter_type}`,'total_loans',true,function_name);
+            this.commonRequest(`/filter-loans/${this.year}/${this.month}/${this.filter_type}`,'total_loans',true,function_name);
         },
         commonRequest(end_point,model,additional_logic = false,function_name = null){
             this.is_loading = true;
@@ -145,7 +181,23 @@ export default {
                 this.errors = errors.response.data.errors;
             })
         },
-        computeMontlyLoans(loans){
+        computeWeeklyLoans(loans){
+            let total_loans = [];
+            let total_interest = [];
+            this.options.xaxis.categories.filter((item,index) => {
+                let week = loans.filter(loan => index  == (loan.week - 4));
+                let loan_amount = 0;
+                let interest_amount = 0;
+                if(week.length){
+                    loan_amount = week[0].total_amount;
+                    interest_amount = week[0].total_interest;
+                }
+                total_loans.push(loan_amount);
+                total_interest.push(interest_amount);
+            });
+            this.updateComputation(total_loans,total_interest);
+        },
+        computeMonthlyLoans(loans){
             let total_loans = [];
             let total_interest = [];
             this.series[0].data.filter((item,index) => {

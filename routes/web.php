@@ -31,7 +31,7 @@ Route::post('update-loan/{id}', 'LoanController@update');
 Route::get('view-loan/{id}', 'LoanController@show');
 Route::post('approve-loan/{id}', 'LoanController@approve');
 Route::post('disapprove-loan/{id}', 'LoanController@disapprove');
-Route::get('filter-loans/{year}/{filterType}', 'LoanController@filterLoans');
+Route::get('filter-loans/{year}/{month}/{filterType}', 'LoanController@filterLoans');
 
 //Payments
 Route::get('payments', 'PaymentController@index');
