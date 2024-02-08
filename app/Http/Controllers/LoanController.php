@@ -291,10 +291,21 @@ class LoanController extends Controller
         }
     }
 
-    public function filterLoans($year,$type){
+    public function filterLoans($year,$month,$type){
         $loans = [];
         switch ($type) {
-            case 'per_month':
+            case 'perWeek':
+                $loans = Loan::select(
+                        DB::raw('WEEK(created_at) as week'),
+                        DB::raw('SUM(amount) as total_amount'),
+                        DB::raw('SUM(total_interest) as total_interest')
+                    )
+                    ->groupBy('week')
+                    ->whereYear('created_at',$year)
+                    ->whereMonth('created_at',$month+1)
+                    ->get();
+              break;
+            case 'perMonth':
                 $loans = Loan::select(
                         DB::raw('MONTH(created_at) as month'),
                         DB::raw('SUM(total_amount) as total_amount'),
@@ -304,7 +315,7 @@ class LoanController extends Controller
                     ->whereYear('created_at',$year)
                     ->get();
               break;
-            case 'per_year':
+            case 'perYear':
                 $end_year = $year + 11;
                 $loans = Loan::select(
                         DB::raw('YEAR(created_at) as year'),
