@@ -41,6 +41,7 @@
                             <th>Group</th>
                             <th>Name</th>
                             <th>Weekly Payment</th>
+                            <th>Total Payment</th>
                             <th>Remaining Balance</th>
                             <th>Release Date</th>
                             <th>Maturity Date</th>
@@ -62,19 +63,48 @@
                               {{$item->borrower->last_name . ', ' . $item->borrower->first_name}}
                             </td>
                             <td>
-                              
+                              @php
+                                  $weekly_payment = $item->billings[0]['total_amount_with_savings'];
+
+                              @endphp
+                              {{$weekly_payment}}
                             </td>
                             <td>
-                              
+                              @php
+                                  $total_payment = $item->payments->sum('actual_payment');
+
+                              @endphp
+                              {{$total_payment}}
                             </td>
                             <td>
-                              
+                              @php
+                                  $remaining_balance = $item->total_amount - $total_payment;
+                                  if($remaining_balance <= 0){
+                                    $remaining_balance = 'Fully Paid';
+                                  }
+                              @endphp
+                              {{$remaining_balance}}
                             </td>
                             <td>
-                              
+                              @php
+                                  $release_date = date('Y-m-d',strtotime($item->release_date));
+
+                              @endphp
+                              {{$release_date}}
                             </td>
                             <td>
-                              
+                              @php
+                                  $maturity_date = date('Y-m-d',strtotime($item->billings[0]['schedule_date']));
+
+                              @endphp
+                              {{$maturity_date}}
+                            </td>
+                            <td>
+                              @php
+                                  $savings = $item->billings[0]['savings'];
+
+                              @endphp
+                              {{$savings}}
                             </td>
                         </tr>
                         @endforeach
