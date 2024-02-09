@@ -2490,6 +2490,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     if (this.id) this.commonRequest('/companies/show/' + this.id, 'company');
   },
   methods: {
+    updateLogo: function updateLogo() {
+      this.company.file_path = '';
+      this.company.file_name = '';
+      this.company.logo = '';
+    },
     uploadLogo: function uploadLogo(e) {
       this.company.logo = '';
       if (/\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false) {
@@ -2504,7 +2509,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     updateCompany: function updateCompany() {
       var _this = this;
       this.errors = [];
-      this.form_data.append('id', this.id);
       this.appendFormData(this.company);
       document.getElementById("loader").style.display = "block";
       axios.post('/companies/store', this.form_data).then(function (response) {
@@ -2527,6 +2531,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var _this3 = this;
       axios.get(end_point).then(function (response) {
         _this3[model] = response.data;
+        _this3.default_name = response.data.name;
       })["catch"](function (errors) {
         _this3.errors = errors.response.data.errors;
       });
@@ -5029,7 +5034,32 @@ var render = function render() {
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6 form-group"
-  }, [_vm._v("\n                            Logo\n                            "), _c("input", {
+  }, [_vm._v("\n                            Logo\n                            "), _vm.company.file_path ? _c("div", {
+    staticClass: "card-profile-image"
+  }, [_c("a", {
+    attrs: {
+      href: "../../storage/" + _vm.company.file_path,
+      target: "_blank"
+    }
+  }, [_c("img", {
+    staticStyle: {
+      width: "50px",
+      height: "auto"
+    },
+    attrs: {
+      src: "../../storage/" + _vm.company.file_path
+    }
+  })]), _vm._v(" "), _c("a", {
+    staticClass: "btn btn-outline-info btn-icon-text btn-sm",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.updateLogo
+    }
+  }, [_c("i", {
+    staticClass: "ti-pencil btn-icon-append"
+  }), _vm._v("\n                                    Update Photo\n                                ")])]) : _c("input", {
     ref: "logo",
     staticClass: "form-control",
     attrs: {
