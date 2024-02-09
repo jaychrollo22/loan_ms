@@ -13,7 +13,16 @@
                             </div>
                             <div class='col-md-6 form-group'>
                                 Logo
-                                <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="logo" @change="uploadLogo($event)">
+                                <div class="card-profile-image" v-if="company.file_path">
+                                    <a :href="'../../storage/'+company.file_path" target="_blank">
+                                        <img :src="'../../storage/'+company.file_path" style='width:50px;height:auto;'>
+                                    </a>
+                                    <a type="button" class="btn btn-outline-info btn-icon-text btn-sm" @click="updateLogo">
+                                        <i class="ti-pencil btn-icon-append"></i>
+                                        Update Photo
+                                    </a>
+                                </div>
+                                <input type="file" class="form-control" name="profile_avatar" accept=".png, .jpg, .jpeg" ref="logo" @change="uploadLogo($event)" v-else>
                             </div>
                         </div>
                         <div class="row">
@@ -66,6 +75,11 @@ export default {
         if(this.id) this.commonRequest('/companies/show/'+this.id,'company');
     },
     methods:{
+        updateLogo(){
+            this.company.file_path = '';
+            this.company.file_name = '';
+            this.company.logo = '';
+        },
         uploadLogo(e){
             this.company.logo = '';
             if(/\.(jpe?g|png|gif)$/i.test(e.target.files[0].name) === false){
@@ -80,7 +94,6 @@ export default {
         },
         updateCompany(){
             this.errors = [];
-            this.form_data.append('id', this.id);
             this.appendFormData(this.company);
             document.getElementById("loader").style.display = "block";
             axios.post('/companies/store',this.form_data)
@@ -101,6 +114,7 @@ export default {
             axios.get(end_point)
             .then(response => {
                 this[model] = response.data;
+                this.default_name = response.data.name;
             })
             .catch(errors => {
                 this.errors = errors.response.data.errors;

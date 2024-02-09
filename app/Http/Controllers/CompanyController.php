@@ -44,7 +44,7 @@ class CompanyController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'logo' => 'required',
+            'logo' => !$request->file_path ? 'required' : '',
             'address' => 'required',
             'status' => 'required'
         ]);
