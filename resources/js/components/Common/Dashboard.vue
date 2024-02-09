@@ -94,7 +94,8 @@
 </template>
 
 <script>
-import VueApexCharts from 'vue-apexcharts'
+import VueApexCharts from 'vue-apexcharts';
+import moment from 'moment';
 export default {
     props: ['user'],
     components: { apexchart: VueApexCharts },
@@ -129,7 +130,9 @@ export default {
                 name: 'Interest',
                 data: [0,0,0,0,0,0,0,0,0,0,0,0]
             }],
-            is_loading: false
+            is_loading: false,
+            week_start: 0,
+            week_end: 0,
         }
     },
     created() {
@@ -143,7 +146,7 @@ export default {
             switch(this.filter_type) {
                 case 'perWeek':
                     const firstDayOfMonth = new Date(this.year, this.month, 1);
-                    const lastDayOfMonth = new Date(this.year, this.month + 1, 0);
+                    const lastDayOfMonth = new Date(this.year,(parseFloat(this.month) + 1), 0);
                     const numberOfDaysInMonth = lastDayOfMonth.getDate();
                     const numberOfWeeks = Math.ceil((numberOfDaysInMonth + firstDayOfMonth.getDay()) / 7);
                 
@@ -155,6 +158,10 @@ export default {
                     }
                     this.options.xaxis.categories = weeks;
                     function_name = 'computeWeeklyLoans';
+
+                    const date = moment(this.year+'-'+(parseFloat(this.month) + 1)+'-01', 'YYYY-MM-DD');
+                    this.week_start = date.isoWeek();
+                    this.week_end = this.week_start + (numberOfWeeks - 1);    
                     break;
                 case 'perYear':
                     let filter_years =  Array.from(new Array(12), (v, idx) => this.year + idx);
@@ -184,8 +191,14 @@ export default {
         computeWeeklyLoans(loans){
             let total_loans = [];
             let total_interest = [];
-            this.options.xaxis.categories.filter((item,index) => {
-                let week = loans.filter(loan => index  == (loan.week - 4));
+            let array_weeks = [];
+
+            while(this.week_start <= this.week_end){
+                array_weeks.push(this.week_start++);
+            }
+
+            array_weeks.filter((item,index) => {
+                let week = loans.filter(loan => item == (loan.week + 1));
                 let loan_amount = 0;
                 let interest_amount = 0;
                 if(week.length){
