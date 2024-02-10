@@ -79,7 +79,7 @@ Route::get('/users/loan-officers', 'UserController@getLoanOfficers');
 
 // Reports
 Route::get('billing-sheets', 'BillingSheetController@index');
-Route::post('print-billing-sheet', 'BillingSheetController@print');
+Route::get('print-billing-sheet', 'BillingSheetController@print');
 
 Route::group(['prefix' => 'borrower-types'], function () {
     Route::get('/lists', 'BorrowerTypeController@lists');

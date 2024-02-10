@@ -8,8 +8,26 @@ use App\Borrower;
 use App\Loan;
 use App\Grouping;
 
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Illuminate\Support\Facades\View;
+
+use PDF;
+
 class BillingSheetController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,27 +35,31 @@ class BillingSheetController extends Controller
      */
     public function index(Request $request)
     {
+        $loans = [];
+        
         $search = $request->search;
         $grouping = $request->grouping;
 
-        $borrowers = Borrower::when($search,function($q) use($search){
-                                $q->where(function($w) use($search){
-                                    $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
-                                    ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
-                                    ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
-                                    ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
-                                });
-                            })
-                            ->when($grouping,function($q) use($grouping){
-                                $q->where('grouping_id',$grouping);
-                            })
-                            ->pluck('id')
-                            ->toArray();
+        if($search || $grouping){
+            $borrowers = Borrower::when($search,function($q) use($search){
+                                    $q->where(function($w) use($search){
+                                        $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
+                                        ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
+                                        ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
+                                        ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
+                                    });
+                                })
+                                ->when($grouping,function($q) use($grouping){
+                                    $q->where('grouping_id',$grouping);
+                                })
+                                ->pluck('id')
+                                ->toArray();
 
-        $loans = Loan::with('borrower.borrowerType','borrower.grouping','borrower.borrowerType','type_info','payments','billings','amount_to_pay')
-                        ->where('loan_number','=',$search)
-                        ->orWhereIn('borrower_id',$borrowers)
-                        ->get();
+            $loans = Loan::with('borrower.borrowerType','borrower.grouping','borrower.borrowerType','type_info','payments','billings','amount_to_pay')
+                            ->where('loan_number','=',$search)
+                            ->orWhereIn('borrower_id',$borrowers)
+                            ->get();
+        }
         
         $groupings = Grouping::with('loanOfficer')->where('status','Active')->get();
 
@@ -54,69 +76,38 @@ class BillingSheetController extends Controller
         );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function print(Request $request)
     {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $search = $request->search;
+        $grouping = $request->grouping;
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        if($search || $grouping){
+            $borrowers = Borrower::when($search,function($q) use($search){
+                                    $q->where(function($w) use($search){
+                                        $w->where('first_name', 'like' , '%' .  $search . '%')->orWhere('last_name', 'like' , '%' .  $search . '%')
+                                        ->orWhere('borrower_code', 'like' , '%' .  $search . '%')
+                                        ->orWhereRaw("CONCAT(`first_name`, ' ', `last_name`) LIKE ?", ["%{$search}%"])
+                                        ->orWhereRaw("CONCAT(`last_name`, ' ', `first_name`) LIKE ?", ["%{$search}%"]);
+                                    });
+                                })
+                                ->when($grouping,function($q) use($grouping){
+                                    $q->where('grouping_id',$grouping);
+                                })
+                                ->pluck('id')
+                                ->toArray();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+            $loans = Loan::with('borrower.borrowerType','borrower.grouping','borrower.borrowerType','type_info','payments','billings','amount_to_pay')
+                            ->where('loan_number','=',$search)
+                            ->orWhereIn('borrower_id',$borrowers)
+                            ->get();
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $pdf = PDF::loadView('billing_sheets.print',array(
+            'loans' => $loans,
+        ));
+        $pdf->setPaper('legal', 'landscape');
+        return $pdf->stream('memorandum_receipts.pdf');
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
