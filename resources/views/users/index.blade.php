@@ -8,6 +8,15 @@
                     <div class="card-body">
                         <h4 class="card-title">Users 
                         </h4>
+                        <p class="card-description">
+                    
+                            <a href="add-user" type="button" class="btn btn-outline-success btn-icon-text">
+                              <i class="ti-plus btn-icon-prepend"></i>                                                    
+                              New
+                            </a>
+                  
+                          </p>
+                          
                         @if ($errors->has('password'))
                             <span class="invalid-feedback" style="display: block;margin:0px 0px 10px 0px;" role="alert">
                                 <strong>{{ $errors->first('password') }}</strong>
@@ -48,7 +57,7 @@
                                         <td>{{$user->email}}</td>
                                         <td>{{$user->role}}</td>
                                         <td>
-                                            <a href="/edit-user-role/{{$user->id}}" target="_blank" class="btn btn-outline-info btn-icon-text btn-sm">
+                                            <a href="/edit-user/{{$user->id}}" target="_blank" class="btn btn-outline-info btn-icon-text btn-sm">
                                                 Edit
                                                 <i class="ti-file btn-icon-append"></i>
                                             </a>

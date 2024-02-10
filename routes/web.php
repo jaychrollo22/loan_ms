@@ -70,6 +70,7 @@ Route::post('update-loan-interest/{id}', 'LoanInterestController@update');
 
 //Users
 Route::get('users', 'UserController@index');
+Route::get('add-user', 'UserController@create');
 Route::post('new-user', 'UserController@store');
 Route::get('edit-user/{id}', 'UserController@edit');
 Route::post('update-user/{id}', 'UserController@update');

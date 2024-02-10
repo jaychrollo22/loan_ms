@@ -4,11 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 use Alert;
 
 class UserController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +48,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.add_user');
     }
 
     /**
@@ -47,7 +59,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
+        $new_user = new User;
+        $new_user->name = $request->name;
+        $new_user->email = $request->email;
+        $new_user->password = $request->password;
+        $new_user->role = $request->role;
+        $new_user->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return redirect('/users'); 
     }
 
     /**
@@ -69,7 +96,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::where('id',$id)->first();
+
+        return view('users.edit_user',array(
+            'user'=>$user
+        ));
     }
 
     /**
@@ -81,7 +112,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255']
+        ]);
+
+        $user = User::where('id',$id)->first();
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+        $user->save();
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return redirect('/users'); 
     }
 
     /**
