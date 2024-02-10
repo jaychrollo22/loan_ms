@@ -33,7 +33,12 @@
                       </div>
                   </form>
               </div>
-             
+                @if($loans)
+                <a href="/print-billing-sheet?search={{$search}}&grouping={{$grouping}}" target="_blank" class="btn btn-outline-primary btn-icon-text mb-2">
+                  <i class="ti-print btn-icon-prepend"></i>                                                    
+                  Generate Billing Sheet
+                </a>
+                @endif
                 <div class="table-responsive">
                   <table class="table table-hover table-bordered tablewithSearch">
                     <thead>

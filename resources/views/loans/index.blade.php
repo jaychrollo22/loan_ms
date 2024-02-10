@@ -36,12 +36,10 @@
                   </form>
               </div>
                 <p class="card-description">
-
                     <a href="/create-loan" class="btn btn-outline-success btn-icon-text">
                       <i class="ti-plus btn-icon-prepend"></i>                                                    
                       New
-                    </a>
-          
+                    </a>          
                   </p>
              
                 <div class="table-responsive">
