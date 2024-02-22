@@ -79,11 +79,15 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3 ml-3 mr-1">
-                                    <div class="col-md-12">
-                                        <h5>Total Released Loans with Interest( {{ year }} )</h5>
+                                    <div class="col-md-4 border">
+                                        <h5 class="mt-3">Total Payments, Principal and Interest( {{ year }} )</h5>
+                                        <apexchart type="radialBar" ref="bar" height="500" :options="chartOptions" :series="series2"></apexchart>
+                                    </div> 
+                                    <div class="col-md-8 border">
+                                        <h5 class="mt-3">Total Released Loans with Interest( {{ year }} )</h5>
+                                        <apexchart height="500" type="bar" ref="chart" :options="options" :series="series"></apexchart>
                                     </div>
-                                </div> 
-                                <apexchart height="500" type="bar" ref="chart" :options="options" :series="series"></apexchart>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -106,6 +110,7 @@ export default {
             filter_type: 'perMonth',
             year: new Date().getFullYear(),
             month: new Date().getMonth(),
+            // Loans and Interest Chart
             total_loans: 0,
             total_interest: 0,
             options: {
@@ -133,12 +138,72 @@ export default {
             is_loading: false,
             week_start: 0,
             week_end: 0,
+            
+            // Payment and Interest Chart
+            series2: [0,0,0],
+            chartOptions: {
+                chart: {
+                    height: 390,
+                    type: 'radialBar',
+                },
+                plotOptions: {
+                    radialBar: {
+                        offsetY: 0,
+                        startAngle: 0,
+                        endAngle: 270,
+                        hollow: {
+                            margin: 5,
+                            size: '30%',
+                            background: 'transparent',
+                            image: undefined,
+                        },
+                        dataLabels: {
+                            name: {
+                                show: false,
+                            },
+                            value: {
+                                show: false,
+                            }
+                        }
+                    }
+                },
+                labels: ['Payment','Principal','Interest'],
+                legend: {
+                    show: true,
+                    floating: true,
+                    fontSize: '12px',
+                    position: 'left',
+                    offsetX: -35,
+                    offsetY: 40,
+                    labels: {
+                        useSeriesColors: true,
+                    },
+                    markers: {
+                        size: 0
+                    },
+                    formatter: function(seriesName, opts) {
+                        return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex]
+                    },
+                    itemMargin: {
+                        vertical: 3
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        legend: {
+                            show: false
+                        }
+                    }
+                }]
+            }
         }
     },
     created() {
         this.commonRequest('/borrowers/active-counts','active_borrowers');
         this.commonRequest('/groupings/active-counts','active_groups');
         this.commonRequest(`/filter-loans/${this.year}/${this.month}/${this.filter_type}`,'total_loans',true,'computeMonthlyLoans');
+        this.commonRequest(`/filter-billings/${this.year}/${this.month}/${this.filter_type}`,'total_payments',true,'computeYearlyPayments');
     },
     methods:{
         filterLoans(){
@@ -175,6 +240,7 @@ export default {
             }
             this.$refs.chart.refresh();
             this.commonRequest(`/filter-loans/${this.year}/${this.month}/${this.filter_type}`,'total_loans',true,function_name);
+            this.commonRequest(`/filter-billings/${this.year}/${this.month}/${this.filter_type}`,'total_payments',true,'computeYearlyPayments');
         },
         commonRequest(end_point,model,additional_logic = false,function_name = null){
             this.is_loading = true;
@@ -245,9 +311,19 @@ export default {
         updateComputation(total_loans,total_interest){
             // In the same way, update the series option
             this.series = [
-                { data: total_loans},
-                { data: total_interest}    
+                { 
+                    name: 'Loans',
+                    data: total_loans
+                },
+                { 
+                    name: 'Interest',
+                    data: total_interest
+                }    
             ];
+        },
+        computeYearlyPayments(payments){
+            this.series2 = [0,0,0];
+            if(payments.length) this.series2 = [payments[0].total_payment,payments[0].total_principal,payments[0].total_interest];
         }
     },
     computed:{

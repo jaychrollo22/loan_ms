@@ -2268,6 +2268,7 @@ __webpack_require__.r(__webpack_exports__);
       filter_type: 'perMonth',
       year: new Date().getFullYear(),
       month: new Date().getMonth(),
+      // Loans and Interest Chart
       total_loans: 0,
       total_interest: 0,
       options: {
@@ -2293,13 +2294,72 @@ __webpack_require__.r(__webpack_exports__);
       }],
       is_loading: false,
       week_start: 0,
-      week_end: 0
+      week_end: 0,
+      // Payment and Interest Chart
+      series2: [0, 0, 0],
+      chartOptions: {
+        chart: {
+          height: 390,
+          type: 'radialBar'
+        },
+        plotOptions: {
+          radialBar: {
+            offsetY: 0,
+            startAngle: 0,
+            endAngle: 270,
+            hollow: {
+              margin: 5,
+              size: '30%',
+              background: 'transparent',
+              image: undefined
+            },
+            dataLabels: {
+              name: {
+                show: false
+              },
+              value: {
+                show: false
+              }
+            }
+          }
+        },
+        labels: ['Payment', 'Principal', 'Interest'],
+        legend: {
+          show: true,
+          floating: true,
+          fontSize: '12px',
+          position: 'left',
+          offsetX: -35,
+          offsetY: 40,
+          labels: {
+            useSeriesColors: true
+          },
+          markers: {
+            size: 0
+          },
+          formatter: function formatter(seriesName, opts) {
+            return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex];
+          },
+          itemMargin: {
+            vertical: 3
+          }
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            legend: {
+              show: false
+            }
+          }
+        }]
+      }
     };
   },
   created: function created() {
     this.commonRequest('/borrowers/active-counts', 'active_borrowers');
     this.commonRequest('/groupings/active-counts', 'active_groups');
     this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.month, "/").concat(this.filter_type), 'total_loans', true, 'computeMonthlyLoans');
+    this.commonRequest("/filter-billings/".concat(this.year, "/").concat(this.month, "/").concat(this.filter_type), 'total_payments', true, 'computeYearlyPayments');
   },
   methods: {
     filterLoans: function filterLoans() {
@@ -2337,6 +2397,7 @@ __webpack_require__.r(__webpack_exports__);
       }
       this.$refs.chart.refresh();
       this.commonRequest("/filter-loans/".concat(this.year, "/").concat(this.month, "/").concat(this.filter_type), 'total_loans', true, function_name);
+      this.commonRequest("/filter-billings/".concat(this.year, "/").concat(this.month, "/").concat(this.filter_type), 'total_payments', true, 'computeYearlyPayments');
     },
     commonRequest: function commonRequest(end_point, model) {
       var _this2 = this;
@@ -2412,10 +2473,16 @@ __webpack_require__.r(__webpack_exports__);
     updateComputation: function updateComputation(total_loans, total_interest) {
       // In the same way, update the series option
       this.series = [{
+        name: 'Loans',
         data: total_loans
       }, {
+        name: 'Interest',
         data: total_interest
       }];
+    },
+    computeYearlyPayments: function computeYearlyPayments(payments) {
+      this.series2 = [0, 0, 0];
+      if (payments.length) this.series2 = [payments[0].total_payment, payments[0].total_principal, payments[0].total_interest];
     }
   },
   computed: {
@@ -4901,8 +4968,22 @@ var render = function render() {
   }, [_vm._v("Filter")])])]), _vm._v(" "), _c("div", {
     staticClass: "row mt-3 ml-3 mr-1"
   }, [_c("div", {
-    staticClass: "col-md-12"
-  }, [_c("h5", [_vm._v("Total Released Loans with Interest( " + _vm._s(_vm.year) + " )")])])]), _vm._v(" "), _c("apexchart", {
+    staticClass: "col-md-4 border"
+  }, [_c("h5", {
+    staticClass: "mt-3"
+  }, [_vm._v("Total Payments, Principal and Interest( " + _vm._s(_vm.year) + " )")]), _vm._v(" "), _c("apexchart", {
+    ref: "bar",
+    attrs: {
+      type: "radialBar",
+      height: "500",
+      options: _vm.chartOptions,
+      series: _vm.series2
+    }
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-md-8 border"
+  }, [_c("h5", {
+    staticClass: "mt-3"
+  }, [_vm._v("Total Released Loans with Interest( " + _vm._s(_vm.year) + " )")]), _vm._v(" "), _c("apexchart", {
     ref: "chart",
     attrs: {
       height: "500",
@@ -4910,7 +4991,7 @@ var render = function render() {
       options: _vm.options,
       series: _vm.series
     }
-  })], 1)])])])])])]);
+  })], 1)])])])])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
