@@ -32,6 +32,7 @@ Route::get('view-loan/{id}', 'LoanController@show');
 Route::post('approve-loan/{id}', 'LoanController@approve');
 Route::post('disapprove-loan/{id}', 'LoanController@disapprove');
 Route::get('filter-loans/{year}/{month}/{filterType}', 'LoanController@filterLoans');
+Route::get('filter-billings/{year}/{month}/{filterType}', 'LoanController@filterBillings');
 
 //Payments
 Route::get('payments', 'PaymentController@index');

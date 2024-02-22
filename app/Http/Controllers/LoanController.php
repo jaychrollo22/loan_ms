@@ -320,4 +320,62 @@ class LoanController extends Controller
 
         return $loans; 
     }
+
+    public function filterBillings($year,$month,$type){
+        return LoanBilling::select(
+                DB::raw('YEAR(schedule_date) as year'),
+                DB::raw('SUM(actual_payment) as total_payment'),
+                DB::raw('SUM(principal) as total_principal'),
+                DB::raw('SUM(interest) as total_interest')
+            )
+            ->groupBy('year')
+            ->whereNotNull('actual_payment')
+            ->whereYear('schedule_date',$year)
+            ->get();
+
+        // $loan_billings = [];
+        // switch ($type) {
+        //     case 'perWeek':
+        //         $loan_billings = LoanBilling::select(
+        //                 DB::raw('WEEK(schedule_date) as week'),
+        //                 DB::raw('SUM(actual_payment) as total_payment'),
+        //                 DB::raw('SUM(principal) as total_principal'),
+        //                 DB::raw('SUM(interest) as total_interest')
+        //             )
+        //             ->groupBy('week')
+        //             ->whereNotNull('actual_payment')
+        //             ->whereYear('schedule_date',$year)
+        //             ->whereMonth('schedule_date',$month+1)
+        //             ->get();
+        //       break;
+        //     case 'perMonth':
+        //         $loan_billings = LoanBilling::select(
+        //                 DB::raw('MONTH(schedule_date) as month'),
+        //                 DB::raw('SUM(actual_payment) as total_payment'),
+        //                 DB::raw('SUM(principal) as total_principal'),
+        //                 DB::raw('SUM(interest) as total_interest')
+        //             )
+        //             ->groupBy('month')  
+        //             ->whereNotNull('actual_payment')
+        //             ->whereYear('schedule_date',$year)
+        //             ->get();
+        //       break;
+        //     case 'perYear':
+        //         $end_year = $year + 11;
+        //         $loan_billings = LoanBilling::select(
+        //                 DB::raw('YEAR(schedule_date) as year'),
+        //                 DB::raw('SUM(actual_payment) as total_payment'),
+        //                 DB::raw('SUM(principal) as total_principal'),
+        //                 DB::raw('SUM(interest) as total_interest')
+        //             )
+        //             ->groupBy('year')
+        //             ->whereNotNull('actual_payment')
+        //             ->whereYear('schedule_date','>=',$year)
+        //             ->whereYear('schedule_date','<=',$end_year)
+        //             ->get();
+        //       break;
+        //   }
+
+        // return $loan_billings;
+    }
 }
