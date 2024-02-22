@@ -60,13 +60,13 @@
                     </td>
                     <td align="right">
                       @php
-                            $total_payment = $item->payments->sum('actual_payment');
+                          $total_payment = $item->payments->sum('actual_payment');
                           $remaining_balance = $item->total_amount - $total_payment;
                           if($remaining_balance <= 0){
                             $remaining_balance = 'Fully Paid';
                           }
                       @endphp
-                      {{ number_format($remaining_balance, 2, '.', ',')}}
+                      {{ $remaining_balance == 'Fully Paid' ? $remaining_balance  :  number_format($remaining_balance, 2, '.', ',')}}
                     </td>
                     <td>
                       @php
